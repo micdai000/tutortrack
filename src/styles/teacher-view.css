@@ -1,0 +1,204 @@
+.teacher-view {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 2.75rem 1.5rem 4.5rem;
+  color: #1f2937;
+  background: #ffffff;
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+}
+
+.teacher-view-chrome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.teacher-view-back {
+  margin: 0;
+}
+
+.teacher-view-back a {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.9rem;
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.teacher-view-back a:hover {
+  color: #111827;
+  text-decoration: underline;
+}
+
+.teacher-view-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.teacher-view-unavailable {
+  text-align: left;
+}
+
+.teacher-view-unavailable-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.teacher-view-unavailable-body {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #4b5563;
+  max-width: 28rem;
+}
+
+.teacher-view-header {
+  margin-bottom: 2.75rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.teacher-view-kicker {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b7280;
+  margin-bottom: 0.85rem;
+}
+
+.teacher-view-district {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+}
+
+.teacher-view-scope {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 1rem;
+  color: #4b5563;
+}
+
+.teacher-companionship-section {
+  margin-bottom: 3rem;
+  padding-top: 0.25rem;
+}
+
+.teacher-companionship-section + .teacher-companionship-section {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 2.5rem;
+}
+
+.teacher-companionship-header {
+  margin-bottom: 1.75rem;
+}
+
+.teacher-companionship-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.teacher-companionship-members {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.95rem;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.teacher-missionary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.teacher-missionary-card {
+  padding: 1.5rem 0 0.25rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.teacher-missionary-card:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.teacher-missionary-name {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+}
+
+.teacher-missionary-section {
+  margin-bottom: 1.15rem;
+}
+
+.teacher-missionary-section h3 {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6b7280;
+  margin-bottom: 0.35rem;
+}
+
+.teacher-missionary-section p {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  color: #111827;
+}
+
+.teacher-missionary-plan {
+  min-height: 1.5rem;
+}
+
+.teacher-view-status,
+.teacher-view-empty {
+  font-family: Inter, system-ui, sans-serif;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.teacher-view-error {
+  font-family: Inter, system-ui, sans-serif;
+  color: #b91c1c;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 640px) {
+  .teacher-view {
+    padding: 1.75rem 1.15rem 3rem;
+  }
+
+  .teacher-view-district {
+    font-size: 1.65rem;
+  }
+}
+
+@media print {
+  .teacher-view {
+    max-width: none;
+    padding: 0;
+  }
+
+  .teacher-view-no-print {
+    display: none !important;
+  }
+
+  .teacher-missionary-card,
+  .teacher-companionship-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .teacher-view-header {
+    border-bottom-color: #d1d5db;
+  }
+}

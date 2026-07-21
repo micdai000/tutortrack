@@ -79,6 +79,16 @@
   font-size: 0.95rem;
 }
 
+.districts-success {
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 0.95rem;
+}
+
 .district-list {
   list-style: none;
   display: flex;
@@ -87,12 +97,99 @@
 }
 
 .district-list-item {
-  padding: 0.85rem 1rem;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   background: #f9fafb;
+  overflow: visible;
 }
 
-.district-list-item-title {
+.district-list-item-row {
+  display: flex;
+  align-items: stretch;
+}
+
+.district-list-item-link {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  color: #111827;
+  text-decoration: none;
   font-weight: 500;
+  min-width: 0;
+}
+
+.district-list-item-link:hover {
+  background: #f3f4f6;
+}
+
+.district-list-item-action {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.district-menu {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  border-left: 1px solid #e5e7eb;
+}
+
+.district-menu-trigger {
+  width: 2.75rem;
+  height: 100%;
+  min-height: 2.75rem;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.district-menu-trigger:hover,
+.district-menu-trigger[aria-expanded="true"] {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.district-menu-panel {
+  position: absolute;
+  top: calc(100% - 0.25rem);
+  right: 0.35rem;
+  z-index: 20;
+  min-width: 10.5rem;
+  padding: 0.35rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.district-menu-item {
+  display: block;
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  text-align: left;
+  font-size: 0.9rem;
+  color: #111827;
+}
+
+.district-menu-item:hover {
+  background: #f3f4f6;
+}
+
+.district-menu-item--danger {
+  color: #b91c1c;
+}
+
+.district-menu-item--danger:hover {
+  background: #fef2f2;
 }

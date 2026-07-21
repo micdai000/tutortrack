@@ -59,7 +59,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Wait for the initial session check before rendering the app
   if (loading) {
-    return <div style={{ padding: "2rem" }}>Loading...</div>;
+    return (
+      <div style={{ padding: "2rem" }} role="status">
+        Checking your session...
+      </div>
+    );
   }
 
   return (

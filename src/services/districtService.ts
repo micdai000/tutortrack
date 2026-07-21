@@ -18,6 +18,20 @@ export async function getDistricts(): Promise<District[]> {
   return data ?? [];
 }
 
+/** Fetch a single district by id (null if missing or not owned). */
+export async function getDistrictById(
+  districtId: string
+): Promise<District | null> {
+  const { data, error } = await supabase
+    .from("districts")
+    .select("id, user_id, name, created_at")
+    .eq("id", districtId)
+    .maybeSingle();
+
+  if (error) throwQueryError(error);
+  return data;
+}
+
 /**
  * Create a district for the signed-in tutor.
  * user_id is set by the database default auth.uid() so it always
@@ -59,4 +73,24 @@ export async function createDistrict(name: string): Promise<District> {
   }
 
   return data;
+}
+
+/** Delete a district. Companionships and missionaries cascade in the database. */
+export async function deleteDistrict(districtId: string): Promise<void> {
+  const {
+    data: { session },
+    error: sessionError,
+  } = await supabase.auth.getSession();
+
+  if (sessionError) throwQueryError(sessionError);
+  if (!session) {
+    throw new Error("You must be signed in to delete a district.");
+  }
+
+  const { error } = await supabase
+    .from("districts")
+    .delete()
+    .eq("id", districtId);
+
+  if (error) throwQueryError(error);
 }

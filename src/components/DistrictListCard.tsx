@@ -16,31 +16,41 @@ export function DistrictListCard({
   return (
     <section className="dashboard-card">
       <div className="dashboard-card-header">
-        <h2>Districts</h2>
+        <h2>Your districts</h2>
         <Link to="/districts" className="dashboard-card-link">
-          Manage
+          View all
         </Link>
       </div>
 
-      {loading && <p className="dashboard-empty">Loading districts...</p>}
+      {loading && (
+        <p className="dashboard-empty" role="status">
+          Loading districts...
+        </p>
+      )}
 
-      {!loading && error && <p className="dashboard-error">{error}</p>}
+      {!loading && error && (
+        <p className="dashboard-error" role="alert">
+          {error}
+        </p>
+      )}
 
       {!loading && !error && districts.length === 0 && (
         <p className="dashboard-empty">
           No districts yet.{" "}
-          <Link to="/districts">Create your first district</Link>.
+          <Link to="/districts">Add your first district</Link>.
         </p>
       )}
 
       {!loading && !error && districts.length > 0 && (
         <ul className="dashboard-list">
           {districts.map((district) => (
-            <li
-              key={district.id}
-              className="dashboard-list-item dashboard-list-item--clickable"
-            >
-              <p className="dashboard-item-title">{district.name}</p>
+            <li key={district.id} className="dashboard-list-item">
+              <Link
+                to={`/districts/${district.id}`}
+                className="dashboard-item-link"
+              >
+                {district.name}
+              </Link>
             </li>
           ))}
         </ul>

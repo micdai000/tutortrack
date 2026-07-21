@@ -23,5 +23,5 @@ create table missionaries (
 
     created_at timestamptz not null default now(),
 
-    updated_at timestamptz not null default now()
+    last_updated_at timestamptz not null default now()
 );

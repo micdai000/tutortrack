@@ -9,7 +9,7 @@ export function WelcomeSection({ greeting, firstName }: WelcomeSectionProps) {
       <h1>
         {greeting}, {firstName}
       </h1>
-      <p>Here is what needs your attention today.</p>
+      <p>Review follow-ups and jump into your districts.</p>
     </section>
   );
 }

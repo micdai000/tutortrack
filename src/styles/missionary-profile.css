@@ -1,0 +1,121 @@
+.missionary-profile-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+}
+
+.missionary-profile-back {
+  margin-bottom: 1rem;
+}
+
+.missionary-profile-back a {
+  color: #374151;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.missionary-profile-back a:hover {
+  text-decoration: underline;
+}
+
+.missionary-profile-toolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  min-height: 1.5rem;
+}
+
+.missionary-profile-kicker {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.missionary-profile-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.missionary-profile-status {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.missionary-save-status {
+  color: #6b7280;
+  font-size: 0.9rem;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.missionary-save-status--saved {
+  color: #047857;
+}
+
+.missionary-save-status--error {
+  color: #b91c1c;
+}
+
+.missionary-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1.35rem 1.4rem 1.6rem;
+}
+
+.missionary-field label,
+.missionary-field-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: #111827;
+}
+
+.missionary-field input[type="text"],
+.missionary-field input[type="date"],
+.missionary-field textarea {
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font: inherit;
+  color: #111827;
+  background: #ffffff;
+  resize: vertical;
+}
+
+.missionary-field input:focus,
+.missionary-field textarea:focus {
+  outline: 2px solid #9ca3af;
+  outline-offset: 1px;
+}
+
+.missionary-field-large {
+  min-height: 10rem;
+  line-height: 1.5;
+}
+
+.missionary-field--readonly {
+  padding-top: 0.25rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.missionary-last-updated {
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.form-error {
+  color: #b91c1c;
+  font-size: 0.95rem;
+}

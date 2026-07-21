@@ -8,8 +8,46 @@ body {
   font-family: Inter, Arial, sans-serif;
   background-color: #f8fafc;
   color: #1f2937;
+  line-height: 1.45;
+}
+
+button,
+a,
+input,
+textarea {
+  font: inherit;
 }
 
 button {
   cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid #6b7280;
+  outline-offset: 2px;
+}
+
+.form-error {
+  color: #b91c1c;
+  font-size: 0.95rem;
+}
+
+.not-found-page {
+  max-width: 420px;
+  margin: 4rem auto;
+  padding: 0 1.25rem;
+}
+
+.not-found-page h1 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.not-found-page p {
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+}
+
+.not-found-page a {
+  color: #111827;
 }

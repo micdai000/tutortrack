@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 
-import { createDistrict, getDistricts } from "../services/districtService";
+import {
+  createDistrict,
+  deleteDistrict,
+  getDistricts,
+} from "../services/districtService";
 import type { District } from "../types/district";
 import { getErrorMessage } from "../utils/getErrorMessage";
 
@@ -9,6 +13,7 @@ type UseDistrictsResult = {
   loading: boolean;
   error: string | null;
   create: (name: string) => Promise<void>;
+  remove: (districtId: string) => Promise<void>;
   refresh: () => Promise<void>;
 };
 
@@ -43,11 +48,19 @@ export function useDistricts(): UseDistrictsResult {
     );
   }
 
+  async function remove(districtId: string) {
+    await deleteDistrict(districtId);
+    setDistricts((current) =>
+      current.filter((district) => district.id !== districtId)
+    );
+  }
+
   return {
     districts,
     loading,
     error,
     create,
+    remove,
     refresh,
   };
 }

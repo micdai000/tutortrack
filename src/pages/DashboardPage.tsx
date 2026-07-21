@@ -5,7 +5,6 @@ import { DistrictListCard } from "../components/DistrictListCard";
 import { useAuth } from "../components/AuthProvider";
 import { useDistricts } from "../hooks/useDistricts";
 import { getDisplayFirstName, getTimeOfDayGreeting } from "../utils/greeting";
-import { mockFollowUps } from "../utils/mockDashboardData";
 import "../styles/dashboard.css";
 
 function DashboardPage() {
@@ -22,7 +21,8 @@ function DashboardPage() {
       <WelcomeSection greeting={greeting} firstName={firstName} />
 
       <div className="dashboard-sections">
-        <FollowUpsCard followUps={mockFollowUps} />
+        {/* Follow-ups stay empty until real data is wired — avoids misleading sample names. */}
+        <FollowUpsCard followUps={[]} />
         <DistrictListCard
           districts={districts}
           loading={loading}

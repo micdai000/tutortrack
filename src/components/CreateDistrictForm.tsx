@@ -20,7 +20,7 @@ export function CreateDistrictForm({ onCreate }: CreateDistrictFormProps) {
       await onCreate(name);
       setName("");
     } catch (err) {
-      setError(getErrorMessage(err, "Unable to create district."));
+      setError(getErrorMessage(err, "Unable to add district. Please try again."));
     } finally {
       setSubmitting(false);
     }
@@ -39,12 +39,17 @@ export function CreateDistrictForm({ onCreate }: CreateDistrictFormProps) {
           required
           maxLength={100}
           disabled={submitting}
+          aria-invalid={error ? true : undefined}
         />
         <button type="submit" disabled={submitting || !name.trim()}>
-          {submitting ? "Creating..." : "Create district"}
+          {submitting ? "Adding..." : "Add district"}
         </button>
       </div>
-      {error && <p className="form-error">{error}</p>}
+      {error && (
+        <p className="form-error" role="alert">
+          {error}
+        </p>
+      )}
     </form>
   );
 }
