@@ -9,10 +9,20 @@ import type { User } from "@supabase/supabase-js";
 
 import { supabase } from "../lib/supabase";
 
+type SignUpResult = {
+  /** False when Supabase requires email confirmation before a session exists. */
+  sessionCreated: boolean;
+};
+
 type AuthContextValue = {
   user: User | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
+  signUp: (
+    email: string,
+    password: string,
+    name: string
+  ) => Promise<SignUpResult>;
   signOut: () => Promise<void>;
 };
 
@@ -45,11 +55,53 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   async function signIn(email: string, password: string) {
     const { error } = await supabase.auth.signInWithPassword({
-      email,
+      email: email.trim(),
       password,
     });
 
     if (error) throw error;
+  }
+
+  async function signUp(
+    email: string,
+    password: string,
+    name: string
+  ): Promise<SignUpResult> {
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+      throw new Error("Name is required.");
+    }
+
+    if (password.length < 6) {
+      throw new Error("Password must be at least 6 characters.");
+    }
+
+    const { data, error } = await supabase.auth.signUp({
+      email: email.trim(),
+      password,
+      options: {
+        data: {
+          full_name: trimmedName,
+          name: trimmedName,
+        },
+      },
+    });
+
+    if (error) throw error;
+
+    // Supabase can return a user with empty identities when the email
+    // already exists and confirmation is required (anti-enumeration).
+    if (
+      data.user &&
+      Array.isArray(data.user.identities) &&
+      data.user.identities.length === 0
+    ) {
+      throw new Error(
+        "An account with this email may already exist. Try signing in instead."
+      );
+    }
+
+    return { sessionCreated: Boolean(data.session) };
   }
 
   async function signOut() {
@@ -67,7 +119,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+    <AuthContext.Provider
+      value={{ user, loading, signIn, signUp, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   );
