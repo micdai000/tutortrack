@@ -2271,3 +2271,45 @@ Teacher View pages keep their own copy action without changing the document layo
 ### 6. Key takeaway
 
 Useful actions belong at the decision point, not only at the destination page.
+
+---
+
+# Feature 014 - SPA Hosting on Vercel
+
+---
+
+## Client-Side Routing vs Server Routing
+
+### 1. What is it?
+
+In a SPA (single-page application), React Router decides which page to show after `index.html` loads.
+
+The hosting server still receives the first HTTP request for every URL.
+
+### 2. Why does it exist?
+
+Browsers ask the server for `/share/abc…` or `/districts` as if those were real files.
+
+On Vercel, if no file exists at that path, the platform returns `404: NOT_FOUND` before React ever runs.
+
+### 3. How does it work?
+
+`vercel.json` rewrites unknown paths to `/index.html`.
+
+Then React Router reads the URL and renders the correct page, including public `/share/:token`.
+
+### 4. Simple analogy
+
+A receptionist who always hands visitors the same lobby directory.
+
+The directory (React Router) tells them which office to walk to. Without the receptionist, visitors get “building not found” at the front door.
+
+### 5. How TutorTrack uses it
+
+Share links and district refreshes both depend on deep URLs.
+
+Without the rewrite, Copy Share Link can create a correct Vercel URL that still fails when opened.
+
+### 6. Key takeaway
+
+For Vite + React Router on Vercel, SPA rewrites are part of production routing — not optional polish.
