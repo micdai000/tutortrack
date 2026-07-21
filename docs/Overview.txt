@@ -1,0 +1,19 @@
+Product Overview: 
+TutorTrack is a web application designed to help language tutors organize, 
+review, and share individualized language study plans for missionaries. 
+The application provides a centralized workspace where tutors can manage 
+districts, companionships, and missionary profiles while preparing for 
+tutoring sessions. TutorTrack also allows tutors to generate clean, 
+read-only Teacher Views that can be shared with classroom teachers, 
+ensuring consistent communication and helping teachers better support
+ each missionary's language development.
+
+Problem Statement:
+Language tutors regularly work with multiple districts and 
+companionships, each containing missionaries with unique language goals
+ and study plans. These plans often change over time and are difficult 
+ to organize, review, and communicate efficiently using existing tools.
+  Tutors need a single, organized workspace that allows them to quickly
+   prepare for tutoring sessions, update language study plans, and share 
+   current information with classroom teachers in a clear and consistent
+    format.

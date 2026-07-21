@@ -6,7 +6,8 @@
 create table districts (
     id uuid primary key default gen_random_uuid(),
 
-    user_id uuid not null references auth.users(id) on delete cascade,
+    -- Defaults to the signed-in tutor so inserts match RLS (auth.uid() = user_id)
+    user_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
 
     name text not null,
 
