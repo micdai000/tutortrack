@@ -2,6 +2,8 @@ import { useState, type FormEvent } from "react";
 import { Navigate } from "react-router-dom";
 
 import { useAuth } from "../components/AuthProvider";
+import { LoginBrandPanel } from "../components/login/LoginBrandPanel";
+import { Button, Checkbox, Field, Input } from "../components/ui";
 import { getErrorMessage } from "../utils/getErrorMessage";
 import "../styles/login.css";
 
@@ -182,139 +184,148 @@ function LoginPage() {
 
   return (
     <div className="login-page">
-      <section className="login-card">
-        <p className="login-brand">TutorTrack</p>
-        <h1>{isSignUp ? "Create account" : "Sign in"}</h1>
-        <p className="login-subtitle">
-          {isSignUp
-            ? "Create a TutorTrack account to manage language study plans."
-            : "Open your tutoring workspace to review language study plans."}
-        </p>
+      <LoginBrandPanel />
 
-        <form className="login-form" onSubmit={handleSubmit}>
-          {isSignUp && (
-            <div className="login-field">
-              <label htmlFor="name">Name</label>
-              <input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                required
-                autoComplete="name"
-                autoFocus
-                disabled={submitting}
-                placeholder="Your name"
-              />
-            </div>
-          )}
+      <main className="login-main">
+        <section className="login-card" aria-labelledby="login-heading">
+          <p className="login-brand">TutorTrack</p>
+          <h1 id="login-heading">
+            {isSignUp ? "Create account" : "Welcome back"}
+          </h1>
+          <p className="login-subtitle">
+            {isSignUp
+              ? "Create a TutorTrack account to manage language study plans."
+              : "Sign in to continue to your tutoring workspace."}
+          </p>
 
-          <div className="login-field">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              required
-              autoComplete="email"
-              autoFocus={!isSignUp}
-              disabled={submitting}
-            />
-          </div>
-
-          <div className="login-field">
-            <label htmlFor="password">Password</label>
-            <div className="login-password-row">
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                required
-                minLength={isSignUp ? 6 : undefined}
-                autoComplete={isSignUp ? "new-password" : "current-password"}
-                disabled={submitting}
-              />
-              <button
-                type="button"
-                className="login-password-toggle"
-                onClick={() => setShowPassword((current) => !current)}
-                aria-pressed={showPassword}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                disabled={submitting}
-              >
-                {showPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
-              </button>
-            </div>
+          <form className="login-form" onSubmit={handleSubmit}>
             {isSignUp && (
-              <p className="login-field-hint">At least 6 characters.</p>
+              <Field label="Name" htmlFor="name">
+                <Input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  required
+                  autoComplete="name"
+                  autoFocus
+                  disabled={submitting}
+                  placeholder="Your name"
+                />
+              </Field>
             )}
-          </div>
 
-          {!isSignUp && (
-            <label className="login-remember">
-              <input
-                type="checkbox"
+            <Field label="Email" htmlFor="email">
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+                autoComplete="email"
+                autoFocus={!isSignUp}
+                disabled={submitting}
+              />
+            </Field>
+
+            <Field
+              label="Password"
+              htmlFor="password"
+              hint={isSignUp ? "At least 6 characters." : undefined}
+            >
+              <div className="login-password-row">
+                <Input
+                  id="password"
+                  className="login-password-input"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  required
+                  minLength={isSignUp ? 6 : undefined}
+                  autoComplete={isSignUp ? "new-password" : "current-password"}
+                  disabled={submitting}
+                />
+                <button
+                  type="button"
+                  className="login-password-toggle"
+                  onClick={() => setShowPassword((current) => !current)}
+                  aria-pressed={showPassword}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  disabled={submitting}
+                >
+                  {showPassword ? <EyeOpenIcon /> : <EyeClosedIcon />}
+                </button>
+              </div>
+            </Field>
+
+            {!isSignUp && (
+              <Checkbox
+                id="remember-me"
+                label="Remember me"
                 checked={rememberMe}
                 onChange={(event) => setRememberMe(event.target.checked)}
                 disabled={submitting}
               />
-              Remember me
-            </label>
-          )}
+            )}
 
-          {error && (
-            <p className="form-error" role="alert">
-              {error}
-            </p>
-          )}
+            {error && (
+              <p className="tt-form-error" role="alert">
+                {error}
+              </p>
+            )}
 
-          {info && (
-            <p className="login-info" role="status">
-              {info}
-            </p>
-          )}
+            {info && (
+              <p className="login-info" role="status">
+                {info}
+              </p>
+            )}
 
-          <button type="submit" className="login-submit" disabled={submitting}>
-            {submitting
-              ? isSignUp
-                ? "Creating account..."
-                : "Signing in..."
-              : isSignUp
-                ? "Create account"
-                : "Sign in"}
-          </button>
-        </form>
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              className="login-submit"
+              disabled={submitting}
+            >
+              {submitting
+                ? isSignUp
+                  ? "Creating account..."
+                  : "Signing in..."
+                : isSignUp
+                  ? "Create account"
+                  : "Sign in"}
+            </Button>
+          </form>
 
-        <p className="login-switch">
-          {isSignUp ? (
-            <>
-              Already have an account?{" "}
-              <button
-                type="button"
-                className="login-switch-button"
-                onClick={() => switchMode("signin")}
-                disabled={submitting}
-              >
-                Sign in
-              </button>
-            </>
-          ) : (
-            <>
-              New to TutorTrack?{" "}
-              <button
-                type="button"
-                className="login-switch-button"
-                onClick={() => switchMode("signup")}
-                disabled={submitting}
-              >
-                Create an account
-              </button>
-            </>
-          )}
-        </p>
-      </section>
+          <p className="login-switch">
+            {isSignUp ? (
+              <>
+                Already have an account?{" "}
+                <button
+                  type="button"
+                  className="login-switch-button"
+                  onClick={() => switchMode("signin")}
+                  disabled={submitting}
+                >
+                  Sign in
+                </button>
+              </>
+            ) : (
+              <>
+                New to TutorTrack?{" "}
+                <button
+                  type="button"
+                  className="login-switch-button"
+                  onClick={() => switchMode("signup")}
+                  disabled={submitting}
+                >
+                  Create account
+                </button>
+              </>
+            )}
+          </p>
+        </section>
+      </main>
     </div>
   );
 }
