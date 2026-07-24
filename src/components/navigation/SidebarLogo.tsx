@@ -1,20 +1,19 @@
+import { Brand } from "../branding";
+
 type SidebarLogoProps = {
   expanded: boolean;
 };
 
-/** Text-only TutorTrack wordmark — no icon. */
+/** Sidebar brand lockup — mark only when collapsed; mark + wordmark when expanded. */
 export function SidebarLogo({ expanded }: SidebarLogoProps) {
   return (
-    <div className="tt-sidebar-logo" aria-label="TutorTrack">
-      <span
-        className={
-          expanded
-            ? "tt-sidebar-logo-wordmark tt-sidebar-logo-wordmark--expanded"
-            : "tt-sidebar-logo-wordmark"
-        }
-      >
-        {expanded ? "TutorTrack" : "TT"}
-      </span>
+    <div className="tt-sidebar-logo">
+      <Brand
+        size="nav"
+        tone="primary"
+        logoOnly={!expanded}
+        showWordmark={expanded}
+      />
     </div>
   );
 }

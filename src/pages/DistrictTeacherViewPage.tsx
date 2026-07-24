@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 
+import { BrandLoading } from "../components/branding";
 import { CopyShareLinkButton } from "../components/teacher/CopyShareLinkButton";
 import { TeacherViewDocument } from "../components/teacher/TeacherViewDocument";
 import { useDistrictTeacherView } from "../hooks/useDistrictTeacherView";
@@ -10,13 +11,7 @@ function DistrictTeacherViewPage() {
   const { teacherView, loading, error } = useDistrictTeacherView(districtId);
 
   if (loading) {
-    return (
-      <div className="teacher-view">
-        <p className="teacher-view-status" role="status">
-          Preparing District Teacher View...
-        </p>
-      </div>
-    );
+    return <BrandLoading label="Preparing District Teacher View..." />;
   }
 
   if (error || !teacherView) {

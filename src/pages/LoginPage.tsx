@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { Navigate } from "react-router-dom";
 
 import { useAuth } from "../components/AuthProvider";
+import { Logo } from "../components/branding";
 import { LoginBrandPanel } from "../components/login/LoginBrandPanel";
 import { Button, Checkbox, Field, Input } from "../components/ui";
 import { getErrorMessage } from "../utils/getErrorMessage";
@@ -188,7 +189,10 @@ function LoginPage() {
 
       <main className="login-main">
         <section className="login-card" aria-labelledby="login-heading">
-          <p className="login-brand">TutorTrack</p>
+          <div className="login-card-brand">
+            <Logo size="login" decorative />
+            <p className="login-card-wordmark">TutorTrack</p>
+          </div>
           <h1 id="login-heading">
             {isSignUp ? "Create account" : "Welcome back"}
           </h1>

@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 
+import { BrandLoading } from "../components/branding";
 import { TeacherViewDocument } from "../components/teacher/TeacherViewDocument";
 import { useSharedTeacherView } from "../hooks/useSharedTeacherView";
 import "../styles/teacher-view.css";
@@ -10,13 +11,7 @@ function SharedTeacherViewPage() {
     useSharedTeacherView(token);
 
   if (loading) {
-    return (
-      <div className="teacher-view">
-        <p className="teacher-view-status" role="status">
-          Opening shared Teacher View...
-        </p>
-      </div>
-    );
+    return <BrandLoading label="Opening shared Teacher View..." />;
   }
 
   if (unavailable) {

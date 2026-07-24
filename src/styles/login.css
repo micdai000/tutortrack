@@ -106,12 +106,8 @@
   max-width: 22rem;
 }
 
-.login-brand-panel__mark {
+.login-brand-panel__brand {
   margin: 0 0 var(--tt-space-5);
-  font-size: var(--tt-text-body-size);
-  font-weight: var(--tt-font-weight-medium);
-  letter-spacing: 0.02em;
-  color: var(--tt-color-primary);
 }
 
 .login-brand-panel__headline {
@@ -173,12 +169,22 @@
   }
 }
 
-.login-brand {
-  margin: 0 0 var(--tt-space-5);
-  font-size: var(--tt-text-body-size);
-  font-weight: var(--tt-font-weight-medium);
-  letter-spacing: 0.01em;
+.login-card-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--tt-space-3);
+  margin: 0 0 var(--tt-space-6);
   color: var(--tt-color-primary);
+}
+
+.login-card-wordmark {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: var(--tt-font-weight-medium);
+  letter-spacing: -0.01em;
+  color: var(--tt-color-text);
+  line-height: 1;
 }
 
 .login-card h1 {

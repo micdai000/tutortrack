@@ -1,3 +1,5 @@
+import { Brand } from "../branding";
+
 /**
  * Brand identity panel for the login experience.
  * Decorative only — no auth or routing logic.
@@ -13,7 +15,7 @@ export function LoginBrandPanel() {
       </div>
 
       <div className="login-brand-panel__content">
-        <p className="login-brand-panel__mark">TutorTrack</p>
+        <Brand size="nav" tone="primary" className="login-brand-panel__brand" />
         <h2 className="login-brand-panel__headline">
           Helping tutors organize language learning.
         </h2>

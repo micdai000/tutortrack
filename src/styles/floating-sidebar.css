@@ -69,20 +69,12 @@
   justify-content: flex-start;
 }
 
-.tt-sidebar-logo-wordmark {
-  display: inline-flex;
-  align-items: center;
-  font-size: 0.8125rem;
-  font-weight: var(--tt-font-weight-semibold);
-  letter-spacing: 0.04em;
-  color: var(--tt-color-text);
-  white-space: nowrap;
-  line-height: 1;
+.tt-sidebar-logo .tt-brand {
+  max-width: 100%;
 }
 
-.tt-sidebar-logo-wordmark--expanded {
-  font-size: 0.9375rem;
-  letter-spacing: -0.02em;
+.tt-sidebar:not(.tt-sidebar--expanded) .tt-sidebar-logo .tt-brand {
+  justify-content: center;
 }
 
 .tt-sidebar-toggle {
@@ -314,11 +306,6 @@
 
   .tt-sidebar--mobile-open {
     translate: 0 0;
-  }
-
-  .tt-sidebar--mobile .tt-sidebar-logo-wordmark {
-    font-size: 0.9375rem;
-    letter-spacing: -0.02em;
   }
 
   .tt-sidebar--mobile .tt-sidebar-item-label,

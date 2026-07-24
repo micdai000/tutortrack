@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 
+import { BrandLoading } from "../components/branding";
 import { CopyShareLinkButton } from "../components/teacher/CopyShareLinkButton";
 import { TeacherViewDocument } from "../components/teacher/TeacherViewDocument";
 import { useCompanionshipTeacherView } from "../hooks/useCompanionshipTeacherView";
@@ -11,13 +12,7 @@ function CompanionshipTeacherViewPage() {
     useCompanionshipTeacherView(companionshipId);
 
   if (loading) {
-    return (
-      <div className="teacher-view">
-        <p className="teacher-view-status" role="status">
-          Preparing Teacher View...
-        </p>
-      </div>
-    );
+    return <BrandLoading label="Preparing Teacher View..." />;
   }
 
   if (error || !teacherView) {

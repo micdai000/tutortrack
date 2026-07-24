@@ -7,6 +7,7 @@ import {
 } from "react";
 import type { User } from "@supabase/supabase-js";
 
+import { BrandLoading } from "./branding";
 import { supabase } from "../lib/supabase";
 
 type SignUpResult = {
@@ -164,11 +165,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   // Wait for the initial session check before rendering the app
   if (loading) {
-    return (
-      <div style={{ padding: "2rem" }} role="status">
-        Checking your session...
-      </div>
-    );
+    return <BrandLoading label="Checking your session..." />;
   }
 
   return (

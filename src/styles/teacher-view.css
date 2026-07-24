@@ -63,6 +63,22 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
+.teacher-view-letterhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.teacher-view-letterhead-date {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 0.8rem;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
 .teacher-view-kicker {
   font-family: Inter, system-ui, sans-serif;
   font-size: 0.8rem;
