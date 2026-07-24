@@ -106,7 +106,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   async function signOut() {
-    const { error } = await supabase.auth.signOut();
+    // Local scope only — global sign-out revokes every device/session and can
+    // leave other open tabs (e.g. the Vercel site) with a zombie JWT that still
+    // loads the app but fails on auth.updateUser with "Auth session missing!".
+    const { error } = await supabase.auth.signOut({ scope: "local" });
     if (error) throw error;
   }
 
@@ -116,6 +119,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
       throw new Error("Name is required.");
     }
 
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+
+    if (sessionError) throw sessionError;
+    if (!session) {
+      setUser(null);
+      throw new Error(
+        "Your sign-in session expired. Please sign in again, then update your name."
+      );
+    }
+
     const { data, error } = await supabase.auth.updateUser({
       data: {
         full_name: trimmedName,
@@ -123,7 +139,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
       },
     });
 
-    if (error) throw error;
+    if (error) {
+      const isSessionGone =
+        error.name === "AuthSessionMissingError" ||
+        error.message.toLowerCase().includes("auth session missing");
+
+      if (isSessionGone) {
+        // Server no longer has this session (revoked elsewhere) but the browser
+        // still held a JWT — clear it so ProtectedRoute sends them to login.
+        await supabase.auth.signOut({ scope: "local" });
+        setUser(null);
+        throw new Error(
+          "Your sign-in session expired. Please sign in again, then update your name."
+        );
+      }
+
+      throw error;
+    }
+
     if (data.user) {
       setUser(data.user);
     }
