@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { AddMissionaryForm } from "../components/AddMissionaryForm";
-import { AppHeader } from "../components/AppHeader";
 import { ConfirmDeleteCompanionshipDialog } from "../components/ConfirmDeleteCompanionshipDialog";
 import { ConfirmRemoveMissionaryDialog } from "../components/ConfirmRemoveMissionaryDialog";
 import { MissionarySelectList } from "../components/MissionarySelectList";
@@ -82,8 +81,6 @@ function CompanionshipWorkspacePage() {
 
   return (
     <div className="companionship-workspace-page">
-      <AppHeader />
-
       {workspace && (
         <div className="companionship-workspace-back">
           <Link to={`/districts/${workspace.district.id}`}>

@@ -1,0 +1,42 @@
+/**
+ * Card system — white surface, soft border, rounded-xl, subtle elevation.
+ */
+
+.tt-card {
+  background: var(--tt-color-surface);
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-lg);
+  box-shadow: var(--tt-shadow-card);
+  padding: var(--tt-card-padding);
+  transition: box-shadow var(--tt-duration-normal) var(--tt-ease-standard),
+    border-color var(--tt-duration-normal) var(--tt-ease-standard),
+    transform var(--tt-duration-normal) var(--tt-ease-standard);
+}
+
+.tt-card--flush {
+  padding: 0;
+}
+
+.tt-card--interactive:hover {
+  box-shadow: var(--tt-shadow-card-hover);
+  border-color: #dbe1e8;
+}
+
+.tt-card--interactive:focus-visible {
+  outline: 2px solid var(--tt-color-focus-ring);
+  outline-offset: 2px;
+}
+
+.tt-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--tt-space-4);
+  margin-bottom: var(--tt-card-gap);
+}
+
+.tt-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-card-gap);
+}

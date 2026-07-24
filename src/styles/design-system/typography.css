@@ -1,0 +1,62 @@
+/**
+ * Typography utilities — use with design tokens.
+ * Prefer these classes in future redesigns instead of one-off font sizes.
+ */
+
+.tt-text-page-title {
+  font-size: var(--tt-text-page-title-size);
+  line-height: var(--tt-text-page-title-line);
+  font-weight: var(--tt-text-page-title-weight);
+  color: var(--tt-color-text);
+  letter-spacing: -0.02em;
+}
+
+.tt-text-section {
+  font-size: var(--tt-text-section-size);
+  line-height: var(--tt-text-section-line);
+  font-weight: var(--tt-text-section-weight);
+  color: var(--tt-color-text);
+  letter-spacing: -0.01em;
+}
+
+.tt-text-card-title {
+  font-size: var(--tt-text-card-title-size);
+  line-height: var(--tt-text-card-title-line);
+  font-weight: var(--tt-text-card-title-weight);
+  color: var(--tt-color-text);
+}
+
+.tt-text-body {
+  font-size: var(--tt-text-body-size);
+  line-height: var(--tt-text-body-line);
+  font-weight: var(--tt-text-body-weight);
+  color: var(--tt-color-text);
+}
+
+.tt-text-helper {
+  font-size: var(--tt-text-helper-size);
+  line-height: var(--tt-text-helper-line);
+  font-weight: var(--tt-text-helper-weight);
+  color: var(--tt-color-text-secondary);
+}
+
+.tt-text-caption {
+  font-size: var(--tt-text-caption-size);
+  line-height: var(--tt-text-caption-line);
+  font-weight: var(--tt-text-caption-weight);
+  color: var(--tt-color-text-secondary);
+  letter-spacing: 0.02em;
+}
+
+/* Heading → body breathing room for future layouts */
+.tt-stack-heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-2);
+}
+
+.tt-stack-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-section-gap);
+}

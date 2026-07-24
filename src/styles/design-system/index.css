@@ -1,0 +1,12 @@
+/**
+ * TutorTrack Design System entry
+ * Import once from src/index.css. Do not import individual tokens in pages.
+ */
+
+@import "./tokens.css";
+@import "./typography.css";
+@import "./spacing.css";
+@import "./card.css";
+@import "./button.css";
+@import "./form.css";
+@import "./icon.css";

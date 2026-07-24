@@ -23,6 +23,7 @@ type AuthContextValue = {
     password: string,
     name: string
   ) => Promise<SignUpResult>;
+  updateProfileName: (name: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -109,6 +110,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (error) throw error;
   }
 
+  async function updateProfileName(name: string) {
+    const trimmedName = name.trim();
+    if (!trimmedName) {
+      throw new Error("Name is required.");
+    }
+
+    const { data, error } = await supabase.auth.updateUser({
+      data: {
+        full_name: trimmedName,
+        name: trimmedName,
+      },
+    });
+
+    if (error) throw error;
+    if (data.user) {
+      setUser(data.user);
+    }
+  }
+
   // Wait for the initial session check before rendering the app
   if (loading) {
     return (
@@ -120,7 +140,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, signIn, signUp, signOut }}
+      value={{ user, loading, signIn, signUp, updateProfileName, signOut }}
     >
       {children}
     </AuthContext.Provider>

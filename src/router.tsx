@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 
+import { AppShell } from "./components/AppShell";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
@@ -10,6 +11,7 @@ import CompanionshipTeacherViewPage from "./pages/CompanionshipTeacherViewPage";
 import DistrictTeacherViewPage from "./pages/DistrictTeacherViewPage";
 import SharedTeacherViewPage from "./pages/SharedTeacherViewPage";
 import MissionaryProfilePage from "./pages/MissionaryProfilePage";
+import SettingsPage from "./pages/SettingsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 export const router = createBrowserRouter([
@@ -25,25 +27,35 @@ export const router = createBrowserRouter([
     element: <ProtectedRoute />,
     children: [
       {
-        path: "/dashboard",
-        element: <DashboardPage />,
+        element: <AppShell />,
+        children: [
+          {
+            path: "/dashboard",
+            element: <DashboardPage />,
+          },
+          {
+            path: "/districts",
+            element: <DistrictsPage />,
+          },
+          {
+            path: "/districts/:districtId",
+            element: <DistrictDetailPage />,
+          },
+          {
+            path: "/companionships/:companionshipId",
+            element: <CompanionshipWorkspacePage />,
+          },
+          {
+            path: "/missionaries/:missionaryId",
+            element: <MissionaryProfilePage />,
+          },
+          {
+            path: "/settings",
+            element: <SettingsPage />,
+          },
+        ],
       },
-      {
-        path: "/districts",
-        element: <DistrictsPage />,
-      },
-      {
-        path: "/districts/:districtId",
-        element: <DistrictDetailPage />,
-      },
-      {
-        path: "/companionships/:companionshipId",
-        element: <CompanionshipWorkspacePage />,
-      },
-      {
-        path: "/missionaries/:missionaryId",
-        element: <MissionaryProfilePage />,
-      },
+      // Document-style Teacher Views stay full-bleed (no shell chrome).
       {
         path: "/teacher/companionship/:companionshipId",
         element: <CompanionshipTeacherViewPage />,

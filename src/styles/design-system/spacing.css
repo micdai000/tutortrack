@@ -1,0 +1,48 @@
+/**
+ * Spacing utilities for future page compositions.
+ * Existing pages are unchanged; these are available for the redesign stages.
+ */
+
+.tt-page {
+  max-width: var(--tt-page-max-width);
+  margin-inline: auto;
+  padding: var(--tt-page-padding-y) var(--tt-page-padding-x) var(--tt-space-12);
+}
+
+.tt-stack-sm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-2);
+}
+
+.tt-stack-md {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-4);
+}
+
+.tt-stack-lg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-6);
+}
+
+.tt-stack-xl {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-8);
+}
+
+.tt-row {
+  display: flex;
+  align-items: center;
+  gap: var(--tt-space-3);
+}
+
+.tt-row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tt-space-4);
+  flex-wrap: wrap;
+}

@@ -1,0 +1,94 @@
+/**
+ * Button system — primary / secondary / ghost / danger.
+ */
+
+.tt-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--tt-space-2);
+  height: var(--tt-control-height);
+  padding: 0 var(--tt-space-4);
+  border-radius: var(--tt-radius-sm);
+  border: 1px solid transparent;
+  font-size: var(--tt-text-body-size);
+  font-weight: var(--tt-font-weight-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--tt-duration-fast) var(--tt-ease-standard),
+    border-color var(--tt-duration-fast) var(--tt-ease-standard),
+    color var(--tt-duration-fast) var(--tt-ease-standard),
+    box-shadow var(--tt-duration-fast) var(--tt-ease-standard);
+}
+
+.tt-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.tt-button:focus-visible {
+  outline: 2px solid var(--tt-color-focus-ring);
+  outline-offset: 2px;
+}
+
+.tt-button--primary {
+  background: var(--tt-color-primary);
+  border-color: var(--tt-color-primary);
+  color: var(--tt-color-text-inverse);
+}
+
+.tt-button--primary:hover:not(:disabled) {
+  background: var(--tt-color-primary-hover);
+  border-color: var(--tt-color-primary-hover);
+}
+
+.tt-button--secondary {
+  background: var(--tt-color-surface);
+  border-color: var(--tt-color-border);
+  color: var(--tt-color-text);
+}
+
+.tt-button--secondary:hover:not(:disabled) {
+  background: var(--tt-color-bg);
+  border-color: #d1d5db;
+}
+
+.tt-button--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--tt-color-text-secondary);
+}
+
+.tt-button--ghost:hover:not(:disabled) {
+  background: var(--tt-color-primary-accent);
+  color: var(--tt-color-text);
+}
+
+.tt-button--danger {
+  background: var(--tt-color-danger);
+  border-color: var(--tt-color-danger);
+  color: var(--tt-color-text-inverse);
+}
+
+.tt-button--danger:hover:not(:disabled) {
+  background: var(--tt-color-danger-hover);
+  border-color: var(--tt-color-danger-hover);
+}
+
+.tt-button--sm {
+  height: 2rem;
+  padding: 0 var(--tt-space-3);
+  font-size: var(--tt-text-helper-size);
+}
+
+.tt-button--lg {
+  height: 2.75rem;
+  padding: 0 var(--tt-space-5);
+}
+
+.tt-button--icon {
+  width: var(--tt-control-height);
+  padding: 0;
+}

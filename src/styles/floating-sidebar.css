@@ -1,0 +1,356 @@
+/**
+ * Floating pill sidebar — generous spacing & visual balance.
+ * Colors and hover motion unchanged.
+ */
+
+.tt-sidebar {
+  --tt-sidebar-width-collapsed: 4.75rem; /* 76px */
+  --tt-sidebar-width-expanded: 16.75rem; /* 268px */
+  --tt-sidebar-inset: 1.5rem;
+  --tt-sidebar-pad-x: 0.9rem;
+  --tt-sidebar-icon-slot: 2.5rem;
+  /* Soft floating rail — large radius, not a stadium that clips the header */
+  --tt-sidebar-radius: 1.75rem;
+
+  position: fixed;
+  z-index: 40;
+  left: var(--tt-sidebar-inset);
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  width: var(--tt-sidebar-width-collapsed);
+  height: auto;
+  max-height: calc(100vh - (var(--tt-sidebar-inset) * 2));
+  padding: 1.25rem var(--tt-sidebar-pad-x) 1.35rem;
+  background: var(--tt-color-surface);
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-sidebar-radius);
+  box-shadow: var(--tt-shadow-md);
+  transition: width var(--tt-duration-slow) var(--tt-ease-standard),
+    box-shadow var(--tt-duration-normal) var(--tt-ease-standard);
+  overflow: visible;
+}
+
+.tt-sidebar--expanded {
+  width: var(--tt-sidebar-width-expanded);
+  padding-inline: 1.1rem;
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.08),
+    0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+/* ---------- Header ---------- */
+
+.tt-sidebar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  min-height: 2.75rem;
+  margin-bottom: 1.35rem;
+  padding: 0.25rem 0.15rem;
+}
+
+.tt-sidebar:not(.tt-sidebar--expanded) .tt-sidebar-top {
+  justify-content: center;
+}
+
+.tt-sidebar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 2.5rem;
+  flex: 1;
+}
+
+.tt-sidebar--expanded .tt-sidebar-logo {
+  justify-content: flex-start;
+}
+
+.tt-sidebar-logo-wordmark {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.8125rem;
+  font-weight: var(--tt-font-weight-semibold);
+  letter-spacing: 0.04em;
+  color: var(--tt-color-text);
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.tt-sidebar-logo-wordmark--expanded {
+  font-size: 0.9375rem;
+  letter-spacing: -0.02em;
+}
+
+.tt-sidebar-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  margin-right: 0.1rem;
+  border: none;
+  border-radius: var(--tt-radius-full);
+  background: transparent;
+  color: var(--tt-color-text-secondary);
+  cursor: pointer;
+  transition: background-color var(--tt-duration-fast) var(--tt-ease-standard),
+    color var(--tt-duration-fast) var(--tt-ease-standard);
+}
+
+.tt-sidebar-toggle:hover {
+  background: var(--tt-color-primary-accent);
+  color: var(--tt-color-text);
+}
+
+/* ---------- Navigation ---------- */
+
+.tt-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.55rem;
+  flex-shrink: 0;
+  padding: 0 0.15rem;
+}
+
+.tt-sidebar-spacer {
+  flex: 1 1 2rem;
+  min-height: 2rem;
+  max-height: 3.5rem;
+}
+
+.tt-sidebar-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.8rem;
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.45rem 0.7rem;
+  border: none;
+  border-radius: var(--tt-radius-full);
+  background: transparent;
+  color: var(--tt-color-text-secondary);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--tt-duration-fast) var(--tt-ease-standard),
+    color var(--tt-duration-fast) var(--tt-ease-standard);
+}
+
+/* Collapsed: icon-only — center the highlight and glyph */
+.tt-sidebar:not(.tt-sidebar--expanded) .tt-sidebar-item,
+.tt-sidebar:not(.tt-sidebar--expanded) .tt-sidebar-sign-out {
+  justify-content: center;
+  gap: 0;
+  padding: 0.4rem;
+}
+
+.tt-sidebar:not(.tt-sidebar--expanded) .tt-sidebar-item-label {
+  display: none;
+}
+
+.tt-sidebar:not(.tt-sidebar--expanded) .tt-sidebar-user {
+  justify-content: center;
+  padding: 0.35rem;
+}
+
+.tt-sidebar:not(.tt-sidebar--expanded) .tt-sidebar-user-meta {
+  display: none;
+}
+
+.tt-sidebar--expanded .tt-sidebar-item {
+  padding-inline: 0.85rem 1rem;
+}
+
+.tt-sidebar-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tt-sidebar-icon-slot);
+  height: var(--tt-sidebar-icon-slot);
+  flex-shrink: 0;
+  border-radius: var(--tt-radius-full);
+}
+
+.tt-sidebar-item-label {
+  font-size: 0.9rem;
+  font-weight: var(--tt-font-weight-medium);
+  line-height: 1.2;
+  white-space: nowrap;
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  transition: opacity var(--tt-duration-normal) var(--tt-ease-standard),
+    max-width var(--tt-duration-slow) var(--tt-ease-standard);
+}
+
+.tt-sidebar-item-label--visible {
+  opacity: 1;
+  max-width: 11rem;
+}
+
+.tt-sidebar-item:hover:not(:disabled):not(.tt-sidebar-item--active) {
+  background: var(--tt-color-primary-accent);
+  color: var(--tt-color-text);
+}
+
+.tt-sidebar-item--active {
+  background: var(--tt-color-primary);
+  color: var(--tt-color-text-inverse);
+  min-height: 3.15rem;
+  padding-block: 0.5rem;
+}
+
+.tt-sidebar-item--active:hover {
+  background: var(--tt-color-primary-hover);
+  color: var(--tt-color-text-inverse);
+}
+
+.tt-sidebar-item--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---------- Footer ---------- */
+
+.tt-sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.7rem;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+  padding: 1.15rem 0.15rem 0.35rem;
+  border-top: 1px solid var(--tt-color-border);
+}
+
+.tt-sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 3rem;
+  padding: 0.35rem 0.7rem;
+}
+
+.tt-sidebar--expanded .tt-sidebar-user {
+  padding-inline: 0.85rem 1rem;
+}
+
+.tt-sidebar-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tt-sidebar-icon-slot);
+  height: var(--tt-sidebar-icon-slot);
+  flex-shrink: 0;
+  border-radius: var(--tt-radius-full);
+  background: var(--tt-color-primary-accent);
+  color: var(--tt-color-primary);
+  font-size: 0.7rem;
+  font-weight: var(--tt-font-weight-semibold);
+  letter-spacing: 0.02em;
+}
+
+.tt-sidebar-user-meta {
+  min-width: 0;
+  flex: 1;
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  transition: opacity var(--tt-duration-normal) var(--tt-ease-standard),
+    max-width var(--tt-duration-slow) var(--tt-ease-standard);
+}
+
+.tt-sidebar-user-meta--visible {
+  opacity: 1;
+  max-width: 11rem;
+}
+
+.tt-sidebar-user-name {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: var(--tt-font-weight-medium);
+  color: var(--tt-color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tt-sidebar-sign-out {
+  color: var(--tt-color-text-secondary);
+}
+
+.tt-sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  border: none;
+  background: var(--tt-color-overlay);
+  cursor: pointer;
+}
+
+/* Mobile drawer */
+@media (max-width: 768px) {
+  .tt-sidebar--mobile {
+    left: var(--tt-sidebar-inset);
+    top: var(--tt-sidebar-inset);
+    bottom: auto;
+    max-height: calc(100vh - (var(--tt-sidebar-inset) * 2));
+    height: auto;
+    transform: none;
+    translate: calc(-100% - 2rem) 0;
+    transition: translate var(--tt-duration-slow) var(--tt-ease-standard),
+      width var(--tt-duration-slow) var(--tt-ease-standard);
+    width: min(var(--tt-sidebar-width-expanded), calc(100vw - 3rem));
+    border-radius: var(--tt-sidebar-radius);
+    padding: 1.35rem 1.2rem 1.4rem;
+  }
+
+  .tt-sidebar--mobile-open {
+    translate: 0 0;
+  }
+
+  .tt-sidebar--mobile .tt-sidebar-logo-wordmark {
+    font-size: 0.9375rem;
+    letter-spacing: -0.02em;
+  }
+
+  .tt-sidebar--mobile .tt-sidebar-item-label,
+  .tt-sidebar--mobile .tt-sidebar-user-meta {
+    opacity: 1;
+    max-width: 11rem;
+  }
+
+  .tt-sidebar--mobile .tt-sidebar-spacer {
+    flex: 1 1 1.5rem;
+    max-height: none;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .tt-sidebar {
+    --tt-sidebar-width-collapsed: 4.5rem;
+    --tt-sidebar-width-expanded: 16rem;
+    --tt-sidebar-inset: 1.35rem;
+  }
+}
+
+@media (max-height: 560px) {
+  .tt-sidebar {
+    --tt-sidebar-inset: 1rem;
+    top: var(--tt-sidebar-inset);
+    transform: none;
+    max-height: calc(100vh - (var(--tt-sidebar-inset) * 2));
+  }
+
+  .tt-sidebar-spacer {
+    min-height: 1rem;
+    max-height: 1.5rem;
+  }
+}

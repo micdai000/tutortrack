@@ -1,6 +1,5 @@
 import { Link, useParams } from "react-router-dom";
 
-import { AppHeader } from "../components/AppHeader";
 import { MissionaryProfileForm } from "../components/MissionaryProfileForm";
 import { SaveStatusIndicator } from "../components/SaveStatusIndicator";
 import { useMissionaryProfile } from "../hooks/useMissionaryProfile";
@@ -23,8 +22,6 @@ function MissionaryProfilePage() {
 
   return (
     <div className="missionary-profile-page">
-      <AppHeader />
-
       {missionary && (
         <div className="missionary-profile-back">
           <Link to={`/companionships/${missionary.companionship_id}`}>

@@ -2313,3 +2313,153 @@ Without the rewrite, Copy Share Link can create a correct Vercel URL that still 
 ### 6. Key takeaway
 
 For Vite + React Router on Vercel, SPA rewrites are part of production routing — not optional polish.
+
+---
+
+# Feature 016 - Floating Sidebar Navigation
+
+---
+
+## App Shell Layout
+
+### 1. What is it?
+
+An app shell is a shared chrome layer (navigation) that wraps authenticated pages.
+
+Pages render inside an `<Outlet />` without owning the navigation UI.
+
+### 2. Why does it exist?
+
+If every page mounts its own header, navigation drifts and redesigns require editing many files.
+
+### 3. How does it work?
+
+`ProtectedRoute` → `AppShell` → page.
+
+`AppShell` mounts `FloatingSidebar` and shifts content with left padding.
+
+Teacher Views stay outside the shell so briefing documents remain full-bleed.
+
+### 4. Simple analogy
+
+A picture frame around many photos.
+
+You change the frame once; every photo still looks like itself.
+
+### 5. How TutorTrack uses it
+
+Dashboard, Districts, Companionship, and Missionary pages use the shell.
+
+Login, public share links, and Teacher Views do not.
+
+### 6. Key takeaway
+
+Own navigation in one layout. Keep page content independent.
+
+---
+
+## Declarative Nav Config
+
+### 1. What is it?
+
+Navigation items live in a config array (`SIDEBAR_NAV_ITEMS`) instead of hard-coded JSX links.
+
+### 2. Why does it exist?
+
+Future pages should “plug in” by adding a route + one nav entry — not rewriting the sidebar component.
+
+### 3. How does it work?
+
+Each item declares `to`, Lucide `icon`, and `matchPrefixes` for active state.
+
+`isNavItemActive()` decides the blue pill highlight.
+
+### 4. Simple analogy
+
+A table of contents for a book.
+
+Add a chapter title to the contents list when you add a chapter — do not redesign the binding.
+
+### 5. How TutorTrack uses it
+
+Districts stays active for nested companionship/missionary routes.
+
+Teacher View highlights on `/teacher/*` while linking tutors back to Districts to open a shareable view.
+
+### 6. Key takeaway
+
+Config-driven navigation scales with the product without sidebar rewrites.
+
+---
+
+# Feature 015 - Design System Foundation
+
+---
+
+## Design Tokens
+
+### 1. What is it?
+
+Design tokens are named values for color, type, space, radius, shadow, and motion.
+
+Instead of scattering `#165AA7` across dozens of files, the app stores it once as `--tt-color-primary`.
+
+### 2. Why does it exist?
+
+Without tokens, redesigns turn into treasure hunts. One color change means editing many unrelated CSS files.
+
+### 3. How does it work?
+
+`tokens.css` defines CSS variables on `:root`.
+
+Components and future page styles read `var(--tt-…)`.
+
+### 4. Simple analogy
+
+A brand style guide on a shelf.
+
+Designers do not invent a new blue for every poster. They pull the approved blue from the guide.
+
+### 5. How TutorTrack uses it
+
+Primary blue is intentional and limited. Surfaces stay white. Background stays `#F8FAFC`.
+
+### 6. Key takeaway
+
+Tokens make a redesign scalable. Change the system once; pages inherit the language.
+
+---
+
+## Reusable UI Primitives
+
+### 1. What is it?
+
+Primitives are small building blocks: Button, Card, Input, Icon.
+
+They encode the design rules so pages do not re-implement them.
+
+### 2. Why does it exist?
+
+Copy-pasted button styles drift. One page gets a taller button; another gets a different hover.
+
+### 3. How does it work?
+
+`src/components/ui` exports typed React wrappers around shared CSS classes (`tt-button`, `tt-card`, …).
+
+Future redesigns compose pages from these primitives.
+
+### 4. Simple analogy
+
+LEGO bricks instead of carving each toy from wood.
+
+Same bricks, different models — consistent feel.
+
+### 5. How TutorTrack uses it
+
+This milestone only adds the bricks. Existing pages are not rewritten yet.
+
+Lucide icons are wrapped by `Icon` so outlines stay monochrome and sized consistently.
+
+### 6. Key takeaway
+
+Build the language first. Redesign screens second — with the language already ready.

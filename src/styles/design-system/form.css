@@ -1,0 +1,133 @@
+/**
+ * Form system — inputs, textareas, selects, checkboxes.
+ * Focus uses Primary Blue intentionally.
+ */
+
+.tt-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-2);
+}
+
+.tt-label {
+  font-size: var(--tt-text-helper-size);
+  font-weight: var(--tt-font-weight-medium);
+  color: var(--tt-color-text);
+}
+
+.tt-hint {
+  font-size: var(--tt-text-caption-size);
+  line-height: var(--tt-text-caption-line);
+  color: var(--tt-color-text-secondary);
+}
+
+.tt-input,
+.tt-textarea,
+.tt-select {
+  width: 100%;
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-md);
+  background: var(--tt-color-surface);
+  color: var(--tt-color-text);
+  font: inherit;
+  font-size: var(--tt-text-body-size);
+  line-height: 1.4;
+  transition: border-color var(--tt-duration-fast) var(--tt-ease-standard),
+    box-shadow var(--tt-duration-fast) var(--tt-ease-standard),
+    background-color var(--tt-duration-fast) var(--tt-ease-standard);
+}
+
+.tt-input,
+.tt-select {
+  height: var(--tt-control-height);
+  padding: 0 var(--tt-space-3);
+}
+
+.tt-textarea {
+  min-height: 6.5rem;
+  padding: var(--tt-space-3);
+  resize: vertical;
+}
+
+.tt-input::placeholder,
+.tt-textarea::placeholder {
+  color: #9ca3af;
+}
+
+.tt-input:hover:not(:disabled):not(:focus),
+.tt-textarea:hover:not(:disabled):not(:focus),
+.tt-select:hover:not(:disabled):not(:focus) {
+  border-color: #d1d5db;
+}
+
+.tt-input:focus,
+.tt-textarea:focus,
+.tt-select:focus {
+  outline: none;
+  border-color: var(--tt-color-primary);
+  box-shadow: 0 0 0 3px var(--tt-color-primary-accent);
+}
+
+.tt-input:disabled,
+.tt-textarea:disabled,
+.tt-select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--tt-color-bg);
+}
+
+.tt-input[aria-invalid="true"],
+.tt-textarea[aria-invalid="true"],
+.tt-select[aria-invalid="true"] {
+  border-color: var(--tt-color-error);
+}
+
+.tt-input[aria-invalid="true"]:focus,
+.tt-textarea[aria-invalid="true"]:focus,
+.tt-select[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.tt-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2.25rem;
+}
+
+.tt-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tt-space-2);
+  font-size: var(--tt-text-helper-size);
+  color: var(--tt-color-text);
+  cursor: pointer;
+  user-select: none;
+}
+
+.tt-checkbox input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  accent-color: var(--tt-color-primary);
+  cursor: pointer;
+}
+
+.tt-checkbox input:focus-visible {
+  outline: 2px solid var(--tt-color-focus-ring);
+  outline-offset: 2px;
+}
+
+.tt-form-error {
+  margin: 0;
+  color: var(--tt-color-error);
+  font-size: var(--tt-text-helper-size);
+  line-height: var(--tt-text-helper-line);
+}
+
+.tt-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-form-gap);
+}

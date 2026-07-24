@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { AppHeader } from "../components/AppHeader";
 import { CompanionshipList } from "../components/CompanionshipList";
 import { CreateCompanionshipForm } from "../components/CreateCompanionshipForm";
 import { TeacherViewEntryActions } from "../components/teacher/TeacherViewEntryActions";
@@ -43,8 +42,6 @@ function DistrictDetailPage() {
 
   return (
     <div className="district-detail-page">
-      <AppHeader />
-
       <div className="district-detail-back">
         <Link to="/districts">← Back to districts</Link>
       </div>

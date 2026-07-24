@@ -1,0 +1,43 @@
+/**
+ * Icon system — monochrome Lucide outlines by default.
+ */
+
+.tt-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: currentColor;
+  line-height: 0;
+}
+
+.tt-icon svg {
+  display: block;
+}
+
+.tt-icon--sm svg {
+  width: var(--tt-icon-sm);
+  height: var(--tt-icon-sm);
+}
+
+.tt-icon--md svg {
+  width: var(--tt-icon-md);
+  height: var(--tt-icon-md);
+}
+
+.tt-icon--lg svg {
+  width: var(--tt-icon-lg);
+  height: var(--tt-icon-lg);
+}
+
+.tt-icon--muted {
+  color: var(--tt-color-text-secondary);
+}
+
+.tt-icon--primary {
+  color: var(--tt-color-primary);
+}
+
+.tt-icon--selected {
+  color: var(--tt-color-primary);
+}

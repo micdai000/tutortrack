@@ -1,0 +1,54 @@
+/**
+ * App shell — shifts page content beside the floating sidebar.
+ * Does not restyle page interiors.
+ */
+
+.tt-app-shell {
+  --tt-shell-sidebar-rail: 7.25rem; /* inset + collapsed width + gap */
+  min-height: 100vh;
+}
+
+.tt-app-shell-main {
+  min-width: 0;
+  padding-left: var(--tt-shell-sidebar-rail);
+  transition: padding-left var(--tt-duration-slow) var(--tt-ease-standard);
+}
+
+.tt-app-shell-menu {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 30;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-full);
+  background: var(--tt-color-surface);
+  color: var(--tt-color-text);
+  box-shadow: var(--tt-shadow-sm);
+  cursor: pointer;
+}
+
+.tt-app-shell-menu:hover {
+  background: var(--tt-color-primary-accent);
+}
+
+@media (max-width: 768px) {
+  .tt-app-shell-main {
+    padding-left: 0;
+    padding-top: 4rem;
+  }
+
+  .tt-app-shell-menu {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .tt-app-shell {
+    --tt-shell-sidebar-rail: 6.5rem;
+  }
+}

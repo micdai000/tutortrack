@@ -1,0 +1,111 @@
+/**
+ * TutorTrack Design System — Tokens
+ *
+ * Central source of truth for color, type, space, radius, shadow, and motion.
+ * Future page redesigns should consume these variables instead of hard-coded values.
+ */
+
+:root {
+  /* ---------- Color ---------- */
+  --tt-color-primary: #165aa7;
+  --tt-color-primary-hover: #2f7bc0;
+  --tt-color-primary-light: #7eb0e5;
+  --tt-color-primary-accent: #d8e9f9;
+
+  --tt-color-bg: #f8fafc;
+  --tt-color-surface: #ffffff;
+  --tt-color-text: #1f2937;
+  --tt-color-text-secondary: #6b7280;
+  --tt-color-text-inverse: #ffffff;
+  --tt-color-border: #e5e7eb;
+
+  --tt-color-success: #16a34a;
+  --tt-color-error: #dc2626;
+  --tt-color-danger: #dc2626;
+  --tt-color-danger-hover: #b91c1c;
+
+  --tt-color-focus-ring: #165aa7;
+  --tt-color-overlay: rgba(15, 23, 42, 0.4);
+
+  /* ---------- Typography ---------- */
+  --tt-font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+
+  --tt-font-weight-regular: 400;
+  --tt-font-weight-medium: 500;
+  --tt-font-weight-semibold: 600;
+  --tt-font-weight-bold: 700;
+
+  --tt-text-page-title-size: 1.875rem; /* 30px */
+  --tt-text-page-title-line: 1.25;
+  --tt-text-page-title-weight: var(--tt-font-weight-bold);
+
+  --tt-text-section-size: 1.25rem; /* 20px */
+  --tt-text-section-line: 1.35;
+  --tt-text-section-weight: var(--tt-font-weight-semibold);
+
+  --tt-text-card-title-size: 1.0625rem; /* 17px */
+  --tt-text-card-title-line: 1.4;
+  --tt-text-card-title-weight: var(--tt-font-weight-semibold);
+
+  --tt-text-body-size: 0.9375rem; /* 15px */
+  --tt-text-body-line: 1.55;
+  --tt-text-body-weight: var(--tt-font-weight-regular);
+
+  --tt-text-helper-size: 0.875rem; /* 14px */
+  --tt-text-helper-line: 1.5;
+  --tt-text-helper-weight: var(--tt-font-weight-regular);
+
+  --tt-text-caption-size: 0.75rem; /* 12px */
+  --tt-text-caption-line: 1.4;
+  --tt-text-caption-weight: var(--tt-font-weight-medium);
+
+  /* ---------- Spacing scale (4px base) ---------- */
+  --tt-space-0: 0;
+  --tt-space-1: 0.25rem; /* 4px */
+  --tt-space-2: 0.5rem; /* 8px */
+  --tt-space-3: 0.75rem; /* 12px */
+  --tt-space-4: 1rem; /* 16px */
+  --tt-space-5: 1.25rem; /* 20px */
+  --tt-space-6: 1.5rem; /* 24px */
+  --tt-space-8: 2rem; /* 32px */
+  --tt-space-10: 2.5rem; /* 40px */
+  --tt-space-12: 3rem; /* 48px */
+  --tt-space-16: 4rem; /* 64px */
+
+  --tt-page-padding-x: 1.25rem;
+  --tt-page-padding-y: 2rem;
+  --tt-page-max-width: 720px;
+  --tt-section-gap: var(--tt-space-8);
+  --tt-card-padding: var(--tt-space-6);
+  --tt-card-gap: var(--tt-space-4);
+  --tt-form-gap: var(--tt-space-5);
+
+  /* ---------- Radius ---------- */
+  --tt-radius-sm: 6px; /* buttons */
+  --tt-radius-md: 8px; /* inputs */
+  --tt-radius-lg: 12px; /* cards (rounded-xl) */
+  --tt-radius-xl: 16px; /* future floating sidebar */
+  --tt-radius-full: 9999px;
+
+  /* ---------- Shadows (subtle / premium) ---------- */
+  --tt-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --tt-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06),
+    0 1px 2px rgba(15, 23, 42, 0.04);
+  --tt-shadow-md: 0 4px 12px rgba(15, 23, 42, 0.07),
+    0 1px 3px rgba(15, 23, 42, 0.04);
+  --tt-shadow-card: var(--tt-shadow-sm);
+  --tt-shadow-card-hover: var(--tt-shadow-md);
+
+  /* ---------- Motion ---------- */
+  --tt-duration-fast: 150ms;
+  --tt-duration-normal: 180ms;
+  --tt-duration-slow: 220ms;
+  --tt-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ---------- Control sizing ---------- */
+  --tt-control-height: 2.5rem; /* 40px — buttons & inputs */
+  --tt-icon-sm: 1rem;
+  --tt-icon-md: 1.25rem;
+  --tt-icon-lg: 1.5rem;
+}

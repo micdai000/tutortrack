@@ -1,4 +1,3 @@
-import { AppHeader } from "../components/AppHeader";
 import { WelcomeSection } from "../components/WelcomeSection";
 import { FollowUpsCard } from "../components/FollowUpsCard";
 import { DistrictListCard } from "../components/DistrictListCard";
@@ -16,8 +15,6 @@ function DashboardPage() {
 
   return (
     <div className="dashboard-page">
-      <AppHeader />
-
       <WelcomeSection greeting={greeting} firstName={firstName} />
 
       <div className="dashboard-sections">

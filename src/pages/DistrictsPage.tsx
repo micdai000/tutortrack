@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { AppHeader } from "../components/AppHeader";
 import { ConfirmDeleteDistrictDialog } from "../components/ConfirmDeleteDistrictDialog";
 import { CreateDistrictForm } from "../components/CreateDistrictForm";
 import { DistrictList } from "../components/DistrictList";
@@ -47,8 +46,6 @@ function DistrictsPage() {
 
   return (
     <div className="districts-page">
-      <AppHeader />
-
       <section className="districts-intro">
         <h1>Districts</h1>
         <p>
