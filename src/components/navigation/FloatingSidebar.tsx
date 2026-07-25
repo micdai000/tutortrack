@@ -22,7 +22,7 @@ type FloatingSidebarProps = {
 /**
  * Floating pill navigation.
  * Desktop: hover expands; toggle pins expanded.
- * Mobile: controlled drawer via mobileOpen.
+ * Mobile: controlled drawer via mobileOpen (layout owned by CSS media query).
  */
 export function FloatingSidebar({
   mobileOpen,
@@ -46,6 +46,9 @@ export function FloatingSidebar({
         onMobileOpenChange(false);
       }
     }
+
+    // Sync immediately in case the first paint missed the match.
+    onChange();
     media.addEventListener("change", onChange);
     return () => media.removeEventListener("change", onChange);
   }, [onMobileOpenChange]);
@@ -56,7 +59,7 @@ export function FloatingSidebar({
 
   return (
     <>
-      {isMobile && mobileOpen && (
+      {mobileOpen && (
         <button
           type="button"
           className="tt-sidebar-backdrop"
@@ -66,13 +69,14 @@ export function FloatingSidebar({
       )}
 
       <aside
+        id="tt-primary-sidebar"
         className={cx(
           "tt-sidebar",
           expanded && "tt-sidebar--expanded",
-          isMobile && "tt-sidebar--mobile",
-          isMobile && mobileOpen && "tt-sidebar--mobile-open"
+          mobileOpen && "tt-sidebar--mobile-open"
         )}
         aria-label="Primary"
+        aria-hidden={isMobile && !mobileOpen ? true : undefined}
         onMouseEnter={() => {
           if (!isMobile) setHovered(true);
         }}
@@ -81,7 +85,7 @@ export function FloatingSidebar({
         }}
       >
         <div className="tt-sidebar-top">
-          <SidebarLogo expanded={expanded} />
+          <SidebarLogo expanded={expanded || isMobile} />
           {!isMobile && expanded && (
             <SidebarToggle
               expanded={pinned}
@@ -95,10 +99,10 @@ export function FloatingSidebar({
             <SidebarItem
               key={item.id}
               item={item}
-              expanded={expanded}
+              expanded={expanded || isMobile}
               active={isNavItemActive(item, location.pathname)}
               onNavigate={() => {
-                if (isMobile) onMobileOpenChange(false);
+                onMobileOpenChange(false);
               }}
             />
           ))}
@@ -107,7 +111,7 @@ export function FloatingSidebar({
         <div className="tt-sidebar-spacer" aria-hidden="true" />
 
         <SidebarFooter
-          expanded={expanded}
+          expanded={expanded || isMobile}
           displayName={displayName}
           initials={initials}
           onSignOut={() => {

@@ -279,42 +279,57 @@
 }
 
 .tt-sidebar-backdrop {
+  display: none;
   position: fixed;
   inset: 0;
-  z-index: 35;
+  z-index: 45;
   border: none;
   background: var(--tt-color-overlay);
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
-/* Mobile drawer */
+/* Mobile drawer — driven by viewport CSS so the hamburger never fights JS */
 @media (max-width: 768px) {
-  .tt-sidebar--mobile {
-    left: var(--tt-sidebar-inset);
-    top: var(--tt-sidebar-inset);
+  .tt-sidebar-backdrop {
+    display: block;
+  }
+
+  .tt-sidebar {
+    left: 1rem;
+    top: 4.75rem;
     bottom: auto;
-    max-height: calc(100vh - (var(--tt-sidebar-inset) * 2));
-    height: auto;
-    transform: none;
-    translate: calc(-100% - 2rem) 0;
-    transition: translate var(--tt-duration-slow) var(--tt-ease-standard),
-      width var(--tt-duration-slow) var(--tt-ease-standard);
+    z-index: 50;
     width: min(var(--tt-sidebar-width-expanded), calc(100vw - 3rem));
-    border-radius: var(--tt-sidebar-radius);
+    max-height: calc(100vh - 5.75rem);
+    height: auto;
     padding: 1.35rem 1.2rem 1.4rem;
+    border-radius: var(--tt-sidebar-radius);
+    /* Off-screen closed state — transform is reliable for hit-testing on mobile */
+    transform: translateX(calc(-100% - 2rem));
+    transition: transform var(--tt-duration-slow) var(--tt-ease-standard),
+      box-shadow var(--tt-duration-normal) var(--tt-ease-standard);
+    /* Closed drawer must not intercept hamburger taps */
+    pointer-events: none;
+    visibility: hidden;
   }
 
   .tt-sidebar--mobile-open {
-    translate: 0 0;
+    transform: translateX(0);
+    pointer-events: auto;
+    visibility: visible;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.14),
+      0 2px 6px rgba(15, 23, 42, 0.06);
   }
 
-  .tt-sidebar--mobile .tt-sidebar-item-label,
-  .tt-sidebar--mobile .tt-sidebar-user-meta {
+  .tt-sidebar .tt-sidebar-item-label,
+  .tt-sidebar .tt-sidebar-user-meta {
     opacity: 1;
     max-width: 11rem;
   }
 
-  .tt-sidebar--mobile .tt-sidebar-spacer {
+  .tt-sidebar .tt-sidebar-spacer {
     flex: 1 1 1.5rem;
     max-height: none;
   }
@@ -328,7 +343,8 @@
   }
 }
 
-@media (max-height: 560px) {
+/* Short desktop viewports only — do not override the mobile drawer */
+@media (max-height: 560px) and (min-width: 769px) {
   .tt-sidebar {
     --tt-sidebar-inset: 1rem;
     top: var(--tt-sidebar-inset);

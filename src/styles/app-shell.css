@@ -19,7 +19,8 @@
   position: fixed;
   top: 1rem;
   left: 1rem;
-  z-index: 30;
+  /* Above closed sidebar (40) and backdrop (45) so taps always reach the button */
+  z-index: 60;
   align-items: center;
   justify-content: center;
   width: 2.75rem;
@@ -30,10 +31,17 @@
   color: var(--tt-color-text);
   box-shadow: var(--tt-shadow-sm);
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .tt-app-shell-menu:hover {
   background: var(--tt-color-primary-accent);
+}
+
+.tt-app-shell-menu:focus-visible {
+  outline: 2px solid var(--tt-color-focus-ring);
+  outline-offset: 2px;
 }
 
 @media (max-width: 768px) {
