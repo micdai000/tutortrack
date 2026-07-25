@@ -226,8 +226,9 @@
   z-index: 1;
 }
 
-.dashboard-search__input {
-  padding-left: 2.5rem;
+/* Beat .tt-input padding shorthand so the icon never overlaps text. */
+.dashboard-search__input.tt-input {
+  padding-left: 2.85rem;
 }
 
 /* ---------- District grid ---------- */

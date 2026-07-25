@@ -1,216 +1,461 @@
+/**
+ * District detail workspace — Stage 5 redesign.
+ * Presentation only; data and actions use existing hooks/components.
+ */
+
 .district-detail-page {
-  max-width: 720px;
+  max-width: 920px;
   margin: 0 auto;
-  padding: 2rem 1.25rem 3rem;
+  padding: var(--tt-space-8) var(--tt-page-padding-x) var(--tt-space-16);
 }
 
 .district-detail-back {
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--tt-space-5);
 }
 
 .district-detail-back a {
-  color: #374151;
+  color: var(--tt-color-text-secondary);
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: var(--tt-text-helper-size);
+  font-weight: var(--tt-font-weight-medium);
+  transition: color var(--tt-duration-fast) var(--tt-ease-standard);
 }
 
 .district-detail-back a:hover {
+  color: var(--tt-color-primary);
   text-decoration: underline;
 }
 
-.district-detail-intro {
-  margin-bottom: 1.5rem;
+/* ---------- Header ---------- */
+
+.district-header {
+  margin-bottom: var(--tt-space-5);
 }
 
-.district-detail-intro-row {
+.district-header__title {
+  margin: 0 0 var(--tt-space-2);
+  font-size: clamp(1.75rem, 2.4vw, 2rem);
+  font-weight: var(--tt-font-weight-bold);
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  color: var(--tt-color-text);
+}
+
+.district-header__subtitle {
+  margin: 0;
+  max-width: 36rem;
+  font-size: var(--tt-text-body-size);
+  line-height: var(--tt-text-body-line);
+  color: var(--tt-color-text-secondary);
+}
+
+/* ---------- Action bar ---------- */
+
+.district-action-bar {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
+  gap: var(--tt-space-2);
+  margin-bottom: var(--tt-space-6);
+}
+
+.district-action-bar__buttons {
+  display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  gap: var(--tt-space-2);
 }
 
-.district-detail-intro h1 {
+.district-action-bar__emphasis {
+  border-color: color-mix(in srgb, var(--tt-color-primary) 35%, var(--tt-color-border));
+  background: var(--tt-color-primary-accent);
+  color: var(--tt-color-primary);
+  font-weight: var(--tt-font-weight-semibold);
+  box-shadow: 0 1px 2px rgba(22, 90, 167, 0.08);
+}
+
+.district-action-bar__emphasis:hover:not(:disabled) {
+  border-color: var(--tt-color-primary);
+  background: color-mix(in srgb, var(--tt-color-primary-accent) 70%, #ffffff);
+  color: var(--tt-color-primary);
+}
+
+.district-action-bar__emphasis:focus-visible {
+  outline: 2px solid var(--tt-color-focus-ring);
+  outline-offset: 2px;
+}
+
+.district-action-bar__status {
+  margin: 0;
+  font-size: var(--tt-text-caption-size);
+  color: var(--tt-color-success);
+}
+
+.district-action-bar__error {
+  margin: 0;
+  font-size: var(--tt-text-caption-size);
+  color: var(--tt-color-error);
+  max-width: 28rem;
+}
+
+/* ---------- Summary ---------- */
+
+.district-summary-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--tt-space-4);
+  margin-bottom: var(--tt-space-8);
+}
+
+.district-summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-2);
+  padding: var(--tt-space-5);
+  min-height: 7rem;
+}
+
+.district-summary-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--tt-radius-md);
+  background: var(--tt-color-primary-accent);
+  color: var(--tt-color-primary);
+  margin-bottom: var(--tt-space-1);
+}
+
+.district-summary-card__value {
+  margin: 0;
   font-size: 1.75rem;
-  font-weight: 600;
-  margin-bottom: 0.35rem;
+  font-weight: var(--tt-font-weight-bold);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--tt-color-text);
 }
 
-.district-detail-intro p {
-  color: #6b7280;
-  font-size: 0.95rem;
+.district-summary-card__label {
+  margin: 0;
+  font-size: var(--tt-text-helper-size);
+  color: var(--tt-color-text-secondary);
 }
 
-.district-detail-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 1.25rem 1.35rem;
+/* ---------- Companionships section ---------- */
+
+.district-companionships {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-5);
 }
 
-.district-detail-card-header {
+.district-section-header h2 {
+  margin: 0;
+  font-size: var(--tt-text-section-size);
+  font-weight: var(--tt-text-section-weight);
+  line-height: var(--tt-text-section-line);
+  color: var(--tt-color-text);
+}
+
+/* ---------- Search ---------- */
+
+.district-search {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-2);
+}
+
+.district-search__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.district-search__field {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 1rem;
 }
 
-.district-detail-card-header h2 {
-  font-size: 1.1rem;
-  font-weight: 600;
+.district-search__icon {
+  position: absolute;
+  left: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  pointer-events: none;
+  z-index: 1;
 }
 
-.district-detail-primary-button {
-  padding: 0.5rem 0.85rem;
-  border: 1px solid #111827;
-  border-radius: 6px;
-  background: #111827;
-  color: #ffffff;
-  font-size: 0.9rem;
+/* Beat .tt-input padding shorthand so the icon never overlaps text. */
+.district-search__input.tt-input {
+  padding-left: 2.85rem;
 }
 
-.district-detail-status,
-.district-detail-empty {
-  color: #6b7280;
-  font-size: 0.95rem;
+/* ---------- Companionship grid ---------- */
+
+.district-companionship-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--tt-space-4);
+}
+
+.district-companionship-card {
+  transition: box-shadow var(--tt-duration-normal) var(--tt-ease-standard),
+    border-color var(--tt-duration-normal) var(--tt-ease-standard),
+    transform var(--tt-duration-normal) var(--tt-ease-standard);
+}
+
+.district-companionship-card:hover {
+  transform: translateY(-2px);
+}
+
+.district-companionship-card__link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-5);
+  min-height: 100%;
+  padding: var(--tt-space-5);
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.district-companionship-card__title {
+  margin: 0 0 var(--tt-space-3);
+  font-size: 1.0625rem;
+  font-weight: var(--tt-font-weight-semibold);
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+  color: var(--tt-color-text);
+}
+
+.district-companionship-card__meta {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-2);
+}
+
+.district-companionship-card__meta li {
+  display: flex;
+  align-items: center;
+  gap: var(--tt-space-2);
+  font-size: var(--tt-text-helper-size);
+  color: var(--tt-color-text-secondary);
+}
+
+.district-companionship-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tt-space-2);
+  margin-top: auto;
+  font-size: var(--tt-text-helper-size);
+  font-weight: var(--tt-font-weight-semibold);
+  color: var(--tt-color-primary);
+}
+
+.district-companionship-card:hover .district-companionship-card__cta {
+  color: var(--tt-color-primary-hover);
+}
+
+/* ---------- Empty / status ---------- */
+
+.district-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--tt-space-3);
+  padding: var(--tt-space-6);
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-lg);
+  background: var(--tt-color-surface);
+  box-shadow: var(--tt-shadow-sm);
+}
+
+.district-empty__title {
+  margin: 0;
+  font-size: var(--tt-text-body-size);
+  font-weight: var(--tt-font-weight-semibold);
+  color: var(--tt-color-text);
+}
+
+.district-empty__copy {
+  margin: 0;
+  max-width: 28rem;
+  font-size: var(--tt-text-helper-size);
+  line-height: var(--tt-text-helper-line);
+  color: var(--tt-color-text-secondary);
+}
+
+.district-status {
+  margin: 0;
+  font-size: var(--tt-text-body-size);
+  color: var(--tt-color-text-secondary);
+}
+
+.district-error {
+  margin: 0;
+  color: var(--tt-color-error);
+  font-size: var(--tt-text-body-size);
 }
 
 .district-detail-success {
-  margin-bottom: 1.25rem;
-  padding: 0.75rem 1rem;
+  margin-bottom: var(--tt-space-5);
+  padding: var(--tt-space-3) var(--tt-space-4);
   border: 1px solid #a7f3d0;
-  border-radius: 8px;
+  border-radius: var(--tt-radius-md);
   background: #ecfdf5;
   color: #047857;
-  font-size: 0.95rem;
+  font-size: var(--tt-text-helper-size);
 }
 
-.companionship-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  margin-top: 1rem;
-}
-
-.companionship-card {
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #f9fafb;
-  padding: 0.95rem 1rem;
-}
-
-.companionship-card--link {
-  display: block;
-  text-decoration: none;
-  color: inherit;
-}
-
-.companionship-card--link:hover {
-  background: #f3f4f6;
-  border-color: #d1d5db;
-}
-
-.companionship-card-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 0.35rem;
-  line-height: 1.35;
-}
-
-.companionship-card-action {
-  color: #6b7280;
-  font-size: 0.875rem;
-}
-
-.companionship-member-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  color: #374151;
-  font-size: 0.95rem;
-}
+/* ---------- Create form (visual polish only) ---------- */
 
 .create-companionship-form {
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #f9fafb;
-  padding: 1rem;
-  margin-bottom: 1rem;
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-lg);
+  background: var(--tt-color-surface);
+  box-shadow: var(--tt-shadow-sm);
+  padding: var(--tt-space-5);
 }
 
 .create-companionship-size {
   border: none;
-  margin: 0 0 1rem;
+  margin: 0 0 var(--tt-space-4);
   padding: 0;
   display: flex;
-  gap: 1rem;
+  gap: var(--tt-space-4);
   flex-wrap: wrap;
   align-items: center;
 }
 
 .create-companionship-size legend {
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
+  font-size: var(--tt-text-helper-size);
+  font-weight: var(--tt-font-weight-medium);
+  margin-bottom: var(--tt-space-2);
   padding: 0;
+  color: var(--tt-color-text);
 }
 
 .create-companionship-size label {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  font-size: 0.95rem;
+  gap: var(--tt-space-2);
+  font-size: var(--tt-text-body-size);
+  color: var(--tt-color-text);
 }
 
 .create-companionship-names {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--tt-space-3);
 }
 
 .create-companionship-field label {
   display: block;
-  font-size: 0.9rem;
-  margin-bottom: 0.35rem;
+  font-size: var(--tt-text-helper-size);
+  font-weight: var(--tt-font-weight-medium);
+  margin-bottom: var(--tt-space-2);
+  color: var(--tt-color-text);
 }
 
 .create-companionship-field input {
   width: 100%;
-  padding: 0.55rem 0.7rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 0.95rem;
+  height: var(--tt-control-height);
+  padding: 0 var(--tt-space-3);
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-md);
+  background: var(--tt-color-surface);
+  font: inherit;
+  font-size: var(--tt-text-body-size);
+  color: var(--tt-color-text);
+  transition: border-color var(--tt-duration-fast) var(--tt-ease-standard),
+    box-shadow var(--tt-duration-fast) var(--tt-ease-standard);
+}
+
+.create-companionship-field input:focus {
+  outline: none;
+  border-color: var(--tt-color-primary);
+  box-shadow: 0 0 0 3px var(--tt-color-primary-accent);
 }
 
 .create-companionship-actions {
   display: flex;
-  gap: 0.75rem;
+  gap: var(--tt-space-3);
   flex-wrap: wrap;
-  margin-top: 1rem;
+  margin-top: var(--tt-space-4);
 }
 
 .create-companionship-actions button[type="submit"] {
-  padding: 0.55rem 0.9rem;
-  border: 1px solid #111827;
-  border-radius: 6px;
-  background: #111827;
-  color: #ffffff;
-  font-size: 0.9rem;
+  height: var(--tt-control-height);
+  padding: 0 var(--tt-space-4);
+  border: 1px solid var(--tt-color-primary);
+  border-radius: var(--tt-radius-sm);
+  background: var(--tt-color-primary);
+  color: var(--tt-color-text-inverse);
+  font-size: var(--tt-text-body-size);
+  font-weight: var(--tt-font-weight-semibold);
+  transition: background-color var(--tt-duration-fast) var(--tt-ease-standard),
+    border-color var(--tt-duration-fast) var(--tt-ease-standard);
+}
+
+.create-companionship-actions button[type="submit"]:hover:not(:disabled) {
+  background: var(--tt-color-primary-hover);
+  border-color: var(--tt-color-primary-hover);
 }
 
 .create-companionship-actions button[type="button"] {
-  padding: 0.55rem 0.9rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background: #ffffff;
-  color: #374151;
-  font-size: 0.9rem;
+  height: var(--tt-control-height);
+  padding: 0 var(--tt-space-4);
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-sm);
+  background: var(--tt-color-surface);
+  color: var(--tt-color-text);
+  font-size: var(--tt-text-body-size);
+  font-weight: var(--tt-font-weight-semibold);
+}
+
+.create-companionship-actions button[type="button"]:hover:not(:disabled) {
+  background: var(--tt-color-bg);
 }
 
 .create-companionship-actions button:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 720px) {
+  .district-summary-row,
+  .district-companionship-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .district-action-bar__buttons {
+    width: 100%;
+  }
+
+  .district-action-bar__buttons > * {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .district-companionship-card,
+  .district-companionship-card:hover {
+    transform: none;
+  }
 }

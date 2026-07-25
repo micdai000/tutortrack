@@ -1,121 +1,379 @@
+/**
+ * Missionary language plan — writing workspace refinement.
+ * Presentation only; autosave and field contracts are unchanged.
+ */
+
 .missionary-profile-page {
-  max-width: 720px;
+  max-width: 880px;
   margin: 0 auto;
-  padding: 2rem 1.25rem 3rem;
+  padding: var(--tt-space-8) var(--tt-page-padding-x) var(--tt-space-16);
 }
 
-.missionary-profile-back {
-  margin-bottom: 1rem;
-}
-
-.missionary-profile-back a {
-  color: #374151;
-  text-decoration: none;
-  font-size: 0.95rem;
-}
-
-.missionary-profile-back a:hover {
-  text-decoration: underline;
-}
-
-.missionary-profile-toolbar {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-  min-height: 1.5rem;
-}
-
-.missionary-profile-kicker {
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: #6b7280;
-  margin-bottom: 0.25rem;
-}
-
-.missionary-profile-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  line-height: 1.25;
+.missionary-profile-status,
+.missionary-profile-error {
+  margin: 0;
+  font-size: var(--tt-text-body-size);
 }
 
 .missionary-profile-status {
-  color: #6b7280;
-  font-size: 0.95rem;
+  color: var(--tt-color-text-secondary);
 }
 
-.missionary-save-status {
-  color: #6b7280;
-  font-size: 0.9rem;
-  text-align: right;
+.missionary-profile-error {
+  color: var(--tt-color-error);
+}
+
+/* ---------- Header ---------- */
+
+.missionary-header {
+  margin-bottom: var(--tt-space-10);
+}
+
+.missionary-header__back {
+  margin-bottom: var(--tt-space-6);
+}
+
+.missionary-header__back a {
+  color: var(--tt-color-text-secondary);
+  text-decoration: none;
+  font-size: var(--tt-text-helper-size);
+  font-weight: var(--tt-font-weight-medium);
+  transition: color var(--tt-duration-fast) var(--tt-ease-standard);
+}
+
+.missionary-header__back a:hover {
+  color: var(--tt-color-primary);
+  text-decoration: underline;
+}
+
+.missionary-header__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--tt-space-4);
+}
+
+.missionary-header__kicker {
+  margin: 0 0 var(--tt-space-2);
+  font-size: 0.7rem;
+  font-weight: var(--tt-font-weight-medium);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.missionary-header__title {
+  margin: 0 0 var(--tt-space-2);
+  font-size: clamp(1.85rem, 2.6vw, 2.25rem);
+  font-weight: var(--tt-font-weight-bold);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--tt-color-text);
+}
+
+.missionary-header__support {
+  margin: 0;
+  font-size: var(--tt-text-helper-size);
+  font-weight: var(--tt-font-weight-regular);
+  color: #9ca3af;
+}
+
+/* ---------- Autosave badge ---------- */
+
+.missionary-autosave {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--tt-radius-full);
+  border: 1px solid transparent;
+  background: transparent;
+  color: #9ca3af;
+  font-size: var(--tt-text-caption-size);
+  font-weight: var(--tt-font-weight-medium);
+  line-height: 1;
   white-space: nowrap;
+  transition: color var(--tt-duration-normal) var(--tt-ease-standard),
+    border-color var(--tt-duration-normal) var(--tt-ease-standard),
+    background-color var(--tt-duration-normal) var(--tt-ease-standard),
+    opacity var(--tt-duration-normal) var(--tt-ease-standard);
 }
 
-.missionary-save-status--saved {
-  color: #047857;
+.missionary-autosave__dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: var(--tt-radius-full);
+  background: currentColor;
+  opacity: 0.75;
 }
 
-.missionary-save-status--error {
-  color: #b91c1c;
+.missionary-autosave--saved {
+  color: #16a34a;
+  background: #f0fdf4;
+  border-color: #dcfce7;
 }
+
+.missionary-autosave--saving {
+  color: var(--tt-color-primary);
+  background: color-mix(in srgb, var(--tt-color-primary-accent) 45%, #ffffff);
+  border-color: var(--tt-color-primary-accent);
+}
+
+.missionary-autosave--error {
+  color: var(--tt-color-error);
+  border-color: #fecaca;
+  background: #fef2f2;
+  white-space: normal;
+  max-width: 16rem;
+  line-height: 1.35;
+}
+
+.missionary-autosave--idle {
+  opacity: 0.45;
+}
+
+/* ---------- Form stack ---------- */
 
 .missionary-profile-form {
   display: flex;
   flex-direction: column;
-  gap: 1.35rem;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 1.35rem 1.4rem 1.6rem;
+  gap: var(--tt-space-8);
+}
+
+.missionary-card {
+  background: var(--tt-color-surface);
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-lg);
+  box-shadow: var(--tt-shadow-xs);
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow var(--tt-duration-normal) var(--tt-ease-standard),
+    border-color var(--tt-duration-normal) var(--tt-ease-standard);
+}
+
+.missionary-card:hover {
+  box-shadow: var(--tt-shadow-sm);
+  border-color: #e2e8f0;
+}
+
+.missionary-card--compact {
+  padding: var(--tt-space-5) var(--tt-space-6);
+  gap: var(--tt-space-4);
+}
+
+.missionary-card--medium {
+  /* Match compact card rhythm so sections feel equally comfortable. */
+  padding: var(--tt-space-5) var(--tt-space-6);
+  gap: var(--tt-space-4);
+}
+
+.missionary-card--featured {
+  /* Keep the same comfortable title → field rhythm as compact cards. */
+  padding: var(--tt-space-5) var(--tt-space-6);
+  gap: var(--tt-space-4);
+  box-shadow: var(--tt-shadow-sm);
+}
+
+.missionary-card--featured:hover {
+  box-shadow: var(--tt-shadow-md);
+}
+
+.missionary-card--meta {
+  padding: var(--tt-space-5) var(--tt-space-6);
+  gap: var(--tt-space-4);
+  background: color-mix(in srgb, var(--tt-color-bg) 70%, #ffffff);
+  box-shadow: none;
+}
+
+.missionary-card--meta:hover {
+  box-shadow: none;
+  border-color: var(--tt-color-border);
+}
+
+.missionary-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.missionary-section-header__title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: var(--tt-font-weight-bold);
+  letter-spacing: -0.02em;
+  color: var(--tt-color-text);
+}
+
+.missionary-section-header__description {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: var(--tt-font-weight-regular);
+  line-height: 1.45;
+  color: #9ca3af;
+}
+
+.missionary-field-stack {
+  display: flex;
+  flex-direction: column;
+  /* Same spacing as title → first field on the Missionary card. */
+  gap: var(--tt-space-4);
+}
+
+/* ---------- Fields ---------- */
+
+.missionary-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
 }
 
 .missionary-field label,
 .missionary-field-label {
   display: block;
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 0.4rem;
-  color: #111827;
+  font-size: 0.875rem;
+  font-weight: var(--tt-font-weight-medium);
+  color: #4b5563;
 }
 
 .missionary-field input[type="text"],
 .missionary-field input[type="date"],
-.missionary-field textarea {
+.missionary-field textarea,
+.missionary-autoresize {
   width: 100%;
-  padding: 0.65rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-md);
   font: inherit;
-  color: #111827;
-  background: #ffffff;
-  resize: vertical;
+  font-size: 0.975rem;
+  line-height: 1.65;
+  color: var(--tt-color-text);
+  background: var(--tt-color-surface);
+  transition: border-color var(--tt-duration-fast) var(--tt-ease-standard),
+    box-shadow var(--tt-duration-fast) var(--tt-ease-standard);
+}
+
+.missionary-field input[type="text"],
+.missionary-field input[type="date"] {
+  height: 2.6rem;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 1.4;
+}
+
+.missionary-autoresize {
+  display: block;
+  overflow: hidden;
+  resize: none;
+  min-height: 0;
+}
+
+.missionary-field-editor {
+  padding: 0.85rem 1rem;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.missionary-field-notes {
+  padding: 0.75rem 0.95rem;
+  line-height: 1.65;
+}
+
+.missionary-field input:hover:not(:disabled):not(:focus),
+.missionary-field textarea:hover:not(:disabled):not(:focus),
+.missionary-autoresize:hover:not(:disabled):not(:focus) {
+  border-color: #d1d5db;
 }
 
 .missionary-field input:focus,
-.missionary-field textarea:focus {
-  outline: 2px solid #9ca3af;
-  outline-offset: 1px;
+.missionary-field textarea:focus,
+.missionary-autoresize:focus {
+  outline: none;
+  border-color: var(--tt-color-primary-light);
+  box-shadow: 0 0 0 3px rgba(22, 90, 167, 0.12);
 }
 
-.missionary-field-large {
-  min-height: 10rem;
-  line-height: 1.5;
+.missionary-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--tt-space-5);
 }
 
 .missionary-field--readonly {
-  padding-top: 0.25rem;
-  border-top: 1px solid #e5e7eb;
+  justify-content: flex-start;
 }
 
 .missionary-last-updated {
+  margin: 0;
   color: #6b7280;
-  font-size: 0.95rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
 }
 
-.form-error {
-  color: #b91c1c;
-  font-size: 0.95rem;
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.missionary-save-status {
+  color: var(--tt-color-text-secondary);
+  font-size: var(--tt-text-helper-size);
+}
+
+.missionary-save-status--saved {
+  color: #15803d;
+}
+
+.missionary-save-status--error {
+  color: var(--tt-color-error);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 720px) {
+  .missionary-profile-page {
+    padding-top: var(--tt-space-6);
+    padding-bottom: var(--tt-space-12);
+  }
+
+  .missionary-header {
+    margin-bottom: var(--tt-space-8);
+  }
+
+  .missionary-header__row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .missionary-profile-form {
+    gap: var(--tt-space-6);
+  }
+
+  .missionary-card--compact,
+  .missionary-card--medium,
+  .missionary-card--featured,
+  .missionary-card--meta {
+    padding: var(--tt-space-5);
+  }
+
+  .missionary-meta-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .missionary-autosave,
+  .missionary-card,
+  .missionary-field input,
+  .missionary-field textarea,
+  .missionary-autoresize {
+    transition: none;
+  }
 }

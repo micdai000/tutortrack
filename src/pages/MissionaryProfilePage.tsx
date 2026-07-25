@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 
 import { MissionaryProfileForm } from "../components/MissionaryProfileForm";
-import { SaveStatusIndicator } from "../components/SaveStatusIndicator";
+import { MissionaryHeader } from "../components/missionary";
 import { useMissionaryProfile } from "../hooks/useMissionaryProfile";
 import "../styles/missionary-profile.css";
 
@@ -22,14 +22,6 @@ function MissionaryProfilePage() {
 
   return (
     <div className="missionary-profile-page">
-      {missionary && (
-        <div className="missionary-profile-back">
-          <Link to={`/companionships/${missionary.companionship_id}`}>
-            ← Back to companionship
-          </Link>
-        </div>
-      )}
-
       {loading && (
         <p className="missionary-profile-status" role="status">
           Loading language plan...
@@ -37,20 +29,23 @@ function MissionaryProfilePage() {
       )}
 
       {!loading && loadError && (
-        <p className="form-error" role="alert">
+        <p className="missionary-profile-error" role="alert">
           {loadError}
         </p>
       )}
 
       {!loading && missionary && draft && (
         <>
-          <div className="missionary-profile-toolbar">
-            <div>
-              <p className="missionary-profile-kicker">Language plan</p>
-              <h1 className="missionary-profile-title">{pageTitle}</h1>
-            </div>
-            <SaveStatusIndicator status={saveStatus} error={saveError} />
-          </div>
+          <MissionaryHeader
+            name={pageTitle}
+            saveStatus={saveStatus}
+            saveError={saveError}
+            backLink={
+              <Link to={`/companionships/${missionary.companionship_id}`}>
+                ← Back to companionship
+              </Link>
+            }
+          />
 
           <MissionaryProfileForm
             draft={draft}

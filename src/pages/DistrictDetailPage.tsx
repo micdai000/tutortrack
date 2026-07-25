@@ -1,9 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { User, Users } from "lucide-react";
 
-import { CompanionshipList } from "../components/CompanionshipList";
 import { CreateCompanionshipForm } from "../components/CreateCompanionshipForm";
-import { TeacherViewEntryActions } from "../components/teacher/TeacherViewEntryActions";
+import {
+  CompanionshipGrid,
+  DistrictActionBar,
+  DistrictHeader,
+  DistrictSummaryCard,
+  SearchBar,
+  companionshipLabel,
+} from "../components/district";
 import { useDistrictDetail } from "../hooks/useDistrictDetail";
 import "../styles/district-detail.css";
 
@@ -25,6 +32,7 @@ function DistrictDetailPage() {
 
   const [showForm, setShowForm] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     const state = location.state as DistrictDetailLocationState | null;
@@ -40,6 +48,25 @@ function DistrictDetailPage() {
     setShowForm(false);
   }
 
+  function openAddCompanionshipForm() {
+    setShowForm(true);
+  }
+
+  const missionaryCount = companionships.reduce(
+    (total, companionship) => total + companionship.missionaries.length,
+    0
+  );
+
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredCompanionships =
+    normalizedQuery.length === 0
+      ? companionships
+      : companionships.filter((companionship) =>
+          companionshipLabel(companionship)
+            .toLowerCase()
+            .includes(normalizedQuery)
+        );
+
   return (
     <div className="district-detail-page">
       <div className="district-detail-back">
@@ -47,13 +74,13 @@ function DistrictDetailPage() {
       </div>
 
       {loading && (
-        <p className="district-detail-status" role="status">
+        <p className="district-status" role="status">
           Loading district...
         </p>
       )}
 
       {!loading && error && !district && (
-        <p className="form-error" role="alert">
+        <p className="district-error" role="alert">
           {error}
         </p>
       )}
@@ -64,40 +91,40 @@ function DistrictDetailPage() {
         </p>
       )}
 
-      {!loading && district && (
+      {!loading && district && districtId && (
         <>
-          <section className="district-detail-intro">
-            <div className="district-detail-intro-row">
-              <div>
-                <h1>{district.name}</h1>
-                <p>
-                  Open a companionship to choose which missionary you are
-                  tutoring.
-                </p>
-              </div>
+          <DistrictHeader name={district.name} />
 
-              {districtId && (
-                <TeacherViewEntryActions
-                  openTo={`/teacher/district/${districtId}`}
-                  shareType="district"
-                  resourceId={districtId}
-                />
-              )}
-            </div>
+          <DistrictActionBar
+            teacherViewTo={`/teacher/district/${districtId}`}
+            shareType="district"
+            resourceId={districtId}
+            onAddCompanionship={openAddCompanionshipForm}
+            showAddCompanionship={!showForm}
+          />
+
+          <section
+            className="district-summary-row"
+            aria-label="District summary"
+          >
+            <DistrictSummaryCard
+              label="Companionships"
+              value={companionships.length}
+              icon={Users}
+            />
+            <DistrictSummaryCard
+              label="Missionaries"
+              value={missionaryCount}
+              icon={User}
+            />
           </section>
 
-          <section className="district-detail-card">
-            <div className="district-detail-card-header">
-              <h2>Companionships</h2>
-              {!showForm && (
-                <button
-                  type="button"
-                  className="district-detail-primary-button"
-                  onClick={() => setShowForm(true)}
-                >
-                  Add companionship
-                </button>
-              )}
+          <section
+            className="district-companionships"
+            aria-labelledby="district-companionships-heading"
+          >
+            <div className="district-section-header">
+              <h2 id="district-companionships-heading">Companionships</h2>
             </div>
 
             {showForm && (
@@ -108,12 +135,26 @@ function DistrictDetailPage() {
             )}
 
             {error && (
-              <p className="form-error" role="alert">
+              <p className="district-error" role="alert">
                 {error}
               </p>
             )}
 
-            <CompanionshipList companionships={companionships} />
+            {companionships.length > 0 && (
+              <SearchBar
+                value={query}
+                onChange={setQuery}
+                placeholder="Search companionships..."
+              />
+            )}
+
+            <CompanionshipGrid
+              companionships={filteredCompanionships}
+              emptyQuery={normalizedQuery.length > 0}
+              query={query.trim()}
+              onAddCompanionship={openAddCompanionshipForm}
+              showEmptyAddAction={!showForm}
+            />
           </section>
         </>
       )}
