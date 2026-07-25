@@ -1,0 +1,62 @@
+/**
+ * Email confirmation landing — calm, branded post-verify screen.
+ */
+
+.auth-confirmed-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--tt-space-8) var(--tt-page-padding-x);
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 0%, #d8e9f9 0%, transparent 55%),
+    radial-gradient(ellipse 70% 50% at 100% 100%, #eef4fb 0%, transparent 50%),
+    var(--tt-color-bg);
+}
+
+.auth-confirmed-card {
+  width: min(100%, 26rem);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--tt-space-4);
+  padding: var(--tt-space-8) var(--tt-space-6);
+  background: var(--tt-color-surface);
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-lg);
+  box-shadow: var(--tt-shadow-md);
+}
+
+.auth-confirmed-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.2vw, 1.75rem);
+  font-weight: var(--tt-font-weight-bold);
+  letter-spacing: -0.02em;
+  color: var(--tt-color-text);
+}
+
+.auth-confirmed-copy {
+  margin: 0 0 var(--tt-space-2);
+  font-size: var(--tt-text-body-size);
+  line-height: var(--tt-text-body-line);
+  color: var(--tt-color-text-secondary);
+}
+
+.auth-confirmed-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--tt-space-3);
+  width: 100%;
+}
+
+.auth-confirmed-secondary {
+  font-size: var(--tt-text-helper-size);
+  color: var(--tt-color-text-secondary);
+  text-decoration: none;
+}
+
+.auth-confirmed-secondary:hover {
+  color: var(--tt-color-primary);
+  text-decoration: underline;
+}

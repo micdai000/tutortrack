@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { AppShell } from "./components/AppShell";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import LoginPage from "./pages/LoginPage";
+import AuthConfirmedPage from "./pages/AuthConfirmedPage";
 import DashboardPage from "./pages/DashboardPage";
 import DistrictsPage from "./pages/DistrictsPage";
 import DistrictDetailPage from "./pages/DistrictDetailPage";
@@ -18,6 +19,10 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: <LoginPage />,
+  },
+  {
+    path: "/auth/confirmed",
+    element: <AuthConfirmedPage />,
   },
   {
     path: "/share/:token",

@@ -158,7 +158,7 @@ function LoginPage() {
 
         if (!result.sessionCreated) {
           setInfo(
-            "Account created. Check your email to confirm your address, then sign in."
+            "Account created. Check your inbox for a confirmation email, open the link to verify your address, then sign in here."
           );
           setMode("signin");
           setPassword("");

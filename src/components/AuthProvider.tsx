@@ -9,6 +9,7 @@ import type { User } from "@supabase/supabase-js";
 
 import { BrandLoading } from "./branding";
 import { supabase } from "../lib/supabase";
+import { getEmailConfirmRedirectUrl } from "../utils/authRedirect";
 
 type SignUpResult = {
   /** False when Supabase requires email confirmation before a session exists. */
@@ -82,6 +83,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       email: email.trim(),
       password,
       options: {
+        emailRedirectTo: getEmailConfirmRedirectUrl(),
         data: {
           full_name: trimmedName,
           name: trimmedName,
