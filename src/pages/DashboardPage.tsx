@@ -1,30 +1,88 @@
-import { WelcomeSection } from "../components/WelcomeSection";
-import { FollowUpsCard } from "../components/FollowUpsCard";
-import { DistrictListCard } from "../components/DistrictListCard";
+import { useState } from "react";
+import {
+  CalendarClock,
+  LayoutDashboard,
+  UserRound,
+  Users,
+} from "lucide-react";
+
 import { useAuth } from "../components/AuthProvider";
-import { useDistricts } from "../hooks/useDistricts";
+import {
+  DashboardHeader,
+  DistrictGrid,
+  FollowUpCard,
+  SearchBar,
+  StatCard,
+} from "../components/dashboard";
+import { useDashboardOverview } from "../hooks/useDashboardOverview";
 import { getDisplayFirstName, getTimeOfDayGreeting } from "../utils/greeting";
 import "../styles/dashboard.css";
 
 function DashboardPage() {
   const { user } = useAuth();
-  const { districts, loading, error } = useDistricts();
+  const { districts, stats, followUps, loading, error } =
+    useDashboardOverview();
+  const [query, setQuery] = useState("");
 
   const greeting = getTimeOfDayGreeting();
   const firstName = getDisplayFirstName(user);
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredDistricts =
+    normalizedQuery.length === 0
+      ? districts
+      : districts.filter((district) =>
+          district.name.toLowerCase().includes(normalizedQuery)
+        );
 
   return (
     <div className="dashboard-page">
-      <WelcomeSection greeting={greeting} firstName={firstName} />
+      <DashboardHeader greeting={greeting} firstName={firstName} />
 
-      <div className="dashboard-sections">
-        {/* Follow-ups stay empty until real data is wired — avoids misleading sample names. */}
-        <FollowUpsCard followUps={[]} />
-        <DistrictListCard
-          districts={districts}
+      <section className="dashboard-stats" aria-label="Workspace overview">
+        <StatCard
+          label="Districts"
+          value={stats.districtCount}
+          icon={LayoutDashboard}
           loading={loading}
-          error={error}
         />
+        <StatCard
+          label="Companionships"
+          value={stats.companionshipCount}
+          icon={Users}
+          loading={loading}
+        />
+        <StatCard
+          label="Missionaries"
+          value={stats.missionaryCount}
+          icon={UserRound}
+          loading={loading}
+        />
+        <StatCard
+          label="Plans needing follow-up"
+          value={stats.followUpCount}
+          icon={CalendarClock}
+          loading={loading}
+        />
+      </section>
+
+      <div className="dashboard-main">
+        <FollowUpCard followUps={followUps} />
+
+        <div className="dashboard-districts-panel">
+          <SearchBar
+            value={query}
+            onChange={setQuery}
+            placeholder="Search districts…"
+            label="Search districts"
+          />
+          <DistrictGrid
+            districts={filteredDistricts}
+            loading={loading}
+            error={error}
+            emptyQuery={normalizedQuery.length > 0}
+            query={query.trim()}
+          />
+        </div>
       </div>
     </div>
   );
