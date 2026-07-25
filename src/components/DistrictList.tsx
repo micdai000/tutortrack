@@ -1,7 +1,9 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { MoreHorizontal } from "lucide-react";
 
 import type { District } from "../types/district";
+import { Icon } from "./ui/Icon";
 
 type DistrictListProps = {
   districts: District[];
@@ -94,7 +96,7 @@ function DistrictListItem({
             aria-label={`Actions for ${district.name}`}
             onClick={() => setMenuOpen((open) => !open)}
           >
-            ⋯
+            <Icon icon={MoreHorizontal} size="sm" tone="muted" />
           </button>
 
           {menuOpen && (

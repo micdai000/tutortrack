@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { User, Users } from "lucide-react";
 
 import { CreateCompanionshipForm } from "../components/CreateCompanionshipForm";
@@ -11,6 +11,11 @@ import {
   SearchBar,
   companionshipLabel,
 } from "../components/district";
+import {
+  BackLink,
+  PageContainer,
+  StatusBanner,
+} from "../components/layout";
 import { useDistrictDetail } from "../hooks/useDistrictDetail";
 import "../styles/district-detail.css";
 
@@ -68,10 +73,8 @@ function DistrictDetailPage() {
         );
 
   return (
-    <div className="district-detail-page">
-      <div className="district-detail-back">
-        <Link to="/districts">← Back to districts</Link>
-      </div>
+    <PageContainer className="district-detail-page">
+      <BackLink to="/districts">← Back to districts</BackLink>
 
       {loading && (
         <p className="district-status" role="status">
@@ -86,9 +89,7 @@ function DistrictDetailPage() {
       )}
 
       {successMessage && (
-        <p className="district-detail-success" role="status">
-          {successMessage}
-        </p>
+        <StatusBanner tone="success">{successMessage}</StatusBanner>
       )}
 
       {!loading && district && districtId && (
@@ -158,7 +159,7 @@ function DistrictDetailPage() {
           </section>
         </>
       )}
-    </div>
+    </PageContainer>
   );
 }
 

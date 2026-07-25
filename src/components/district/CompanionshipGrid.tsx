@@ -1,6 +1,7 @@
-import { Plus } from "lucide-react";
+import { Plus, Search, Users } from "lucide-react";
 
 import type { CompanionshipWithMissionaries } from "../../types/companionship";
+import { EmptyState } from "../layout/EmptyState";
 import { Button } from "../ui/Button";
 import { Icon } from "../ui/Icon";
 import { CompanionshipCard } from "./CompanionshipCard";
@@ -23,31 +24,34 @@ export function CompanionshipGrid({
 }: CompanionshipGridProps) {
   if (companionships.length === 0 && emptyQuery) {
     return (
-      <p className="district-status">
-        No companionships match &ldquo;{query}&rdquo;.
-      </p>
+      <EmptyState
+        icon={Search}
+        title="No matching companionships"
+        description={`No companionships match “${query}”.`}
+      />
     );
   }
 
   if (companionships.length === 0) {
     return (
-      <div className="district-empty">
-        <p className="district-empty__title">No companionships yet.</p>
-        <p className="district-empty__copy">
-          Create your first companionship to begin tracking language plans.
-        </p>
-        {showEmptyAddAction && onAddCompanionship && (
-          <Button
-            type="button"
-            variant="primary"
-            size="sm"
-            onClick={onAddCompanionship}
-          >
-            <Icon icon={Plus} size="sm" />
-            Add Companionship
-          </Button>
-        )}
-      </div>
+      <EmptyState
+        icon={Users}
+        title="No companionships yet"
+        description="Create your first companionship to begin tracking language plans."
+        action={
+          showEmptyAddAction && onAddCompanionship ? (
+            <Button
+              type="button"
+              variant="primary"
+              size="sm"
+              onClick={onAddCompanionship}
+            >
+              <Icon icon={Plus} size="sm" />
+              Add Companionship
+            </Button>
+          ) : undefined
+        }
+      />
     );
   }
 

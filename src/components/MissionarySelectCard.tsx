@@ -1,8 +1,10 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 import type { Missionary } from "../types/missionary";
 import { getErrorMessage } from "../utils/getErrorMessage";
+import { Icon } from "./ui/Icon";
 
 type MissionarySelectCardProps = {
   missionary: Missionary;
@@ -131,7 +133,7 @@ export function MissionarySelectCard({
               className="missionary-select-card-action-arrow"
               aria-hidden="true"
             >
-              →
+              <Icon icon={ArrowRight} size="sm" />
             </span>
           </Link>
         )}

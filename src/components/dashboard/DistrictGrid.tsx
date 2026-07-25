@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { BookOpen, Search } from "lucide-react";
 
 import type { DistrictSummary } from "../../types/dashboardOverview";
+import { EmptyState } from "../layout/EmptyState";
 import { DistrictCard } from "./DistrictCard";
 
 type DistrictGridProps = {
@@ -41,16 +43,24 @@ export function DistrictGrid({
       )}
 
       {!loading && !error && districts.length === 0 && emptyQuery && (
-        <p className="dashboard-status">
-          No districts match &ldquo;{query}&rdquo;.
-        </p>
+        <EmptyState
+          icon={Search}
+          title="No matching districts"
+          description={`No districts match “${query}”.`}
+        />
       )}
 
       {!loading && !error && districts.length === 0 && !emptyQuery && (
-        <p className="dashboard-status">
-          No districts yet.{" "}
-          <Link to="/districts">Add your first district</Link>.
-        </p>
+        <EmptyState
+          icon={BookOpen}
+          title="No districts yet"
+          description="Add your first district to start organizing companionships."
+          action={
+            <Link to="/districts" className="tt-button tt-button--primary tt-button--sm">
+              Add district
+            </Link>
+          }
+        />
       )}
 
       {!loading && !error && districts.length > 0 && (

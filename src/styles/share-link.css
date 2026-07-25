@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.5rem;
+  gap: var(--tt-space-2);
 }
 
 .teacher-view-entry-action-row {
@@ -10,24 +10,35 @@
   flex-wrap: wrap;
   justify-content: flex-end;
   align-items: flex-start;
-  gap: 0.5rem;
+  gap: var(--tt-space-2);
 }
 
 .teacher-view-entry-open-button {
-  display: inline-block;
-  padding: 0.55rem 0.9rem;
-  border: 1px solid #111827;
-  border-radius: 6px;
-  background: #111827;
-  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--tt-control-height);
+  padding: 0 1rem;
+  border: 1px solid var(--tt-color-primary);
+  border-radius: var(--tt-radius-sm);
+  background: var(--tt-color-primary);
+  color: var(--tt-color-text-inverse);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: var(--tt-text-helper-size);
+  font-weight: var(--tt-font-weight-semibold);
   white-space: nowrap;
+  transition: background-color var(--tt-duration-fast) var(--tt-ease-standard),
+    border-color var(--tt-duration-fast) var(--tt-ease-standard);
 }
 
 .teacher-view-entry-open-button:hover {
-  background: #374151;
-  border-color: #374151;
+  background: var(--tt-color-primary-hover);
+  border-color: var(--tt-color-primary-hover);
+}
+
+.teacher-view-entry-open-button:focus-visible {
+  outline: 2px solid var(--tt-color-focus-ring);
+  outline-offset: 2px;
 }
 
 .teacher-share-actions {
@@ -42,18 +53,30 @@
 }
 
 .teacher-share-copy-button {
-  padding: 0.55rem 0.9rem;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  background: #ffffff;
-  color: #111827;
-  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--tt-control-height);
+  padding: 0 1rem;
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-sm);
+  background: var(--tt-color-surface);
+  color: var(--tt-color-text);
+  font-size: var(--tt-text-helper-size);
+  font-weight: var(--tt-font-weight-medium);
   white-space: nowrap;
+  transition: background-color var(--tt-duration-fast) var(--tt-ease-standard),
+    border-color var(--tt-duration-fast) var(--tt-ease-standard);
 }
 
 .teacher-share-copy-button:hover:not(:disabled) {
-  background: #f9fafb;
-  border-color: #9ca3af;
+  background: var(--tt-color-bg);
+  border-color: #d1d5db;
+}
+
+.teacher-share-copy-button:focus-visible {
+  outline: 2px solid var(--tt-color-focus-ring);
+  outline-offset: 2px;
 }
 
 .teacher-share-copy-button:disabled {
@@ -63,15 +86,15 @@
 
 .teacher-share-status {
   margin: 0;
-  font-size: 0.8rem;
-  color: #047857;
+  font-size: var(--tt-text-caption-size);
+  color: var(--tt-color-success);
   text-align: right;
 }
 
 .teacher-share-error {
   margin: 0;
-  font-size: 0.8rem;
-  color: #b91c1c;
+  font-size: var(--tt-text-caption-size);
+  color: var(--tt-color-danger);
   text-align: right;
   max-width: 16rem;
 }

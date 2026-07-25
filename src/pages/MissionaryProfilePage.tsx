@@ -1,7 +1,8 @@
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import { MissionaryProfileForm } from "../components/MissionaryProfileForm";
 import { MissionaryHeader } from "../components/missionary";
+import { BackLink, PageContainer } from "../components/layout";
 import { useMissionaryProfile } from "../hooks/useMissionaryProfile";
 import "../styles/missionary-profile.css";
 
@@ -21,7 +22,7 @@ function MissionaryProfilePage() {
     draft?.display_name.trim() || missionary?.display_name || "Missionary";
 
   return (
-    <div className="missionary-profile-page">
+    <PageContainer className="missionary-profile-page">
       {loading && (
         <p className="missionary-profile-status" role="status">
           Loading language plan...
@@ -41,9 +42,9 @@ function MissionaryProfilePage() {
             saveStatus={saveStatus}
             saveError={saveError}
             backLink={
-              <Link to={`/companionships/${missionary.companionship_id}`}>
+              <BackLink to={`/companionships/${missionary.companionship_id}`}>
                 ← Back to companionship
-              </Link>
+              </BackLink>
             }
           />
 
@@ -54,7 +55,7 @@ function MissionaryProfilePage() {
           />
         </>
       )}
-    </div>
+    </PageContainer>
   );
 }
 

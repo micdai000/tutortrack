@@ -1,11 +1,21 @@
 import { useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Users } from "lucide-react";
 
 import { AddMissionaryForm } from "../components/AddMissionaryForm";
 import { ConfirmDeleteCompanionshipDialog } from "../components/ConfirmDeleteCompanionshipDialog";
 import { ConfirmRemoveMissionaryDialog } from "../components/ConfirmRemoveMissionaryDialog";
 import { MissionarySelectList } from "../components/MissionarySelectList";
 import { TeacherViewEntryActions } from "../components/teacher/TeacherViewEntryActions";
+import {
+  BackLink,
+  EmptyState,
+  PageContainer,
+  PageHeader,
+  SectionCard,
+  StatusBanner,
+} from "../components/layout";
+import { Button } from "../components/ui";
 import { useCompanionshipWorkspace } from "../hooks/useCompanionshipWorkspace";
 import type { Missionary } from "../types/missionary";
 import { getErrorMessage } from "../utils/getErrorMessage";
@@ -80,13 +90,11 @@ function CompanionshipWorkspacePage() {
   }
 
   return (
-    <div className="companionship-workspace-page">
+    <PageContainer className="companionship-workspace-page">
       {workspace && (
-        <div className="companionship-workspace-back">
-          <Link to={`/districts/${workspace.district.id}`}>
-            ← Back to {workspace.district.name}
-          </Link>
-        </div>
+        <BackLink to={`/districts/${workspace.district.id}`}>
+          ← Back to {workspace.district.name}
+        </BackLink>
       )}
 
       {loading && (
@@ -96,58 +104,46 @@ function CompanionshipWorkspacePage() {
       )}
 
       {!loading && error && (
-        <p className="form-error" role="alert">
+        <p className="tt-form-error" role="alert">
           {error}
         </p>
       )}
 
       {successMessage && (
-        <p className="companionship-workspace-success" role="status">
-          {successMessage}
-        </p>
+        <StatusBanner tone="success">{successMessage}</StatusBanner>
       )}
 
       {!loading && workspace && companionshipId && (
-        <>
-          <section className="companionship-workspace-intro">
-            <div className="companionship-workspace-intro-row">
-              <div>
-                <p className="companionship-workspace-district">
-                  {workspace.district.name}
-                </p>
-                <h1>Companionship</h1>
-                <p>
-                  Select a missionary to review or update their language plan.
-                </p>
-              </div>
-
+        <div className="tt-page-stack">
+          <PageHeader
+            kicker={workspace.district.name}
+            title="Companionship"
+            description="Select a missionary to review or update their language plan."
+            actions={
               <TeacherViewEntryActions
                 openTo={`/teacher/companionship/${companionshipId}`}
                 shareType="companionship"
                 resourceId={companionshipId}
               />
-            </div>
-          </section>
+            }
+          />
 
-          <section className="companionship-workspace-card">
-            <div className="companionship-workspace-card-header">
-              <h2 className="companionship-workspace-card-title">
-                Missionaries
-              </h2>
-              {!showAddForm && (
-                <button
+          <SectionCard
+            title="Missionaries"
+            actions={
+              !showAddForm ? (
+                <Button
                   type="button"
-                  className="companionship-add-missionary-button"
                   onClick={() => {
                     setSuccessMessage(null);
                     setShowAddForm(true);
                   }}
                 >
                   Add missionary
-                </button>
-              )}
-            </div>
-
+                </Button>
+              ) : undefined
+            }
+          >
             {showAddForm && (
               <AddMissionaryForm
                 onAdd={async (name) => {
@@ -159,25 +155,44 @@ function CompanionshipWorkspacePage() {
               />
             )}
 
-            <MissionarySelectList
-              missionaries={workspace.missionaries}
-              onRename={async (missionary, name) => {
-                setSuccessMessage(null);
-                await renameMissionary(missionary, name);
-                setSuccessMessage(`Name updated to “${name.trim()}”.`);
-              }}
-              onRequestRemove={(missionary) => {
-                setSuccessMessage(null);
-                setRemoveError(null);
-                setMissionaryToRemove(missionary);
-              }}
-            />
-          </section>
+            {workspace.missionaries.length === 0 && !showAddForm ? (
+              <EmptyState
+                icon={Users}
+                title="No missionaries yet"
+                description="Add a missionary to start building their language plan."
+                action={
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      setSuccessMessage(null);
+                      setShowAddForm(true);
+                    }}
+                  >
+                    Add missionary
+                  </Button>
+                }
+              />
+            ) : (
+              <MissionarySelectList
+                missionaries={workspace.missionaries}
+                onRename={async (missionary, name) => {
+                  setSuccessMessage(null);
+                  await renameMissionary(missionary, name);
+                  setSuccessMessage(`Name updated to “${name.trim()}”.`);
+                }}
+                onRequestRemove={(missionary) => {
+                  setSuccessMessage(null);
+                  setRemoveError(null);
+                  setMissionaryToRemove(missionary);
+                }}
+              />
+            )}
+          </SectionCard>
 
           <section className="companionship-danger-zone">
-            <button
+            <Button
               type="button"
-              className="companionship-delete-button"
+              variant="danger"
               onClick={() => {
                 setSuccessMessage(null);
                 setDeleteCompanionshipError(null);
@@ -185,9 +200,9 @@ function CompanionshipWorkspacePage() {
               }}
             >
               Delete companionship
-            </button>
+            </Button>
           </section>
-        </>
+        </div>
       )}
 
       {missionaryToRemove && (
@@ -223,7 +238,7 @@ function CompanionshipWorkspacePage() {
           }}
         />
       )}
-    </div>
+    </PageContainer>
   );
 }
 

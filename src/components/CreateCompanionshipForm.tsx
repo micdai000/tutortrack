@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 
+import { Button, Input } from "./ui";
 import type { CompanionshipSize } from "../types/companionship";
 import { getErrorMessage } from "../utils/getErrorMessage";
 
@@ -87,7 +88,7 @@ export function CreateCompanionshipForm({
             <label htmlFor={`missionary-name-${index}`}>
               Missionary {index + 1}
             </label>
-            <input
+            <Input
               id={`missionary-name-${index}`}
               type="text"
               value={name}
@@ -105,18 +106,23 @@ export function CreateCompanionshipForm({
       </div>
 
       {error && (
-        <p className="form-error" role="alert">
+        <p className="tt-form-error" role="alert">
           {error}
         </p>
       )}
 
       <div className="create-companionship-actions">
-        <button type="submit" disabled={submitting}>
+        <Button type="submit" disabled={submitting}>
           {submitting ? "Adding..." : "Add companionship"}
-        </button>
-        <button type="button" onClick={onCancel} disabled={submitting}>
+        </Button>
+        <Button
+          type="button"
+          variant="secondary"
+          onClick={onCancel}
+          disabled={submitting}
+        >
           Cancel
-        </button>
+        </Button>
       </div>
     </form>
   );

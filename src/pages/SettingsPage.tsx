@@ -1,6 +1,11 @@
 import { useEffect, useState, type FormEvent } from "react";
 
 import { useAuth } from "../components/AuthProvider";
+import {
+  PageContainer,
+  PageHeader,
+  SectionCard,
+} from "../components/layout";
 import { Button, Field, Input } from "../components/ui";
 import { getDisplayFirstName } from "../utils/greeting";
 import { getErrorMessage } from "../utils/getErrorMessage";
@@ -46,24 +51,21 @@ function SettingsPage() {
   }
 
   return (
-    <div className="settings-page">
-      <section className="settings-intro">
-        <h1>Settings</h1>
-        <p>Manage your TutorTrack profile.</p>
-      </section>
+    <PageContainer className="settings-page">
+      <PageHeader
+        title="Settings"
+        description="Manage your TutorTrack profile."
+      />
 
-      <section className="settings-card">
-        <h2>Edit profile</h2>
-        <p className="settings-card-copy">
-          This name appears in your dashboard greeting and sidebar.
-        </p>
-
-        <form className="settings-form" onSubmit={(event) => void handleSubmit(event)}>
-          <Field
-            label="Name"
-            htmlFor="profile-name"
-            error={error}
-          >
+      <SectionCard
+        title="Edit profile"
+        description="This name appears in your dashboard greeting and sidebar."
+      >
+        <form
+          className="settings-form"
+          onSubmit={(event) => void handleSubmit(event)}
+        >
+          <Field label="Name" htmlFor="profile-name" error={error}>
             <Input
               id="profile-name"
               type="text"
@@ -92,13 +94,16 @@ function SettingsPage() {
           )}
 
           <div className="settings-actions">
-            <Button type="submit" disabled={saving || !trimmedName || !hasChanges}>
+            <Button
+              type="submit"
+              disabled={saving || !trimmedName || !hasChanges}
+            >
               {saving ? "Saving..." : "Save"}
             </Button>
           </div>
         </form>
-      </section>
-    </div>
+      </SectionCard>
+    </PageContainer>
   );
 }
 

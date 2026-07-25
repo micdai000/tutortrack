@@ -75,11 +75,16 @@
 
   --tt-page-padding-x: 1.25rem;
   --tt-page-padding-y: 2rem;
-  --tt-page-max-width: 720px;
+  /** Shared content column for workspace pages (Dashboard → Settings). */
+  --tt-page-max-width: 880px;
+  /** Document-style Teacher Views stay slightly narrower for reading. */
+  --tt-page-max-width-document: 40rem;
   --tt-section-gap: var(--tt-space-8);
-  --tt-card-padding: var(--tt-space-6);
+  --tt-card-padding: var(--tt-space-5) var(--tt-space-6);
   --tt-card-gap: var(--tt-space-4);
-  --tt-form-gap: var(--tt-space-5);
+  --tt-form-gap: var(--tt-space-4);
+  --tt-stack-page: var(--tt-space-8);
+  --tt-label-gap: 0.45rem;
 
   /* ---------- Radius ---------- */
   --tt-radius-sm: 6px; /* buttons */

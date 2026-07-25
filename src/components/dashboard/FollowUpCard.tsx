@@ -22,11 +22,11 @@ export function FollowUpCard({ followUps }: FollowUpCardProps) {
           <span className="dashboard-followups__check" aria-hidden="true">
             <Icon icon={Check} size="sm" tone="primary" />
           </span>
-          <div>
+          <div className="dashboard-followups__empty-copy">
             <p className="dashboard-followups__empty-title">
               You&apos;re all caught up.
             </p>
-            <p className="dashboard-followups__empty-copy">
+            <p className="dashboard-followups__empty-description">
               No follow-ups scheduled today.
             </p>
           </div>

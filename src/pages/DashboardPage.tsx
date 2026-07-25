@@ -14,6 +14,7 @@ import {
   SearchBar,
   StatCard,
 } from "../components/dashboard";
+import { PageContainer } from "../components/layout";
 import { useDashboardOverview } from "../hooks/useDashboardOverview";
 import { getDisplayFirstName, getTimeOfDayGreeting } from "../utils/greeting";
 import "../styles/dashboard.css";
@@ -35,7 +36,7 @@ function DashboardPage() {
         );
 
   return (
-    <div className="dashboard-page">
+    <PageContainer className="dashboard-page">
       <DashboardHeader greeting={greeting} firstName={firstName} />
 
       <section className="dashboard-stats" aria-label="Workspace overview">
@@ -84,7 +85,7 @@ function DashboardPage() {
           />
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }
 

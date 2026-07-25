@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 
+import { Button, Input } from "./ui";
 import { getErrorMessage } from "../utils/getErrorMessage";
 
 type AddMissionaryFormProps = {
@@ -33,7 +34,7 @@ export function AddMissionaryForm({ onAdd, onCancel }: AddMissionaryFormProps) {
     <form className="add-missionary-form" onSubmit={handleSubmit}>
       <label htmlFor="new-missionary-name">Name</label>
       <div className="add-missionary-form-row">
-        <input
+        <Input
           id="new-missionary-name"
           type="text"
           value={name}
@@ -44,15 +45,15 @@ export function AddMissionaryForm({ onAdd, onCancel }: AddMissionaryFormProps) {
           disabled={submitting}
           autoFocus
         />
-        <button type="submit" disabled={submitting || !name.trim()}>
+        <Button type="submit" disabled={submitting || !name.trim()}>
           {submitting ? "Adding..." : "Add missionary"}
-        </button>
-        <button type="button" onClick={onCancel} disabled={submitting}>
+        </Button>
+        <Button type="button" variant="secondary" onClick={onCancel} disabled={submitting}>
           Cancel
-        </button>
+        </Button>
       </div>
       {error && (
-        <p className="form-error" role="alert">
+        <p className="tt-form-error" role="alert">
           {error}
         </p>
       )}

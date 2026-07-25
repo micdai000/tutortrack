@@ -1,8 +1,4 @@
-import type { ChangeEvent } from "react";
-import { Search } from "lucide-react";
-
-import { Icon } from "../ui/Icon";
-import { Input } from "../ui/Input";
+import { SearchInput } from "../layout/SearchInput";
 
 type SearchBarProps = {
   value: string;
@@ -20,29 +16,15 @@ export function SearchBar({
   label = "Search companionships",
   id = "district-companionship-search",
 }: SearchBarProps) {
-  function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    onChange(event.target.value);
-  }
-
   return (
     <div className="district-search">
-      <label className="district-search__label" htmlFor={id}>
-        {label}
-      </label>
-      <div className="district-search__field">
-        <span className="district-search__icon" aria-hidden="true">
-          <Icon icon={Search} size="sm" tone="muted" />
-        </span>
-        <Input
-          id={id}
-          type="search"
-          value={value}
-          onChange={handleChange}
-          placeholder={placeholder}
-          autoComplete="off"
-          className="district-search__input"
-        />
-      </div>
+      <SearchInput
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        label={label}
+        id={id}
+      />
     </div>
   );
 }

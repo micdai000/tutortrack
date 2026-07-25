@@ -1,9 +1,9 @@
 .teacher-view {
-  max-width: 40rem;
+  max-width: var(--tt-page-max-width-document);
   margin: 0 auto;
   padding: 2.75rem 1.5rem 4.5rem;
-  color: #1f2937;
-  background: #ffffff;
+  color: var(--tt-color-text);
+  background: var(--tt-color-surface);
   font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
 }
 

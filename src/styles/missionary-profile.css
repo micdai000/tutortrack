@@ -3,10 +3,8 @@
  * Presentation only; autosave and field contracts are unchanged.
  */
 
-.missionary-profile-page {
-  max-width: 880px;
-  margin: 0 auto;
-  padding: var(--tt-space-8) var(--tt-page-padding-x) var(--tt-space-16);
+.missionary-profile-page.tt-page-container {
+  /* PageContainer owns width/padding */
 }
 
 .missionary-profile-status,
@@ -33,17 +31,8 @@
   margin-bottom: var(--tt-space-6);
 }
 
-.missionary-header__back a {
-  color: var(--tt-color-text-secondary);
-  text-decoration: none;
-  font-size: var(--tt-text-helper-size);
-  font-weight: var(--tt-font-weight-medium);
-  transition: color var(--tt-duration-fast) var(--tt-ease-standard);
-}
-
-.missionary-header__back a:hover {
-  color: var(--tt-color-primary);
-  text-decoration: underline;
+.missionary-header__back .tt-back-link {
+  margin-bottom: 0;
 }
 
 .missionary-header__row {

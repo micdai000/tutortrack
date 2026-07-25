@@ -1,9 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BookOpen } from "lucide-react";
 
 import { ConfirmDeleteDistrictDialog } from "../components/ConfirmDeleteDistrictDialog";
 import { CreateDistrictForm } from "../components/CreateDistrictForm";
 import { DistrictList } from "../components/DistrictList";
+import {
+  EmptyState,
+  PageContainer,
+  PageHeader,
+  SectionCard,
+  StatusBanner,
+} from "../components/layout";
 import { useDistricts } from "../hooks/useDistricts";
 import type { District } from "../types/district";
 import { getErrorMessage } from "../utils/getErrorMessage";
@@ -45,55 +53,56 @@ function DistrictsPage() {
   }
 
   return (
-    <div className="districts-page">
-      <section className="districts-intro">
-        <h1>Districts</h1>
-        <p>
-          Organize your tutoring by district, then open one to manage
-          companionships.
-        </p>
-      </section>
+    <PageContainer className="districts-page">
+      <PageHeader
+        title="Districts"
+        description="Organize your tutoring by district, then open one to manage companionships."
+      />
 
       {successMessage && (
-        <p className="districts-success" role="status">
-          {successMessage}
-        </p>
+        <StatusBanner tone="success">{successMessage}</StatusBanner>
       )}
 
-      <section className="districts-card">
-        <h2>Add a district</h2>
-        <CreateDistrictForm
-          onCreate={async (name) => {
-            setSuccessMessage(null);
-            await create(name);
-          }}
-        />
-      </section>
-
-      <section className="districts-card">
-        <h2>Your districts</h2>
-
-        {loading && (
-          <p className="districts-status" role="status">
-            Loading districts...
-          </p>
-        )}
-        {!loading && error && (
-          <p className="form-error" role="alert">
-            {error}
-          </p>
-        )}
-        {!loading && !error && (
-          <DistrictList
-            districts={districts}
-            onRequestDelete={(district) => {
+      <div className="tt-page-stack">
+        <SectionCard title="Add a district">
+          <CreateDistrictForm
+            onCreate={async (name) => {
               setSuccessMessage(null);
-              setDeleteError(null);
-              setDistrictToDelete(district);
+              await create(name);
             }}
           />
-        )}
-      </section>
+        </SectionCard>
+
+        <SectionCard title="Your districts">
+          {loading && (
+            <p className="districts-status" role="status">
+              Loading districts...
+            </p>
+          )}
+          {!loading && error && (
+            <p className="tt-form-error" role="alert">
+              {error}
+            </p>
+          )}
+          {!loading && !error && districts.length === 0 && (
+            <EmptyState
+              icon={BookOpen}
+              title="No districts yet"
+              description="Add your first district above to start organizing companionships."
+            />
+          )}
+          {!loading && !error && districts.length > 0 && (
+            <DistrictList
+              districts={districts}
+              onRequestDelete={(district) => {
+                setSuccessMessage(null);
+                setDeleteError(null);
+                setDistrictToDelete(district);
+              }}
+            />
+          )}
+        </SectionCard>
+      </div>
 
       {districtToDelete && (
         <ConfirmDeleteDistrictDialog
@@ -110,7 +119,7 @@ function DistrictsPage() {
           }}
         />
       )}
-    </div>
+    </PageContainer>
   );
 }
 

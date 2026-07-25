@@ -1,0 +1,277 @@
+/**
+ * Shared layout primitives — Stage 7 consistency.
+ */
+
+.tt-page-container {
+  max-width: var(--tt-page-max-width);
+  margin: 0 auto;
+  padding: var(--tt-space-8) var(--tt-page-padding-x) var(--tt-space-16);
+}
+
+.tt-page-container--document {
+  max-width: var(--tt-page-max-width-document);
+}
+
+.tt-page-header {
+  margin-bottom: var(--tt-space-8);
+}
+
+.tt-page-header__kicker {
+  margin: 0 0 var(--tt-space-2);
+  font-size: var(--tt-text-caption-size);
+  font-weight: var(--tt-font-weight-medium);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.tt-page-header__title {
+  margin: 0 0 var(--tt-space-2);
+  font-size: clamp(1.75rem, 2.4vw, 2rem);
+  font-weight: var(--tt-font-weight-bold);
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  color: var(--tt-color-text);
+}
+
+.tt-page-header__description {
+  margin: 0;
+  max-width: 36rem;
+  font-size: var(--tt-text-body-size);
+  line-height: var(--tt-text-body-line);
+  color: var(--tt-color-text-secondary);
+}
+
+.tt-page-header__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--tt-space-4);
+  flex-wrap: wrap;
+}
+
+.tt-back-link {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: var(--tt-space-5);
+  color: var(--tt-color-text-secondary);
+  text-decoration: none;
+  font-size: var(--tt-text-helper-size);
+  font-weight: var(--tt-font-weight-medium);
+  transition: color var(--tt-duration-fast) var(--tt-ease-standard);
+}
+
+.tt-back-link:hover {
+  color: var(--tt-color-primary);
+  text-decoration: underline;
+}
+
+.tt-section-card {
+  background: var(--tt-color-surface);
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-lg);
+  box-shadow: var(--tt-shadow-sm);
+  padding: var(--tt-card-padding);
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-card-gap);
+  transition: box-shadow var(--tt-duration-normal) var(--tt-ease-standard),
+    border-color var(--tt-duration-normal) var(--tt-ease-standard);
+}
+
+.tt-section-card--interactive:hover {
+  box-shadow: var(--tt-shadow-card-hover);
+  border-color: #dbe1e8;
+}
+
+.tt-section-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-2);
+}
+
+.tt-section-card__header--with-actions {
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--tt-space-4);
+  flex-wrap: wrap;
+}
+
+.tt-section-card__title {
+  margin: 0;
+  font-size: var(--tt-text-card-title-size);
+  font-weight: var(--tt-text-card-title-weight);
+  line-height: var(--tt-text-card-title-line);
+  letter-spacing: -0.015em;
+  color: var(--tt-color-text);
+}
+
+.tt-section-card__description {
+  margin: 0;
+  font-size: var(--tt-text-helper-size);
+  line-height: var(--tt-text-helper-line);
+  color: var(--tt-color-text-secondary);
+}
+
+.tt-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--tt-space-3);
+  padding: var(--tt-space-6);
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-lg);
+  background: var(--tt-color-surface);
+  box-shadow: var(--tt-shadow-sm);
+}
+
+.tt-empty-state--inline {
+  padding: var(--tt-space-2) 0 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.tt-empty-state__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--tt-radius-md);
+  background: var(--tt-color-primary-accent);
+  color: var(--tt-color-primary);
+}
+
+.tt-empty-state__title {
+  margin: 0;
+  font-size: var(--tt-text-body-size);
+  font-weight: var(--tt-font-weight-semibold);
+  color: var(--tt-color-text);
+}
+
+.tt-empty-state__description {
+  margin: 0;
+  max-width: 28rem;
+  font-size: var(--tt-text-helper-size);
+  line-height: var(--tt-text-helper-line);
+  color: var(--tt-color-text-secondary);
+}
+
+.tt-search-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-2);
+}
+
+.tt-search-input__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.tt-search-input__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.tt-search-input__icon {
+  position: absolute;
+  left: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.tt-search-input__control.tt-input {
+  padding-left: 2.85rem;
+}
+
+.tt-status-banner {
+  margin: 0 0 var(--tt-space-5);
+  padding: var(--tt-space-3) var(--tt-space-4);
+  border-radius: var(--tt-radius-md);
+  font-size: var(--tt-text-helper-size);
+  line-height: var(--tt-text-helper-line);
+}
+
+.tt-status-banner--success {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.tt-status-banner--error {
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: var(--tt-color-error);
+}
+
+.tt-status-banner--info {
+  border: 1px solid var(--tt-color-border);
+  background: var(--tt-color-bg);
+  color: var(--tt-color-text-secondary);
+}
+
+.tt-page-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-stack-page);
+}
+
+.tt-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tt-space-2);
+  min-height: 1.75rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--tt-radius-full);
+  border: 1px solid var(--tt-color-border);
+  background: var(--tt-color-bg);
+  color: var(--tt-color-text-secondary);
+  font-size: var(--tt-text-caption-size);
+  font-weight: var(--tt-font-weight-medium);
+  line-height: 1.2;
+}
+
+.tt-status-badge--success {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: #15803d;
+}
+
+.tt-status-badge--warning {
+  border-color: #fde68a;
+  background: #fffbeb;
+  color: #b45309;
+}
+
+.tt-status-badge--danger {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: var(--tt-color-danger);
+}
+
+.tt-status-badge--info {
+  border-color: var(--tt-color-primary-accent);
+  background: #f4f9ff;
+  color: var(--tt-color-primary);
+}
+
+.tt-status-badge--neutral {
+  border-color: var(--tt-color-border);
+  background: var(--tt-color-bg);
+  color: var(--tt-color-text-secondary);
+}

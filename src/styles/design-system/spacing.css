@@ -6,7 +6,7 @@
 .tt-page {
   max-width: var(--tt-page-max-width);
   margin-inline: auto;
-  padding: var(--tt-page-padding-y) var(--tt-page-padding-x) var(--tt-space-12);
+  padding: var(--tt-space-8) var(--tt-page-padding-x) var(--tt-space-16);
 }
 
 .tt-stack-sm {

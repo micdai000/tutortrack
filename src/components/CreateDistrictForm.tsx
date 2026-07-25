@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
 
+import { Button, Input } from "./ui";
 import { getErrorMessage } from "../utils/getErrorMessage";
 
 type CreateDistrictFormProps = {
@@ -30,7 +31,7 @@ export function CreateDistrictForm({ onCreate }: CreateDistrictFormProps) {
     <form className="create-district-form" onSubmit={handleSubmit}>
       <label htmlFor="district-name">District name</label>
       <div className="create-district-form-row">
-        <input
+        <Input
           id="district-name"
           type="text"
           value={name}
@@ -41,12 +42,12 @@ export function CreateDistrictForm({ onCreate }: CreateDistrictFormProps) {
           disabled={submitting}
           aria-invalid={error ? true : undefined}
         />
-        <button type="submit" disabled={submitting || !name.trim()}>
+        <Button type="submit" disabled={submitting || !name.trim()}>
           {submitting ? "Adding..." : "Add district"}
-        </button>
+        </Button>
       </div>
       {error && (
-        <p className="form-error" role="alert">
+        <p className="tt-form-error" role="alert">
           {error}
         </p>
       )}
