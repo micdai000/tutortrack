@@ -37,7 +37,7 @@ export function SectionCard({
         <div
           className={cx(
             "tt-section-card__header",
-            actions && "tt-section-card__header--with-actions"
+            actions ? "tt-section-card__header--with-actions" : undefined
           )}
         >
           <div className="tt-stack-sm">
