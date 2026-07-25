@@ -16,6 +16,7 @@ import {
   PageContainer,
   StatusBanner,
 } from "../components/layout";
+import { TeacherViewEntryActions } from "../components/teacher/TeacherViewEntryActions";
 import { useDistrictDetail } from "../hooks/useDistrictDetail";
 import "../styles/district-detail.css";
 
@@ -94,12 +95,18 @@ function DistrictDetailPage() {
 
       {!loading && district && districtId && (
         <>
-          <DistrictHeader name={district.name} />
+          <DistrictHeader
+            name={district.name}
+            actions={
+              <TeacherViewEntryActions
+                openTo={`/teacher/district/${districtId}`}
+                shareType="district"
+                resourceId={districtId}
+              />
+            }
+          />
 
           <DistrictActionBar
-            teacherViewTo={`/teacher/district/${districtId}`}
-            shareType="district"
-            resourceId={districtId}
             onAddCompanionship={openAddCompanionshipForm}
             showAddCompanionship={!showForm}
           />
