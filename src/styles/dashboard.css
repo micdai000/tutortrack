@@ -306,8 +306,10 @@
     padding-bottom: var(--tt-space-12);
   }
 
+  /* 2×2 square stat cards: Districts | Companionships / Missionaries | Follow-ups */
   .dashboard-stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--tt-space-3);
   }
 
   .dashboard-district-grid {
@@ -315,11 +317,28 @@
   }
 
   .dashboard-stat-card {
+    aspect-ratio: 1;
     min-height: 0;
+    height: auto;
+    justify-content: center;
+    align-items: flex-start;
+    gap: var(--tt-space-1);
+    padding: var(--tt-space-4);
+  }
+
+  .dashboard-stat-card__icon {
+    width: 2rem;
+    height: 2rem;
+    margin-bottom: 0;
   }
 
   .dashboard-stat-card__value {
-    font-size: 1.5rem;
+    font-size: 1.625rem;
+  }
+
+  .dashboard-stat-card__label {
+    font-size: 0.8125rem;
+    line-height: 1.3;
   }
 }
 
