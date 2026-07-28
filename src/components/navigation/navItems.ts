@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { BookOpen, LayoutDashboard, Settings } from "lucide-react";
+import { BookOpen, ClipboardList, LayoutDashboard, Settings } from "lucide-react";
 
 export type SidebarNavItem = {
   id: string;
@@ -33,6 +33,13 @@ export const SIDEBAR_NAV_ITEMS: SidebarNavItem[] = [
     to: "/districts",
     icon: BookOpen,
     matchPrefixes: ["/districts", "/companionships", "/missionaries"],
+  },
+  {
+    id: "render-account",
+    label: "Render an Account",
+    to: "/render-account",
+    icon: ClipboardList,
+    matchPrefixes: ["/render-account"],
   },
   {
     id: "settings",
