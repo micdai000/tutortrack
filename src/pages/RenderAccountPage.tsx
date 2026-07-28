@@ -3,12 +3,14 @@ import { ClipboardList, Plus } from "lucide-react";
 
 import {
   ConfirmDeleteQuestionDialog,
+  GoogleFormsCard,
   RenderQuestionCard,
   RenderStatusCard,
 } from "../components/renderAccount";
 import { EmptyState, PageContainer, PageHeader } from "../components/layout";
 import { Button, Icon } from "../components/ui";
 import { useEnsureRenderAccount } from "../hooks/useEnsureRenderAccount";
+import { useGoogleConnection } from "../hooks/useGoogleConnection";
 import { useRenderQuestions } from "../hooks/useRenderQuestions";
 import { toQuestionDraft } from "../services/renderAccountService";
 import type {
@@ -17,6 +19,7 @@ import type {
 } from "../types/renderAccount";
 import { getErrorMessage } from "../utils/getErrorMessage";
 import { validateRenderAccount } from "../utils/renderAccountValidation";
+import { publishGoogleForm } from "../services/googleConnectionService";
 import "../styles/missionary-profile.css";
 import "../styles/render-account.css";
 
@@ -25,6 +28,7 @@ function RenderAccountPage() {
     account,
     loading: accountLoading,
     error: accountError,
+    refresh: refreshAccount,
   } = useEnsureRenderAccount();
 
   const {
@@ -36,6 +40,16 @@ function RenderAccountPage() {
     remove,
   } = useRenderQuestions(account?.id);
 
+  const {
+    connection: googleConnection,
+    loading: googleLoading,
+    connecting: googleConnecting,
+    error: googleError,
+    connect: connectGoogle,
+  } = useGoogleConnection();
+
+  const [publishing, setPublishing] = useState(false);
+  const [publishError, setPublishError] = useState<string | null>(null);
   const [focusQuestionId, setFocusQuestionId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [addError, setAddError] = useState<string | null>(null);
@@ -133,6 +147,40 @@ function RenderAccountPage() {
     }
   }
 
+  /** Connect Google if needed; otherwise create the permanent Google Form. */
+  async function handlePublishToGoogleForms() {
+    setPublishError(null);
+
+    if (!googleConnection) {
+      void connectGoogle();
+      return;
+    }
+
+    if (account?.google_form_id) {
+      return;
+    }
+
+    if (!validationSummary.isPublishable) {
+      setPublishError(
+        "Fix validation errors before publishing to Google Forms."
+      );
+      return;
+    }
+
+    setPublishing(true);
+
+    try {
+      await publishGoogleForm();
+      await refreshAccount({ silent: true });
+    } catch (err) {
+      setPublishError(
+        getErrorMessage(err, "Unable to publish to Google Forms.")
+      );
+    } finally {
+      setPublishing(false);
+    }
+  }
+
   return (
     <PageContainer className="render-account-page">
       <PageHeader title="Render an Account" />
@@ -164,6 +212,17 @@ function RenderAccountPage() {
       {!loading && !loadError && account && (
         <div className="render-account-body">
           <RenderStatusCard summary={validationSummary} />
+
+          <GoogleFormsCard
+            account={account}
+            connection={googleConnection}
+            loading={googleLoading}
+            connecting={googleConnecting}
+            publishing={publishing}
+            error={publishError ?? googleError}
+            canPublish={validationSummary.isPublishable}
+            onPublishClick={() => void handlePublishToGoogleForms()}
+          />
 
           {questions.length === 0 ? (
             <div className="render-account-empty-panel">

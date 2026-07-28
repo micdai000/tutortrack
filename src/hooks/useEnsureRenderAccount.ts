@@ -13,7 +13,7 @@ type UseEnsureRenderAccountResult = {
   account: RenderAccount | null;
   loading: boolean;
   error: string | null;
-  refresh: () => Promise<void>;
+  refresh: (options?: { silent?: boolean }) => Promise<void>;
 };
 
 /**
@@ -26,8 +26,10 @@ export function useEnsureRenderAccount(): UseEnsureRenderAccountResult {
   const [error, setError] = useState<string | null>(null);
   const ensureStarted = useRef(false);
 
-  async function refresh() {
-    setLoading(true);
+  async function refresh(options?: { silent?: boolean }) {
+    if (!options?.silent) {
+      setLoading(true);
+    }
     setError(null);
     ensureStarted.current = false;
 
@@ -67,7 +69,9 @@ export function useEnsureRenderAccount(): UseEnsureRenderAccountResult {
       setAccount(null);
       setError(getErrorMessage(err, "Unable to load Render an Account."));
     } finally {
-      setLoading(false);
+      if (!options?.silent) {
+        setLoading(false);
+      }
     }
   }
 

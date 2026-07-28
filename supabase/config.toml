@@ -1,0 +1,13 @@
+# Supabase local/CLI config for TutorTrack Edge Functions.
+# Deploy with: supabase functions deploy google-oauth-start
+#              supabase functions deploy google-oauth-callback
+
+[functions.google-oauth-start]
+verify_jwt = true
+
+[functions.google-oauth-callback]
+# Google redirects here without a Supabase JWT.
+verify_jwt = false
+
+[functions.publish-google-form]
+verify_jwt = true

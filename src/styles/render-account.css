@@ -138,6 +138,119 @@
   letter-spacing: 0.02em;
 }
 
+/* ---------- Google Forms connection ---------- */
+
+.google-forms-card.google-forms-card--connected {
+  border-color: color-mix(
+    in srgb,
+    var(--tt-color-success) 28%,
+    var(--tt-color-border)
+  );
+}
+
+.google-forms-card.google-forms-card--published {
+  border-color: color-mix(
+    in srgb,
+    var(--tt-color-success) 35%,
+    var(--tt-color-border)
+  );
+}
+
+.google-forms-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-5);
+}
+
+.google-forms-card__metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--tt-space-5);
+  margin: 0;
+}
+
+.google-forms-card__metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-2);
+  min-width: 0;
+}
+
+.google-forms-card__metric dt {
+  margin: 0;
+  font-size: var(--tt-text-caption-size);
+  font-weight: var(--tt-font-weight-medium);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.google-forms-card__metric dd {
+  margin: 0;
+  font-size: var(--tt-text-body-size);
+  font-weight: var(--tt-font-weight-medium);
+  color: var(--tt-color-text);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.google-forms-card__value--ok {
+  color: var(--tt-color-success);
+}
+
+.google-forms-card__description {
+  margin: 0;
+  max-width: 36rem;
+  color: var(--tt-color-text-secondary);
+  font-size: var(--tt-text-helper-size);
+  line-height: 1.55;
+}
+
+.google-forms-card__actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: var(--tt-space-3);
+  flex-wrap: wrap;
+}
+
+.google-forms-card__actions--links {
+  padding-top: var(--tt-space-1);
+}
+
+.google-forms-card__link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-md);
+  background: var(--tt-color-bg);
+  color: var(--tt-color-primary);
+  font-size: var(--tt-text-helper-size);
+  font-weight: var(--tt-font-weight-medium);
+  text-decoration: none;
+  transition: border-color var(--tt-duration-fast) var(--tt-ease-standard),
+    background-color var(--tt-duration-fast) var(--tt-ease-standard);
+}
+
+.google-forms-card__link:hover {
+  border-color: var(--tt-color-primary);
+  background: color-mix(in srgb, var(--tt-color-primary-accent) 55%, #ffffff);
+}
+
+.google-forms-card__status,
+.google-forms-card__error {
+  margin: 0;
+  font-size: var(--tt-text-body-size);
+}
+
+.google-forms-card__status {
+  color: var(--tt-color-text-secondary);
+}
+
+.google-forms-card__error {
+  color: var(--tt-color-error);
+}
+
 /* ---------- Empty state ---------- */
 
 .render-account-empty-panel {
@@ -276,7 +389,8 @@
 }
 
 @media (max-width: 800px) {
-  .render-status-card__metrics {
+  .render-status-card__metrics,
+  .google-forms-card__metrics {
     grid-template-columns: 1fr;
     gap: var(--tt-space-4);
   }

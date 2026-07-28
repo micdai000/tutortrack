@@ -22,6 +22,12 @@ export type RenderAccount = {
   title: string;
   created_at: string;
   updated_at: string;
+  google_form_id: string | null;
+  google_form_url: string | null;
+  google_sheet_id: string | null;
+  google_sheet_url: string | null;
+  published_at: string | null;
+  last_publish_at: string | null;
 };
 
 /** A question belonging to a Render an Account. */
@@ -35,6 +41,8 @@ export type RenderQuestion = {
   response_type: ResponseType;
   insight_category: InsightCategory;
   required: boolean;
+  /** Choice labels for MULTIPLE_CHOICE / CHECKBOXES. */
+  options: string[];
   created_at: string;
   updated_at: string;
 };
@@ -46,6 +54,7 @@ export type RenderQuestionInput = {
   response_type: ResponseType;
   insight_category?: InsightCategory;
   required?: boolean;
+  options?: string[];
 };
 
 /** Fields accepted when updating a question. */
@@ -55,6 +64,7 @@ export type RenderQuestionUpdate = {
   response_type?: ResponseType;
   insight_category?: InsightCategory;
   required?: boolean;
+  options?: string[];
 };
 
 /** Human-readable labels for response type dropdowns. */

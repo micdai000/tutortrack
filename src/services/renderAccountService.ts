@@ -13,10 +13,11 @@ function throwQueryError(error: unknown): never {
   throw new Error(getErrorMessage(error, "Unexpected database error."));
 }
 
-const ACCOUNT_COLUMNS = "id, user_id, title, created_at, updated_at";
+const ACCOUNT_COLUMNS =
+  "id, user_id, title, created_at, updated_at, google_form_id, google_form_url, google_sheet_id, google_sheet_url, published_at, last_publish_at";
 
 const QUESTION_COLUMNS =
-  "id, render_account_id, display_order, question_text, helper_text, response_type, insight_category, required, created_at, updated_at";
+  "id, render_account_id, display_order, question_text, helper_text, response_type, insight_category, required, options, created_at, updated_at";
 
 /** Fetch the signed-in tutor's Render an Account (null if none exists). */
 export async function getRenderAccount(): Promise<RenderAccount | null> {
@@ -165,6 +166,7 @@ export async function createQuestion(
       response_type: input.response_type,
       insight_category: input.insight_category ?? "NONE",
       required: input.required ?? false,
+      options: input.options ?? [],
       updated_at: now,
     })
     .select(QUESTION_COLUMNS)
@@ -211,6 +213,10 @@ export async function updateQuestion(
 
   if (updates.required !== undefined) {
     payload.required = updates.required;
+  }
+
+  if (updates.options !== undefined) {
+    payload.options = updates.options;
   }
 
   const { data, error } = await supabase
@@ -288,7 +294,6 @@ export function toQuestionDraft(question: RenderQuestion): RenderQuestionDraft {
     response_type: question.response_type,
     insight_category: question.insight_category,
     required: question.required,
-    // Options persistence lands in a later stage; empty until then.
-    options: [],
+    options: question.options ?? [],
   };
 }
