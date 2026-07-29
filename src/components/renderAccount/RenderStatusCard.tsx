@@ -64,15 +64,6 @@ export function RenderStatusCard({ summary }: RenderStatusCardProps) {
         </div>
       </dl>
 
-      <div className="render-status-card__future">
-        <p className="render-status-card__future-label">Future Integrations</p>
-        <div className="render-status-card__future-row">
-          <span className="render-status-card__future-name">
-            Google Forms Sync
-          </span>
-          <span className="render-status-card__future-badge">Coming Soon</span>
-        </div>
-      </div>
     </SectionCard>
   );
 }

@@ -30,6 +30,15 @@ Deno.serve(async (req) => {
     const serviceRoleKey = requireEnv("SUPABASE_SERVICE_ROLE_KEY");
     const googleClientId = requireEnv("GOOGLE_CLIENT_ID");
 
+    // Temporary debug: compare with Google Cloud Console Client ID.
+    console.log(
+      "GOOGLE_CLIENT_ID prefix/suffix:",
+      googleClientId.slice(0, 20),
+      "...",
+      googleClientId.slice(-20),
+      `(len=${googleClientId.length})`
+    );
+
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return jsonResponse({ error: "Not authenticated." }, 401, headers);
@@ -73,6 +82,9 @@ Deno.serve(async (req) => {
     }
 
     const redirectUri = getGoogleRedirectUri();
+    // Temporary debug: must match Google Cloud Authorized redirect URI exactly.
+    console.log("GOOGLE_REDIRECT_URI at runtime:", redirectUri);
+
     const authUrl = new URL(GOOGLE_AUTH_URL);
     authUrl.searchParams.set("client_id", googleClientId);
     authUrl.searchParams.set("redirect_uri", redirectUri);

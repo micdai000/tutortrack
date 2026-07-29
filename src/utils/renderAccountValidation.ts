@@ -17,14 +17,13 @@ export type RenderQuestionFieldErrors = {
 
 /**
  * Minimal question shape for validation.
- * Used by the editor and future Google Forms sync.
+ * Used by the editor and Google Forms sync.
  */
 export type ValidatableRenderQuestion = {
   id?: string;
   question_text: string;
   response_type: ResponseType | "" | null | undefined;
   insight_category?: InsightCategory | "" | null;
-  /** Choice options; required when response_type is MULTIPLE_CHOICE or CHECKBOXES. */
   options?: string[] | null;
 };
 
@@ -38,18 +37,11 @@ export type RenderAccountValidationSummary = {
   questionErrors: Record<string, RenderQuestionFieldErrors>;
 };
 
-const RESPONSE_TYPES_REQUIRING_OPTIONS: ReadonlySet<ResponseType> = new Set([
-  "MULTIPLE_CHOICE",
-  "CHECKBOXES",
-]);
-
 const VALID_RESPONSE_TYPES: ReadonlySet<ResponseType> = new Set([
   "YES_NO",
   "RATING_1_TO_10",
   "SHORT_TEXT",
   "PARAGRAPH",
-  "MULTIPLE_CHOICE",
-  "CHECKBOXES",
 ]);
 
 const VALID_INSIGHT_CATEGORIES: ReadonlySet<InsightCategory> = new Set([
@@ -59,14 +51,6 @@ const VALID_INSIGHT_CATEGORIES: ReadonlySet<InsightCategory> = new Set([
   "CONFIDENCE",
   "PLANNING",
 ]);
-
-function hasAtLeastOneOption(options: string[] | null | undefined): boolean {
-  if (!options || options.length === 0) {
-    return false;
-  }
-
-  return options.some((option) => option.trim().length > 0);
-}
 
 /** Validate a single question. Returns only fields that failed. */
 export function validateRenderQuestion(
@@ -83,11 +67,6 @@ export function validateRenderQuestion(
     !VALID_RESPONSE_TYPES.has(question.response_type)
   ) {
     errors.response_type = "Response type is required.";
-  } else if (
-    RESPONSE_TYPES_REQUIRING_OPTIONS.has(question.response_type) &&
-    !hasAtLeastOneOption(question.options)
-  ) {
-    errors.options = "Add at least one option for this response type.";
   }
 
   const insightCategory = question.insight_category || "NONE";
@@ -149,10 +128,7 @@ export function validateRenderAccount(
   };
 }
 
-/**
- * Future Google Forms sync should call this (or use summary.isPublishable).
- * Returns true only when the Render an Account is ready to publish.
- */
+/** Returns true only when the Render an Account is ready to publish/sync. */
 export function isRenderAccountPublishable(
   questions: ValidatableRenderQuestion[]
 ): boolean {

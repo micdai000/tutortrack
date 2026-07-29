@@ -10,179 +10,29 @@ import {
   deleteDriveFile,
   getValidGoogleAccessToken,
 } from "../_shared/googleTokens.ts";
-
-type ResponseType =
-  | "YES_NO"
-  | "RATING_1_TO_10"
-  | "SHORT_TEXT"
-  | "PARAGRAPH"
-  | "MULTIPLE_CHOICE"
-  | "CHECKBOXES";
-
-type RenderQuestionRow = {
-  id: string;
-  question_text: string;
-  helper_text: string | null;
-  response_type: ResponseType;
-  required: boolean;
-  display_order: number;
-  options: string[] | null;
-};
-
-type GoogleFormCreateResponse = {
-  formId?: string;
-  responderUri?: string;
-  info?: { title?: string };
-};
+import {
+  type BatchUpdateResponse,
+  type GoogleForm,
+  type RenderQuestionRow,
+  buildPageBreakRequest,
+  buildQuestionCreateRequest,
+  buildTextSectionRequest,
+  googleJson,
+} from "../_shared/googleForms.ts";
+import {
+  buildWhoAreYouCreateRequest,
+  loadWhoAreYouOptions,
+  replaceWhoAreYouOptionMappings,
+  whoAreYouChoiceValues,
+} from "../_shared/whoAreYou.ts";
 
 type DriveFileCreateResponse = {
   id?: string;
 };
 
-function choiceOptions(values: string[]) {
-  return values
-    .map((value) => value.trim())
-    .filter(Boolean)
-    .map((value) => ({ value }));
-}
-
-function buildQuestionRequest(
-  question: RenderQuestionRow,
-  index: number
-): Record<string, unknown> {
-  const title = question.question_text.trim() || "Untitled question";
-  const description = question.helper_text?.trim() || undefined;
-  const required = Boolean(question.required);
-
-  let questionBody: Record<string, unknown>;
-
-  switch (question.response_type) {
-    case "SHORT_TEXT":
-      questionBody = { required, textQuestion: { paragraph: false } };
-      break;
-    case "PARAGRAPH":
-      questionBody = { required, textQuestion: { paragraph: true } };
-      break;
-    case "YES_NO":
-      questionBody = {
-        required,
-        choiceQuestion: {
-          type: "RADIO",
-          options: choiceOptions(["Yes", "No"]),
-        },
-      };
-      break;
-    case "RATING_1_TO_10":
-      questionBody = {
-        required,
-        scaleQuestion: {
-          low: 1,
-          high: 10,
-        },
-      };
-      break;
-    case "MULTIPLE_CHOICE": {
-      const options = choiceOptions(question.options ?? []);
-      if (options.length === 0) {
-        throw new Error("QUESTION_OPTIONS_REQUIRED");
-      }
-      questionBody = {
-        required,
-        choiceQuestion: { type: "RADIO", options },
-      };
-      break;
-    }
-    case "CHECKBOXES": {
-      const options = choiceOptions(question.options ?? []);
-      if (options.length === 0) {
-        throw new Error("QUESTION_OPTIONS_REQUIRED");
-      }
-      questionBody = {
-        required,
-        choiceQuestion: { type: "CHECKBOX", options },
-      };
-      break;
-    }
-    default:
-      throw new Error("UNSUPPORTED_RESPONSE_TYPE");
-  }
-
-  const item: Record<string, unknown> = {
-    title,
-    questionItem: { question: questionBody },
-  };
-
-  if (description) {
-    item.description = description;
-  }
-
-  return {
-    createItem: {
-      item,
-      location: { index },
-    },
-  };
-}
-
-function buildFixedDropdownRequest(
-  title: string,
-  index: number,
-  placeholder: string
-): Record<string, unknown> {
-  return {
-    createItem: {
-      item: {
-        title,
-        description:
-          "Managed by TutorTrack. Companionship and missionary choices will be maintained by TutorTrack.",
-        questionItem: {
-          question: {
-            required: true,
-            choiceQuestion: {
-              type: "DROP_DOWN",
-              options: choiceOptions([placeholder]),
-            },
-          },
-        },
-      },
-      location: { index },
-    },
-  };
-}
-
-async function googleJson<T>(
-  accessToken: string,
-  url: string,
-  init: RequestInit
-): Promise<T> {
-  const response = await fetch(url, {
-    ...init,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-      ...(init.headers ?? {}),
-    },
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    const error = new Error(
-      `GOOGLE_API_${response.status}:${body.slice(0, 500)}`
-    );
-    (error as Error & { status: number }).status = response.status;
-    throw error;
-  }
-
-  if (response.status === 204) {
-    return {} as T;
-  }
-
-  return (await response.json()) as T;
-}
-
 /**
  * Creates the tutor's permanent Google Form + Responses spreadsheet,
- * populates fixed + custom questions, and stores Google IDs on render_accounts.
+ * populates fixed + custom questions, stores Google IDs, and marks sync up to date.
  */
 Deno.serve(async (req) => {
   const headers = corsHeaders(req);
@@ -226,7 +76,7 @@ Deno.serve(async (req) => {
     const { data: account, error: accountError } = await admin
       .from("render_accounts")
       .select(
-        "id, user_id, title, google_form_id, google_form_url, google_sheet_id, google_sheet_url, published_at, last_publish_at"
+        "id, user_id, title, google_form_id, google_form_url, google_sheet_id, google_sheet_url, published_at, last_publish_at, last_synced_at, sync_status, needs_sync, who_are_you_google_question_id"
       )
       .eq("user_id", user.id)
       .maybeSingle();
@@ -248,7 +98,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Duplicate publish — return the permanent form already stored.
     if (account.google_form_id && account.google_form_url) {
       return jsonResponse(
         {
@@ -259,6 +108,9 @@ Deno.serve(async (req) => {
           google_sheet_url: account.google_sheet_url,
           published_at: account.published_at,
           last_publish_at: account.last_publish_at,
+          last_synced_at: account.last_synced_at,
+          sync_status: account.sync_status,
+          needs_sync: account.needs_sync,
         },
         200,
         headers
@@ -268,7 +120,7 @@ Deno.serve(async (req) => {
     const { data: questions, error: questionsError } = await admin
       .from("render_questions")
       .select(
-        "id, question_text, helper_text, response_type, required, display_order, options"
+        "id, question_text, helper_text, response_type, required, display_order, options, google_question_id"
       )
       .eq("render_account_id", account.id)
       .order("display_order", { ascending: true });
@@ -284,43 +136,18 @@ Deno.serve(async (req) => {
 
     const rows = (questions ?? []) as RenderQuestionRow[];
 
-    if (rows.length === 0) {
-      return jsonResponse(
-        {
-          error:
-            "Add at least one valid question before publishing to Google Forms.",
-        },
-        400,
-        headers
-      );
-    }
-
     for (const question of rows) {
       if (!question.question_text.trim()) {
         return jsonResponse(
           {
             error:
-              "Fix validation errors before publishing to Google Forms.",
+              "Fix validation errors before creating your Google Form.",
           },
           400,
           headers
         );
       }
 
-      if (
-        (question.response_type === "MULTIPLE_CHOICE" ||
-          question.response_type === "CHECKBOXES") &&
-        !(question.options ?? []).some((option) => option.trim())
-      ) {
-        return jsonResponse(
-          {
-            error:
-              "Multiple choice and checkbox questions need at least one option before publishing.",
-          },
-          400,
-          headers
-        );
-      }
     }
 
     const tokenResult = await getValidGoogleAccessToken(admin, user.id);
@@ -328,8 +155,7 @@ Deno.serve(async (req) => {
 
     const formTitle = account.title?.trim() || "Render an Account";
 
-    // 1) Create Google Form
-    const createdForm = await googleJson<GoogleFormCreateResponse>(
+    const createdForm = await googleJson<{ formId?: string }>(
       accessToken,
       "https://forms.googleapis.com/v1/forms",
       {
@@ -349,34 +175,29 @@ Deno.serve(async (req) => {
 
     createdFormId = createdForm.formId;
 
-    // 2) Populate fixed + custom questions + confirmation message
+    const whoAreYouOptions = await loadWhoAreYouOptions(admin, user.id);
+    const whoAreYouValues = whoAreYouChoiceValues(whoAreYouOptions);
+
+    // Fixed system items occupy request indexes 0–2; tutor questions start at 3.
     const requests: Record<string, unknown>[] = [
-      {
-        updateSettings: {
-          settings: {
-            confirmationMessage:
-              "Thank you for submitting your Render an Account.",
-          },
-          updateMask: "confirmationMessage",
-        },
-      },
-      buildFixedDropdownRequest(
-        "Companionship",
-        0,
-        "(Companionships managed by TutorTrack)"
+      buildTextSectionRequest(
+        "Section 1 — TutorTrack-managed questions",
+        "These required questions are owned by TutorTrack. Tutors cannot edit or remove them.",
+        0
       ),
-      buildFixedDropdownRequest(
-        "Missionary",
-        1,
-        "(Missionaries managed by TutorTrack)"
+      buildWhoAreYouCreateRequest(1, whoAreYouValues),
+      buildPageBreakRequest(
+        "Section 2 — Tutor questions",
+        "Questions from your Render an Account.",
+        2
       ),
     ];
 
     rows.forEach((question, offset) => {
-      requests.push(buildQuestionRequest(question, offset + 2));
+      requests.push(buildQuestionCreateRequest(question, offset + 3));
     });
 
-    await googleJson(
+    const batchResult = await googleJson<BatchUpdateResponse>(
       accessToken,
       `https://forms.googleapis.com/v1/forms/${createdFormId}:batchUpdate`,
       {
@@ -385,7 +206,14 @@ Deno.serve(async (req) => {
       }
     );
 
-    // Ensure the form accepts responses (newer Forms publish settings).
+    const whoAreYouItemId =
+      batchResult.replies?.[1]?.createItem?.itemId ?? null;
+
+    const questionItemIds: Array<string | null> = rows.map((_, offset) => {
+      const reply = batchResult.replies?.[offset + 3];
+      return reply?.createItem?.itemId ?? null;
+    });
+
     try {
       await googleJson(
         accessToken,
@@ -403,11 +231,10 @@ Deno.serve(async (req) => {
         }
       );
     } catch (publishSettingsError) {
-      // Older forms / accounts may not support publish settings — continue.
       console.warn("setPublishSettings skipped:", publishSettingsError);
     }
 
-    const formGet = await googleJson<GoogleFormCreateResponse>(
+    const formGet = await googleJson<GoogleForm>(
       accessToken,
       `https://forms.googleapis.com/v1/forms/${createdFormId}`,
       { method: "GET" }
@@ -417,7 +244,6 @@ Deno.serve(async (req) => {
       formGet.responderUri ||
       `https://docs.google.com/forms/d/${createdFormId}/viewform`;
 
-    // 3) Create permanent Responses spreadsheet (Forms API cannot natively link).
     const sheetTitle = `${formTitle} (Responses)`;
     const createdSheet = await googleJson<DriveFileCreateResponse>(
       accessToken,
@@ -437,7 +263,6 @@ Deno.serve(async (req) => {
 
     createdSheetId = createdSheet.id;
 
-    // Seed a header row so the sheet is ready for future response sync.
     try {
       await googleJson(
         accessToken,
@@ -448,8 +273,7 @@ Deno.serve(async (req) => {
             values: [
               [
                 "Timestamp",
-                "Companionship",
-                "Missionary",
+                "Who are you?",
                 ...rows.map(
                   (question) =>
                     question.question_text.trim() || "Untitled question"
@@ -467,7 +291,8 @@ Deno.serve(async (req) => {
       `https://docs.google.com/spreadsheets/d/${createdSheetId}/edit`;
     const now = new Date().toISOString();
 
-    // 4) Persist IDs only after Google resources succeed.
+    await replaceWhoAreYouOptionMappings(admin, account.id, whoAreYouOptions);
+
     const { data: updatedAccount, error: updateError } = await admin
       .from("render_accounts")
       .update({
@@ -477,13 +302,17 @@ Deno.serve(async (req) => {
         google_sheet_url: googleSheetUrl,
         published_at: now,
         last_publish_at: now,
+        last_synced_at: now,
+        sync_status: "up_to_date",
+        needs_sync: false,
+        who_are_you_google_question_id: whoAreYouItemId,
         updated_at: now,
       })
       .eq("id", account.id)
       .eq("user_id", user.id)
       .is("google_form_id", null)
       .select(
-        "id, google_form_id, google_form_url, google_sheet_id, google_sheet_url, published_at, last_publish_at"
+        "id, google_form_id, google_form_url, google_sheet_id, google_sheet_url, published_at, last_publish_at, last_synced_at, sync_status, needs_sync, who_are_you_google_question_id"
       )
       .maybeSingle();
 
@@ -492,7 +321,6 @@ Deno.serve(async (req) => {
       throw new Error("STORE_FAILED");
     }
 
-    // Race: another publish finished first — roll back this attempt's Google files.
     if (!updatedAccount) {
       await deleteDriveFile(accessToken, createdFormId);
       await deleteDriveFile(accessToken, createdSheetId);
@@ -502,7 +330,7 @@ Deno.serve(async (req) => {
       const { data: existing } = await admin
         .from("render_accounts")
         .select(
-          "google_form_id, google_form_url, google_sheet_id, google_sheet_url, published_at, last_publish_at"
+          "google_form_id, google_form_url, google_sheet_id, google_sheet_url, published_at, last_publish_at, last_synced_at, sync_status, needs_sync"
         )
         .eq("id", account.id)
         .maybeSingle();
@@ -521,15 +349,29 @@ Deno.serve(async (req) => {
       throw new Error("STORE_FAILED");
     }
 
+    for (let i = 0; i < rows.length; i += 1) {
+      const itemId = questionItemIds[i];
+      if (!itemId) continue;
+
+      const { error: mapError } = await admin
+        .from("render_questions")
+        .update({
+          google_question_id: itemId,
+          updated_at: now,
+        })
+        .eq("id", rows[i].id)
+        .eq("render_account_id", account.id);
+
+      if (mapError) {
+        console.error("Failed storing google_question_id:", mapError);
+        throw new Error("STORE_FAILED");
+      }
+    }
+
     return jsonResponse(
       {
         status: "published",
-        google_form_id: updatedAccount.google_form_id,
-        google_form_url: updatedAccount.google_form_url,
-        google_sheet_id: updatedAccount.google_sheet_id,
-        google_sheet_url: updatedAccount.google_sheet_url,
-        published_at: updatedAccount.published_at,
-        last_publish_at: updatedAccount.last_publish_at,
+        ...updatedAccount,
       },
       200,
       headers
@@ -550,7 +392,7 @@ Deno.serve(async (req) => {
 
     if (message === "NOT_CONNECTED") {
       return jsonResponse(
-        { error: "Connect Google before publishing." },
+        { error: "Connect Google before creating your Google Form." },
         400,
         headers
       );
@@ -591,20 +433,9 @@ Deno.serve(async (req) => {
       );
     }
 
-    if (message === "QUESTION_OPTIONS_REQUIRED") {
-      return jsonResponse(
-        {
-          error:
-            "Multiple choice and checkbox questions need at least one option before publishing.",
-        },
-        400,
-        headers
-      );
-    }
-
     return jsonResponse(
       {
-        error: "Unable to publish to Google Forms. Please try again.",
+        error: "Unable to create your Google Form. Please try again.",
         code: "publish_failed",
       },
       500,

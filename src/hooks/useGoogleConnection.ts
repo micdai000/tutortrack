@@ -76,8 +76,15 @@ export function useGoogleConnection(): UseGoogleConnectionResult {
         setLoading(true);
         try {
           const data = await getGoogleConnection();
-          setConnection(data);
-          setError(null);
+          if (!data) {
+            setConnection(null);
+            setError(
+              "Google authorization finished, but TutorTrack could not load the connection. Confirm you are signed into TutorTrack on the same site URL as SITE_URL, then refresh. Also check that migrations 016–017 ran and google_connections has a row."
+            );
+          } else {
+            setConnection(data);
+            setError(null);
+          }
         } catch (err) {
           setError(
             getErrorMessage(err, "Connected, but unable to refresh status.")

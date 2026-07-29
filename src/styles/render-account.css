@@ -156,6 +156,24 @@
   );
 }
 
+.google-forms-card.google-forms-card--pending {
+  border-color: color-mix(
+    in srgb,
+    var(--tt-color-warning, #d97706) 40%,
+    var(--tt-color-border)
+  );
+}
+
+.google-forms-card__value--pending {
+  color: var(--tt-color-warning, #d97706);
+}
+
+.google-forms-card__success {
+  margin: 0;
+  font-size: var(--tt-text-body-size);
+  color: var(--tt-color-success);
+}
+
 .google-forms-card__body {
   display: flex;
   flex-direction: column;

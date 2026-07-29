@@ -14,10 +14,72 @@ function throwQueryError(error: unknown): never {
 }
 
 const ACCOUNT_COLUMNS =
-  "id, user_id, title, created_at, updated_at, google_form_id, google_form_url, google_sheet_id, google_sheet_url, published_at, last_publish_at";
+  "id, user_id, title, created_at, updated_at, google_form_id, google_form_url, google_sheet_id, google_sheet_url, published_at, last_publish_at, last_synced_at, sync_status, needs_sync, who_are_you_google_question_id";
 
 const QUESTION_COLUMNS =
-  "id, render_account_id, display_order, question_text, helper_text, response_type, insight_category, required, options, created_at, updated_at";
+  "id, render_account_id, display_order, question_text, helper_text, response_type, insight_category, required, options, google_question_id, created_at, updated_at";
+
+/** Mark the Google Form mirror as needing a manual sync (TutorTrack edits pending). */
+async function markNeedsSyncIfPublished(
+  renderAccountId: string
+): Promise<void> {
+  const { data: account, error } = await supabase
+    .from("render_accounts")
+    .select("google_form_id, needs_sync")
+    .eq("id", renderAccountId)
+    .maybeSingle();
+
+  if (error) throwQueryError(error);
+  if (!account?.google_form_id || account.needs_sync) return;
+
+  const { error: updateError } = await supabase
+    .from("render_accounts")
+    .update({
+      needs_sync: true,
+      sync_status: "changes_pending",
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", renderAccountId)
+    .not("google_form_id", "is", null);
+
+  if (updateError) throwQueryError(updateError);
+}
+
+/**
+ * Mark the signed-in tutor's published Google Form as Changes Pending.
+ * Used when district missionary roster/labels change (Who are you? dropdown).
+ */
+export async function markRenderAccountNeedsSyncForCurrentUser(): Promise<void> {
+  const {
+    data: { session },
+    error: sessionError,
+  } = await supabase.auth.getSession();
+
+  if (sessionError) throwQueryError(sessionError);
+  if (!session) return;
+
+  const { data: account, error } = await supabase
+    .from("render_accounts")
+    .select("id, google_form_id, needs_sync")
+    .eq("user_id", session.user.id)
+    .maybeSingle();
+
+  if (error) throwQueryError(error);
+  if (!account?.google_form_id || account.needs_sync) return;
+
+  await markNeedsSyncIfPublished(account.id);
+}
+
+/** True when an update changes fields that are published to Google Forms. */
+function updateAffectsGoogleForm(updates: RenderQuestionUpdate): boolean {
+  return (
+    updates.question_text !== undefined ||
+    updates.helper_text !== undefined ||
+    updates.response_type !== undefined ||
+    updates.required !== undefined ||
+    updates.options !== undefined
+  );
+}
 
 /** Fetch the signed-in tutor's Render an Account (null if none exists). */
 export async function getRenderAccount(): Promise<RenderAccount | null> {
@@ -173,6 +235,8 @@ export async function createQuestion(
     .single();
 
   if (error) throwQueryError(error);
+
+  await markNeedsSyncIfPublished(renderAccountId);
   return data;
 }
 
@@ -227,6 +291,11 @@ export async function updateQuestion(
     .single();
 
   if (error) throwQueryError(error);
+
+  if (updateAffectsGoogleForm(updates)) {
+    await markNeedsSyncIfPublished(data.render_account_id);
+  }
+
   return data;
 }
 
@@ -242,12 +311,24 @@ export async function deleteQuestion(questionId: string): Promise<void> {
     throw new Error("You must be signed in to delete a question.");
   }
 
+  const { data: existing, error: loadError } = await supabase
+    .from("render_questions")
+    .select("render_account_id")
+    .eq("id", questionId)
+    .maybeSingle();
+
+  if (loadError) throwQueryError(loadError);
+
   const { error } = await supabase
     .from("render_questions")
     .delete()
     .eq("id", questionId);
 
   if (error) throwQueryError(error);
+
+  if (existing?.render_account_id) {
+    await markNeedsSyncIfPublished(existing.render_account_id);
+  }
 }
 
 /**
@@ -283,6 +364,7 @@ export async function reorderQuestions(
     if (error) throwQueryError(error);
   }
 
+  await markNeedsSyncIfPublished(renderAccountId);
   return getQuestions(renderAccountId);
 }
 

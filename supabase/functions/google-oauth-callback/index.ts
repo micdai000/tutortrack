@@ -46,6 +46,23 @@ Deno.serve(async (req) => {
     const googleClientSecret = requireEnv("GOOGLE_CLIENT_SECRET");
     const redirectUri = getGoogleRedirectUri();
 
+    // Temporary debug for token exchange failures (do not log full secret).
+    console.log(
+      "Token exchange config:",
+      "client_id_prefix=",
+      googleClientId.slice(0, 20),
+      "client_id_suffix=",
+      googleClientId.slice(-20),
+      "client_id_len=",
+      googleClientId.length,
+      "secret_len=",
+      googleClientSecret.length,
+      "secret_prefix=",
+      googleClientSecret.slice(0, 6),
+      "redirect_uri=",
+      redirectUri
+    );
+
     const admin = createClient(supabaseUrl, serviceRoleKey);
 
     // Validate and consume one-time state (binds OAuth to TutorTrack user).
@@ -95,10 +112,21 @@ Deno.serve(async (req) => {
 
     if (!tokenResponse.ok) {
       const body = await tokenResponse.text();
-      console.error("Google token exchange failed:", tokenResponse.status, body);
+      console.error(
+        "Google token exchange failed:",
+        tokenResponse.status,
+        body
+      );
 
       if (body.includes("invalid_grant")) {
         return redirect("error", "expired_code");
+      }
+
+      if (
+        body.includes("invalid_client") ||
+        body.includes("unauthorized_client")
+      ) {
+        return redirect("error", "exchange_failed");
       }
 
       return redirect("error", "exchange_failed");
@@ -159,6 +187,13 @@ Deno.serve(async (req) => {
       console.error("Failed storing Google connection:", upsertError);
       return redirect("error", "store_failed");
     }
+
+    console.log(
+      "Google connection stored for user:",
+      userId,
+      "email:",
+      profile.email
+    );
 
     return redirect("connected");
   } catch (error) {

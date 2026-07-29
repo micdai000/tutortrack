@@ -11,9 +11,10 @@ export type ResponseType =
   | "YES_NO"
   | "RATING_1_TO_10"
   | "SHORT_TEXT"
-  | "PARAGRAPH"
-  | "MULTIPLE_CHOICE"
-  | "CHECKBOXES";
+  | "PARAGRAPH";
+
+/** Google Form mirror status for a published Render an Account. */
+export type RenderSyncStatus = "up_to_date" | "changes_pending";
 
 /** One Render an Account per tutor. */
 export type RenderAccount = {
@@ -28,6 +29,11 @@ export type RenderAccount = {
   google_sheet_url: string | null;
   published_at: string | null;
   last_publish_at: string | null;
+  last_synced_at: string | null;
+  sync_status: RenderSyncStatus;
+  needs_sync: boolean;
+  /** Google Forms item ID for the managed Who are you? dropdown. */
+  who_are_you_google_question_id: string | null;
 };
 
 /** A question belonging to a Render an Account. */
@@ -36,13 +42,15 @@ export type RenderQuestion = {
   render_account_id: string;
   display_order: number;
   question_text: string;
-  /** Optional instructions shown under the question (future Google Forms description). */
+  /** Optional instructions shown under the question (Google Forms description). */
   helper_text: string | null;
   response_type: ResponseType;
   insight_category: InsightCategory;
   required: boolean;
-  /** Choice labels for MULTIPLE_CHOICE / CHECKBOXES. */
+  /** Legacy choice labels (unused; kept for schema compatibility). */
   options: string[];
+  /** Google Forms item ID for sync (null until published/synced). */
+  google_question_id: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -73,8 +81,6 @@ export const RESPONSE_TYPE_LABELS: Record<ResponseType, string> = {
   RATING_1_TO_10: "Rating (1–10)",
   SHORT_TEXT: "Short text",
   PARAGRAPH: "Paragraph",
-  MULTIPLE_CHOICE: "Multiple choice",
-  CHECKBOXES: "Checkboxes",
 };
 
 /** Human-readable labels for insight category dropdowns. Never show enum keys. */
@@ -101,6 +107,5 @@ export type RenderQuestionDraft = {
   response_type: ResponseType;
   insight_category: InsightCategory;
   required: boolean;
-  /** Choice labels for MULTIPLE_CHOICE / CHECKBOXES (future options editor). */
   options: string[];
 };

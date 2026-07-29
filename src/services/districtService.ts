@@ -1,6 +1,7 @@
 import { supabase } from "../lib/supabase";
 import type { District } from "../types/district";
 import { getErrorMessage } from "../utils/getErrorMessage";
+import { markRenderAccountNeedsSyncForCurrentUser } from "./renderAccountService";
 
 /** Convert Supabase/PostgREST plain error objects into real Error instances. */
 function throwQueryError(error: unknown): never {
@@ -93,4 +94,6 @@ export async function deleteDistrict(districtId: string): Promise<void> {
     .eq("id", districtId);
 
   if (error) throwQueryError(error);
+
+  await markRenderAccountNeedsSyncForCurrentUser();
 }

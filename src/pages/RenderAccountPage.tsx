@@ -19,7 +19,10 @@ import type {
 } from "../types/renderAccount";
 import { getErrorMessage } from "../utils/getErrorMessage";
 import { validateRenderAccount } from "../utils/renderAccountValidation";
-import { publishGoogleForm } from "../services/googleConnectionService";
+import {
+  publishGoogleForm,
+  syncGoogleForm,
+} from "../services/googleConnectionService";
 import "../styles/missionary-profile.css";
 import "../styles/render-account.css";
 
@@ -35,9 +38,9 @@ function RenderAccountPage() {
     questions,
     loading: questionsLoading,
     error: questionsError,
-    create,
-    update,
-    remove,
+    create: createQuestion,
+    update: updateQuestion,
+    remove: removeQuestion,
   } = useRenderQuestions(account?.id);
 
   const {
@@ -49,6 +52,8 @@ function RenderAccountPage() {
   } = useGoogleConnection();
 
   const [publishing, setPublishing] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const [syncSuccess, setSyncSuccess] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
   const [focusQuestionId, setFocusQuestionId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
@@ -101,6 +106,22 @@ function RenderAccountPage() {
     });
   }
 
+  async function refreshAccountAfterEdit() {
+    if (account?.google_form_id) {
+      setSyncSuccess(false);
+      await refreshAccount({ silent: true });
+    }
+  }
+
+  async function handleSaveQuestion(
+    questionId: string,
+    updates: Parameters<typeof updateQuestion>[1]
+  ) {
+    const updated = await updateQuestion(questionId, updates);
+    await refreshAccountAfterEdit();
+    return updated;
+  }
+
   async function handleAddQuestion() {
     if (!account || adding) return;
 
@@ -108,7 +129,7 @@ function RenderAccountPage() {
     setAddError(null);
 
     try {
-      const created = await create({
+      const created = await createQuestion({
         question_text: "",
         helper_text: "",
         response_type: "SHORT_TEXT",
@@ -116,6 +137,7 @@ function RenderAccountPage() {
         required: true,
       });
       setFocusQuestionId(created.id);
+      await refreshAccountAfterEdit();
     } catch (err) {
       setAddError(getErrorMessage(err, "Unable to add a question."));
     } finally {
@@ -130,7 +152,7 @@ function RenderAccountPage() {
     setDeleteError(null);
 
     try {
-      await remove(questionToDelete.id);
+      await removeQuestion(questionToDelete.id);
       setDraftsById((current) => {
         const next = { ...current };
         delete next[questionToDelete.id];
@@ -140,6 +162,7 @@ function RenderAccountPage() {
         setFocusQuestionId(null);
       }
       setQuestionToDelete(null);
+      await refreshAccountAfterEdit();
     } catch (err) {
       setDeleteError(getErrorMessage(err, "Unable to delete this question."));
     } finally {
@@ -150,6 +173,7 @@ function RenderAccountPage() {
   /** Connect Google if needed; otherwise create the permanent Google Form. */
   async function handlePublishToGoogleForms() {
     setPublishError(null);
+    setSyncSuccess(false);
 
     if (!googleConnection) {
       void connectGoogle();
@@ -162,7 +186,7 @@ function RenderAccountPage() {
 
     if (!validationSummary.isPublishable) {
       setPublishError(
-        "Fix validation errors before publishing to Google Forms."
+        "Fix validation errors before creating your Google Form."
       );
       return;
     }
@@ -174,10 +198,43 @@ function RenderAccountPage() {
       await refreshAccount({ silent: true });
     } catch (err) {
       setPublishError(
-        getErrorMessage(err, "Unable to publish to Google Forms.")
+        getErrorMessage(err, "Unable to create your Google Form.")
       );
     } finally {
       setPublishing(false);
+    }
+  }
+
+  /** Push pending TutorTrack edits to the existing Google Form. */
+  async function handleSyncChanges() {
+    setPublishError(null);
+    setSyncSuccess(false);
+
+    if (!googleConnection) {
+      setPublishError("Connect Google before syncing changes.");
+      return;
+    }
+
+    if (!account?.google_form_id) {
+      setPublishError("Create your Google Form before syncing changes.");
+      return;
+    }
+
+    if (!validationSummary.isPublishable) {
+      setPublishError("Fix validation errors before syncing to Google Forms.");
+      return;
+    }
+
+    setSyncing(true);
+
+    try {
+      await syncGoogleForm();
+      await refreshAccount({ silent: true });
+      setSyncSuccess(true);
+    } catch (err) {
+      setPublishError(getErrorMessage(err, "Unable to sync Google Forms."));
+    } finally {
+      setSyncing(false);
     }
   }
 
@@ -219,9 +276,13 @@ function RenderAccountPage() {
             loading={googleLoading}
             connecting={googleConnecting}
             publishing={publishing}
+            syncing={syncing}
+            syncSuccess={syncSuccess}
             error={publishError ?? googleError}
             canPublish={validationSummary.isPublishable}
+            canSync={validationSummary.isPublishable}
             onPublishClick={() => void handlePublishToGoogleForms()}
+            onSyncClick={() => void handleSyncChanges()}
           />
 
           {questions.length === 0 ? (
@@ -265,7 +326,7 @@ function RenderAccountPage() {
                     fieldErrors={
                       validationSummary.questionErrors[question.id] ?? {}
                     }
-                    onSave={update}
+                    onSave={handleSaveQuestion}
                     onDraftChange={handleDraftChange}
                     onRequestDelete={setQuestionToDelete}
                   />

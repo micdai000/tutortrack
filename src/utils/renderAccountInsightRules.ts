@@ -12,8 +12,6 @@ export const INSIGHT_CATEGORIES_BY_RESPONSE_TYPE: Record<
   RATING_1_TO_10: ["NONE", "STUDY_EFFECTIVENESS", "CONFIDENCE"],
   SHORT_TEXT: ["NONE"],
   PARAGRAPH: ["NONE"],
-  MULTIPLE_CHOICE: ["NONE"],
-  CHECKBOXES: ["NONE"],
 };
 
 /** True when the insight category is allowed for the response type. */

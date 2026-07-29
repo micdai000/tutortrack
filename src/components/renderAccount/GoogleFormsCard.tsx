@@ -11,68 +11,92 @@ type GoogleFormsCardProps = {
   loading: boolean;
   connecting: boolean;
   publishing: boolean;
+  syncing: boolean;
+  syncSuccess: boolean;
   error: string | null;
   canPublish: boolean;
+  canSync: boolean;
   onPublishClick: () => void;
+  onSyncClick: () => void;
 };
 
 function isPublished(account: RenderAccount | null): boolean {
   return Boolean(account?.google_form_id && account.google_form_url);
 }
 
-/** Google Forms connection + publish status for the Render an Account page. */
+function syncStatusLabel(account: RenderAccount): string {
+  if (account.needs_sync || account.sync_status === "changes_pending") {
+    return "Changes Pending";
+  }
+  return "Up To Date";
+}
+
+/** Google Forms connection, create, and manual sync status. */
 export function GoogleFormsCard({
   account,
   connection,
   loading,
   connecting,
   publishing,
+  syncing,
+  syncSuccess,
   error,
   canPublish,
+  canSync,
   onPublishClick,
+  onSyncClick,
 }: GoogleFormsCardProps) {
   const isConnected = connection !== null;
   const published = isPublished(account);
-  const busy = loading || connecting || publishing;
+  const busy = loading || connecting || publishing || syncing;
+  const changesPending = Boolean(
+    account &&
+      (account.needs_sync || account.sync_status === "changes_pending")
+  );
 
   return (
     <SectionCard
       className={cx(
         "google-forms-card",
         published
-          ? "google-forms-card--published"
+          ? changesPending
+            ? "google-forms-card--pending"
+            : "google-forms-card--published"
           : isConnected
             ? "google-forms-card--connected"
             : "google-forms-card--idle"
       )}
       title="Google Forms"
       actions={
-        !busy && (
-          <StatusBadge
-            tone={published ? "success" : isConnected ? "success" : "neutral"}
-          >
-            {published
-              ? "Published"
-              : isConnected
-                ? "Connected"
-                : "Not Connected"}
+        !busy &&
+        published && (
+          <StatusBadge tone={changesPending ? "warning" : "success"}>
+            {syncStatusLabel(account!)}
           </StatusBadge>
         )
       }
     >
       {busy && (
         <p className="google-forms-card__status" role="status">
-          {publishing
-            ? "Creating your Google Form..."
-            : connecting
-              ? "Redirecting to Google..."
-              : "Checking Google connection..."}
+          {syncing
+            ? "Syncing changes to Google Forms..."
+            : publishing
+              ? "Creating your Google Form..."
+              : connecting
+                ? "Redirecting to Google..."
+                : "Checking Google connection..."}
         </p>
       )}
 
       {!busy && error && (
         <p className="google-forms-card__error" role="alert">
           {error}
+        </p>
+      )}
+
+      {!busy && !error && syncSuccess && published && (
+        <p className="google-forms-card__success" role="status">
+          Google Form is up to date.
         </p>
       )}
 
@@ -86,8 +110,8 @@ export function GoogleFormsCard({
           </dl>
 
           <p className="google-forms-card__description">
-            Connect Google, then publish your Render an Account so missionaries
-            can begin submitting responses.
+            Connect Google, then create your permanent Google Form so
+            missionaries can begin submitting responses.
           </p>
 
           <div className="google-forms-card__actions">
@@ -97,7 +121,7 @@ export function GoogleFormsCard({
               onClick={onPublishClick}
               disabled={connecting}
             >
-              Publish to Google Forms
+              Connect Google
             </Button>
           </div>
         </div>
@@ -128,9 +152,10 @@ export function GoogleFormsCard({
           </dl>
 
           <p className="google-forms-card__description">
-            Publish creates your permanent Google Form and Responses spreadsheet.
+            Create your permanent Google Form and linked Responses spreadsheet.
+            TutorTrack will never create a duplicate form.
             {!canPublish
-              ? " Fix validation errors in your questions before publishing."
+              ? " Fix validation errors in your questions before creating the form."
               : ""}
           </p>
 
@@ -141,7 +166,7 @@ export function GoogleFormsCard({
               onClick={onPublishClick}
               disabled={publishing || !canPublish}
             >
-              Publish to Google Forms
+              Create Google Form
             </Button>
           </div>
         </div>
@@ -151,8 +176,8 @@ export function GoogleFormsCard({
         <div className="google-forms-card__body">
           <dl className="google-forms-card__metrics">
             <div className="google-forms-card__metric">
-              <dt>Status</dt>
-              <dd className="google-forms-card__value--ok">Google Connected</dd>
+              <dt>Google Connected</dt>
+              <dd className="google-forms-card__value--ok">Connected</dd>
             </div>
 
             <div className="google-forms-card__metric">
@@ -163,21 +188,46 @@ export function GoogleFormsCard({
             </div>
 
             <div className="google-forms-card__metric">
-              <dt>Published</dt>
-              <dd>
-                {account.published_at
-                  ? formatLastUpdated(account.published_at)
-                  : "Published"}
+              <dt>Status</dt>
+              <dd
+                className={
+                  changesPending
+                    ? "google-forms-card__value--pending"
+                    : "google-forms-card__value--ok"
+                }
+              >
+                {syncStatusLabel(account)}
               </dd>
             </div>
 
             <div className="google-forms-card__metric">
-              <dt>Google email</dt>
-              <dd>{connection.google_email}</dd>
+              <dt>Last Synced</dt>
+              <dd>
+                {account.last_synced_at
+                  ? formatLastUpdated(account.last_synced_at)
+                  : "Not synced yet"}
+              </dd>
             </div>
           </dl>
 
-          <div className="google-forms-card__actions google-forms-card__actions--links">
+          <p className="google-forms-card__description">
+            TutorTrack is the source of truth. Edit questions here, then sync
+            when you are ready to update Google Forms.
+            {!canSync && changesPending
+              ? " Fix validation errors before syncing."
+              : ""}
+          </p>
+
+          <div className="google-forms-card__actions">
+            <Button
+              type="button"
+              variant="primary"
+              onClick={onSyncClick}
+              disabled={syncing || !changesPending || !canSync}
+            >
+              Sync Changes
+            </Button>
+
             {account.google_form_url && (
               <a
                 className="google-forms-card__link"
@@ -185,7 +235,7 @@ export function GoogleFormsCard({
                 target="_blank"
                 rel="noreferrer"
               >
-                View Google Form
+                Open Google Form
               </a>
             )}
             {account.google_sheet_url && (

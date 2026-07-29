@@ -5,6 +5,7 @@ import type {
   MissionaryProfileDraft,
 } from "../types/missionary";
 import { getErrorMessage } from "../utils/getErrorMessage";
+import { markRenderAccountNeedsSyncForCurrentUser } from "./renderAccountService";
 
 function throwQueryError(error: unknown): never {
   throw new Error(getErrorMessage(error, "Unexpected database error."));
@@ -40,6 +41,14 @@ export async function updateMissionaryProfile(
     throw new Error("Name is required.");
   }
 
+  const { data: existing, error: existingError } = await supabase
+    .from("missionaries")
+    .select("display_name")
+    .eq("id", missionaryId)
+    .maybeSingle();
+
+  if (existingError) throwQueryError(existingError);
+
   const { data, error } = await supabase
     .from("missionaries")
     .update({
@@ -56,6 +65,14 @@ export async function updateMissionaryProfile(
     .single();
 
   if (error) throwQueryError(error);
+
+  if (
+    existing &&
+    existing.display_name.trim() !== displayName
+  ) {
+    await markRenderAccountNeedsSyncForCurrentUser();
+  }
+
   return data;
 }
 
@@ -94,6 +111,14 @@ export async function updateMissionaryDisplayName(
     throw new Error("You must be signed in to rename a missionary.");
   }
 
+  const { data: existing, error: existingError } = await supabase
+    .from("missionaries")
+    .select("display_name")
+    .eq("id", missionaryId)
+    .maybeSingle();
+
+  if (existingError) throwQueryError(existingError);
+
   const { data, error } = await supabase
     .from("missionaries")
     .update({
@@ -105,6 +130,11 @@ export async function updateMissionaryDisplayName(
     .single();
 
   if (error) throwQueryError(error);
+
+  if (!existing || existing.display_name.trim() !== displayName) {
+    await markRenderAccountNeedsSyncForCurrentUser();
+  }
+
   return data;
 }
 
@@ -139,6 +169,8 @@ export async function addMissionaryToCompanionship(
     .single();
 
   if (error) throwQueryError(error);
+
+  await markRenderAccountNeedsSyncForCurrentUser();
   return data;
 }
 
@@ -180,4 +212,6 @@ export async function removeMissionaryFromCompanionship(
     .eq("companionship_id", companionshipId);
 
   if (error) throwQueryError(error);
+
+  await markRenderAccountNeedsSyncForCurrentUser();
 }

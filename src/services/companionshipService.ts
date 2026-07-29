@@ -9,6 +9,7 @@ import type {
 } from "../types/teacherView";
 import { getErrorMessage } from "../utils/getErrorMessage";
 import { getDistrictById } from "./districtService";
+import { markRenderAccountNeedsSyncForCurrentUser } from "./renderAccountService";
 
 function throwQueryError(error: unknown): never {
   throw new Error(getErrorMessage(error, "Unexpected database error."));
@@ -265,6 +266,7 @@ export async function createCompanionshipWithMissionaries(
 
   if (error) throwQueryError(error);
 
+  await markRenderAccountNeedsSyncForCurrentUser();
   return data as CompanionshipWithMissionaries;
 }
 
@@ -288,4 +290,6 @@ export async function deleteCompanionship(
     .eq("id", companionshipId);
 
   if (error) throwQueryError(error);
+
+  await markRenderAccountNeedsSyncForCurrentUser();
 }

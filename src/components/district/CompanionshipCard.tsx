@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, UserRound } from "lucide-react";
 
 import type { CompanionshipWithMissionaries } from "../../types/companionship";
+import { formatCompanionshipLabel } from "../../utils/companionshipLabel";
 import { Card } from "../ui/Card";
 import { Icon } from "../ui/Icon";
 
@@ -12,15 +13,9 @@ type CompanionshipCardProps = {
 export function companionshipLabel(
   companionship: CompanionshipWithMissionaries
 ): string {
-  const names = companionship.missionaries
-    .map((missionary) => missionary.display_name.trim())
-    .filter(Boolean);
-
-  if (names.length === 0) {
-    return "Companionship";
-  }
-
-  return names.join(" · ");
+  return formatCompanionshipLabel(
+    companionship.missionaries.map((missionary) => missionary.display_name)
+  );
 }
 
 /** Interactive companionship card linking to the companionship workspace. */

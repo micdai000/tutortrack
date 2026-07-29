@@ -199,12 +199,9 @@ export function RenderQuestionCard({
   const displayErrors: RenderQuestionFieldErrors = {
     question_text: fieldErrors.question_text,
     response_type: fieldErrors.response_type,
-    options: fieldErrors.options,
   };
   const hasErrors = Boolean(
-    displayErrors.question_text ||
-      displayErrors.response_type ||
-      displayErrors.options
+    displayErrors.question_text || displayErrors.response_type
   );
 
   return (
@@ -254,7 +251,7 @@ export function RenderQuestionCard({
           <Field
             label="Response type"
             htmlFor={responseFieldId}
-            error={displayErrors.response_type ?? displayErrors.options}
+            error={displayErrors.response_type}
           >
             <Select
               id={responseFieldId}
@@ -262,11 +259,7 @@ export function RenderQuestionCard({
               onChange={(event) =>
                 handleResponseTypeChange(event.target.value as ResponseType)
               }
-              aria-invalid={
-                displayErrors.response_type || displayErrors.options
-                  ? true
-                  : undefined
-              }
+              aria-invalid={displayErrors.response_type ? true : undefined}
             >
               {RESPONSE_TYPE_OPTIONS.map((value) => (
                 <option key={value} value={value}>

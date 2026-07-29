@@ -93,6 +93,22 @@ export type PublishGoogleFormResult = {
   google_sheet_url: string | null;
   published_at: string | null;
   last_publish_at: string | null;
+  last_synced_at?: string | null;
+  sync_status?: "up_to_date" | "changes_pending";
+  needs_sync?: boolean;
+};
+
+export type SyncGoogleFormResult = {
+  status: "synced";
+  google_form_id: string;
+  google_form_url: string;
+  google_sheet_id: string | null;
+  google_sheet_url: string | null;
+  published_at: string | null;
+  last_publish_at: string | null;
+  last_synced_at: string | null;
+  sync_status: "up_to_date" | "changes_pending";
+  needs_sync: boolean;
 };
 
 /**
@@ -107,31 +123,95 @@ export async function publishGoogleForm(): Promise<PublishGoogleFormResult> {
 
   if (sessionError) throwQueryError(sessionError);
   if (!session) {
-    throw new Error("You must be signed in to publish to Google Forms.");
+    throw new Error("You must be signed in to create your Google Form.");
   }
 
   const { data, error } = await supabase.functions.invoke("publish-google-form", {
     method: "POST",
   });
 
-  if (error) {
-    throw new Error(
-      getErrorMessage(error, "Unable to publish to Google Forms.")
-    );
+  // Supabase often sets `error` for non-2xx while the JSON body is still in `data`
+  // (or on error.context). Prefer the Edge Function's tutor-facing message.
+  const bodyError = await readFunctionsInvokeError(data, error);
+  if (bodyError) {
+    throw new Error(bodyError);
   }
 
-  if (data && typeof data === "object" && "error" in data) {
+  if (error) {
     throw new Error(
-      String((data as { error?: unknown }).error ?? "Unable to publish to Google Forms.")
+      getErrorMessage(error, "Unable to create your Google Form.")
     );
   }
 
   const result = data as PublishGoogleFormResult | null;
   if (!result?.google_form_id || !result.google_form_url) {
-    throw new Error("Unable to publish to Google Forms.");
+    throw new Error("Unable to create your Google Form.");
   }
 
   return result;
+}
+
+/**
+ * Push pending TutorTrack question changes to the existing Google Form.
+ * Never creates a second form. Tokens never reach the browser.
+ */
+export async function syncGoogleForm(): Promise<SyncGoogleFormResult> {
+  const {
+    data: { session },
+    error: sessionError,
+  } = await supabase.auth.getSession();
+
+  if (sessionError) throwQueryError(sessionError);
+  if (!session) {
+    throw new Error("You must be signed in to sync Google Forms.");
+  }
+
+  const { data, error } = await supabase.functions.invoke("sync-google-form", {
+    method: "POST",
+  });
+
+  const bodyError = await readFunctionsInvokeError(data, error);
+  if (bodyError) {
+    throw new Error(bodyError);
+  }
+
+  if (error) {
+    throw new Error(getErrorMessage(error, "Unable to sync Google Forms."));
+  }
+
+  const result = data as SyncGoogleFormResult | null;
+  if (!result?.google_form_id || result.status !== "synced") {
+    throw new Error("Unable to sync Google Forms.");
+  }
+
+  return result;
+}
+
+/** Pull `{ error }` from a Functions invoke failure body when available. */
+async function readFunctionsInvokeError(
+  data: unknown,
+  error: unknown
+): Promise<string | null> {
+  if (data && typeof data === "object" && "error" in data) {
+    const message = (data as { error?: unknown }).error;
+    if (typeof message === "string" && message.trim()) {
+      return message;
+    }
+  }
+
+  const context = (error as { context?: Response } | null)?.context;
+  if (context && typeof context.json === "function") {
+    try {
+      const payload = (await context.json()) as { error?: unknown };
+      if (typeof payload?.error === "string" && payload.error.trim()) {
+        return payload.error;
+      }
+    } catch {
+      // Ignore unreadable error bodies.
+    }
+  }
+
+  return null;
 }
 
 /** Map OAuth redirect error codes to tutor-facing messages. */
