@@ -1,0 +1,142 @@
+/**
+ * Public About / home page for Google OAuth branding.
+ */
+
+.about-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--tt-color-bg);
+  color: var(--tt-color-text);
+}
+
+.about-page__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tt-space-4);
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: var(--tt-space-6);
+}
+
+.about-page__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tt-space-3);
+}
+
+.about-page__brand-name {
+  font-size: 1.125rem;
+  font-weight: var(--tt-font-weight-semibold);
+  letter-spacing: -0.02em;
+}
+
+.about-page__sign-in {
+  font-size: var(--tt-text-helper-size);
+  font-weight: var(--tt-font-weight-medium);
+  color: var(--tt-color-primary);
+  text-decoration: none;
+}
+
+.about-page__sign-in:hover {
+  color: var(--tt-color-primary-hover);
+  text-decoration: underline;
+}
+
+.about-page__main {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: var(--tt-space-4) var(--tt-space-6) var(--tt-space-12);
+}
+
+.about-page__eyebrow {
+  margin: 0 0 var(--tt-space-3);
+  font-size: var(--tt-text-helper-size);
+  font-weight: var(--tt-font-weight-semibold);
+  color: var(--tt-color-primary);
+}
+
+.about-page__main h1 {
+  margin: 0 0 var(--tt-space-4);
+  font-size: clamp(1.85rem, 3vw, 2.35rem);
+  font-weight: var(--tt-font-weight-bold);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.about-page__lead {
+  margin: 0 0 var(--tt-space-8);
+  font-size: var(--tt-text-body-size);
+  line-height: 1.65;
+  color: var(--tt-color-text-secondary);
+  max-width: 40rem;
+}
+
+.about-page__section {
+  margin-bottom: var(--tt-space-8);
+}
+
+.about-page__section h2 {
+  margin: 0 0 var(--tt-space-3);
+  font-size: var(--tt-text-section-size);
+  font-weight: var(--tt-text-section-weight);
+}
+
+.about-page__section p,
+.about-page__section li {
+  font-size: var(--tt-text-body-size);
+  line-height: 1.6;
+}
+
+.about-page__section p {
+  margin: 0;
+  color: var(--tt-color-text-secondary);
+}
+
+.about-page__section ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.about-page__section li {
+  margin-bottom: var(--tt-space-2);
+}
+
+.about-page__actions {
+  margin: var(--tt-space-8) 0 var(--tt-space-6);
+}
+
+.about-page__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tt-control-height);
+  padding: 0 var(--tt-space-5);
+  border-radius: var(--tt-radius-md);
+  background: var(--tt-color-primary);
+  color: #fff;
+  font-weight: var(--tt-font-weight-semibold);
+  text-decoration: none;
+}
+
+.about-page__cta:hover {
+  background: var(--tt-color-primary-hover);
+}
+
+.about-page__legal {
+  margin: 0;
+  padding-top: var(--tt-space-6);
+  border-top: 1px solid var(--tt-color-border);
+  font-size: var(--tt-text-helper-size);
+  color: var(--tt-color-text-secondary);
+}
+
+.about-page__legal a {
+  color: var(--tt-color-primary);
+  font-weight: var(--tt-font-weight-medium);
+  text-decoration: none;
+}
+
+.about-page__legal a:hover {
+  text-decoration: underline;
+}

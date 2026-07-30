@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 import { AppShell } from "./components/AppShell";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import AboutPage from "./pages/AboutPage";
 import LoginPage from "./pages/LoginPage";
 import AuthConfirmedPage from "./pages/AuthConfirmedPage";
 import DashboardPage from "./pages/DashboardPage";
@@ -22,6 +23,10 @@ import NotFoundPage from "./pages/NotFoundPage";
 export const router = createBrowserRouter([
   {
     path: "/",
+    element: <AboutPage />,
+  },
+  {
+    path: "/login",
     element: <LoginPage />,
   },
   {

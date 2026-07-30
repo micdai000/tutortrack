@@ -110,7 +110,7 @@ function AuthConfirmedPage() {
           <Button
             type="button"
             onClick={() => {
-              void navigate(user ? "/dashboard" : "/", { replace: true });
+              void navigate(user ? "/dashboard" : "/login", { replace: true });
             }}
           >
             {user ? "Continue to dashboard" : "Continue to sign in"}
@@ -120,7 +120,7 @@ function AuthConfirmedPage() {
             <Button
               type="button"
               onClick={() => {
-                void navigate("/", { replace: true });
+                void navigate("/login", { replace: true });
               }}
             >
               Back to sign in
