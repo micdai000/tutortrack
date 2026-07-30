@@ -15,12 +15,22 @@ import MissionaryProfilePage from "./pages/MissionaryProfilePage";
 import LanguageStudySessionsPage from "./pages/LanguageStudySessionsPage";
 import RenderAccountPage from "./pages/RenderAccountPage";
 import SettingsPage from "./pages/SettingsPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import TermsOfServicePage from "./pages/TermsOfServicePage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <LoginPage />,
+  },
+  {
+    path: "/privacy",
+    element: <PrivacyPolicyPage />,
+  },
+  {
+    path: "/terms",
+    element: <TermsOfServicePage />,
   },
   {
     path: "/auth/confirmed",

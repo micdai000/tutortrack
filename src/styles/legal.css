@@ -1,0 +1,87 @@
+/**
+ * Public legal pages (privacy / terms) for OAuth branding.
+ */
+
+.legal-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--tt-color-bg);
+  color: var(--tt-color-text);
+}
+
+.legal-page__header {
+  padding: var(--tt-space-6) var(--tt-space-6) 0;
+  max-width: 44rem;
+  margin: 0 auto;
+}
+
+.legal-page__brand {
+  display: inline-flex;
+  text-decoration: none;
+  color: inherit;
+}
+
+.legal-page__main {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: var(--tt-space-6) var(--tt-space-6) var(--tt-space-12);
+}
+
+.legal-page__main h1 {
+  margin: 0 0 var(--tt-space-2);
+  font-size: clamp(1.75rem, 2.4vw, 2rem);
+  font-weight: var(--tt-font-weight-bold);
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+}
+
+.legal-page__updated {
+  margin: 0 0 var(--tt-space-6);
+  color: var(--tt-color-text-secondary);
+  font-size: var(--tt-text-helper-size);
+}
+
+.legal-page__main h2 {
+  margin: var(--tt-space-8) 0 var(--tt-space-3);
+  font-size: var(--tt-text-section-size);
+  font-weight: var(--tt-text-section-weight);
+  line-height: var(--tt-text-section-line);
+}
+
+.legal-page__main p,
+.legal-page__main li {
+  font-size: var(--tt-text-body-size);
+  line-height: 1.6;
+  color: var(--tt-color-text);
+}
+
+.legal-page__main p {
+  margin: 0 0 var(--tt-space-4);
+}
+
+.legal-page__main ul {
+  margin: 0 0 var(--tt-space-4);
+  padding-left: 1.25rem;
+}
+
+.legal-page__main li {
+  margin-bottom: var(--tt-space-2);
+}
+
+.legal-page__main a {
+  color: var(--tt-color-primary);
+  font-weight: var(--tt-font-weight-medium);
+  text-decoration: none;
+}
+
+.legal-page__main a:hover {
+  color: var(--tt-color-primary-hover);
+  text-decoration: underline;
+}
+
+.legal-page__nav {
+  margin-top: var(--tt-space-8);
+  padding-top: var(--tt-space-6);
+  border-top: 1px solid var(--tt-color-border);
+  color: var(--tt-color-text-secondary);
+}
