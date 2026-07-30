@@ -1,13 +1,18 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { Logo } from "../components/branding";
 import "../styles/about.css";
 
 /**
- * Public home/about page for Google OAuth branding verification.
- * Must be reachable without login and clearly name TutorTrack.
+ * Public home page for Google OAuth branding verification.
+ * Must be public, name TutorTrack clearly, and explain the product purpose.
  */
 function AboutPage() {
+  useEffect(() => {
+    document.title = "TutorTrack";
+  }, []);
+
   return (
     <div className="about-page">
       <header className="about-page__header">
@@ -21,17 +26,27 @@ function AboutPage() {
       </header>
 
       <main className="about-page__main">
-        <p className="about-page__eyebrow">TutorTrack</p>
-        <h1>TutorTrack helps language tutors support missionaries every day.</h1>
+        <h1>TutorTrack</h1>
         <p className="about-page__lead">
-          TutorTrack is a web app for language tutors. It helps you organize
-          districts and companionships, build your Render an Account questions,
-          collect language study responses through Google Forms, and see which
-          missionaries may benefit from encouragement.
+          TutorTrack is a web application for language tutors who support
+          missionaries. Use TutorTrack to organize districts, collect Render an
+          Account responses through Google Forms, review Language Study
+          Sessions, and identify missionaries who may benefit from
+          encouragement.
         </p>
 
         <section className="about-page__section">
-          <h2>What TutorTrack is for</h2>
+          <h2>Purpose of TutorTrack</h2>
+          <p>
+            The purpose of TutorTrack is to help tutors run a simple daily
+            language-study workflow: prepare questions, share one Google Form
+            link, review missionary submissions, and follow up when recent
+            responses suggest extra support may help.
+          </p>
+        </section>
+
+        <section className="about-page__section">
+          <h2>What you can do in TutorTrack</h2>
           <ul>
             <li>Manage districts, companionships, and missionary profiles</li>
             <li>
@@ -39,25 +54,24 @@ function AboutPage() {
             </li>
             <li>Review Language Study Sessions by district and date</li>
             <li>
-              See Today&apos;s Follow-Ups when recent responses suggest a
-              missionary may need support
+              View Today&apos;s Follow-Ups based on recent Render an Account
+              responses
             </li>
           </ul>
         </section>
 
         <section className="about-page__section">
-          <h2>Google connection</h2>
+          <h2>Google account connection</h2>
           <p>
-            Tutors can optionally connect their own Google account so TutorTrack
-            can create and update their Google Form and import responses. Each
-            tutor keeps their own Form and data. TutorTrack does not send Google
-            Chat messages for you.
+            Tutors may optionally connect their own Google account so TutorTrack
+            can create and update their Google Form and import form responses.
+            Each tutor uses their own Google Form and their own TutorTrack data.
           </p>
         </section>
 
         <div className="about-page__actions">
           <Link to="/login" className="about-page__cta">
-            Open TutorTrack
+            Sign in to TutorTrack
           </Link>
         </div>
 
