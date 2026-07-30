@@ -406,6 +406,56 @@
   justify-content: flex-start;
 }
 
+/* ---------- Begin Today's Render an Account ---------- */
+
+.begin-todays-card__error {
+  margin: 0 0 var(--tt-space-4);
+  color: var(--tt-color-error);
+  font-size: var(--tt-text-body-size);
+}
+
+.begin-todays-card__hint {
+  margin: 0 0 var(--tt-space-4);
+  color: var(--tt-color-text-secondary);
+  font-size: var(--tt-text-helper-size);
+  line-height: var(--tt-text-helper-line);
+}
+
+.begin-todays-card__success {
+  margin: 0 0 var(--tt-space-5);
+  padding: var(--tt-space-4);
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-md);
+  background: var(--tt-color-bg);
+}
+
+.begin-todays-card__success-title {
+  margin: 0 0 var(--tt-space-2);
+  font-size: var(--tt-text-body-size);
+  font-weight: var(--tt-font-weight-semibold);
+  color: var(--tt-color-text);
+}
+
+.begin-todays-card__success-body {
+  margin: 0;
+  font-size: var(--tt-text-helper-size);
+  line-height: var(--tt-text-helper-line);
+  color: var(--tt-color-text-secondary);
+}
+
+.begin-todays-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--tt-space-3);
+  align-items: center;
+}
+
+.begin-todays-card__copy-status {
+  margin: var(--tt-space-3) 0 0;
+  font-size: var(--tt-text-helper-size);
+  color: var(--tt-color-text-secondary);
+}
+
 @media (max-width: 800px) {
   .render-status-card__metrics,
   .google-forms-card__metrics {

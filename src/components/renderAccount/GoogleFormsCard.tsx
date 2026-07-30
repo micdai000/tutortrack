@@ -265,16 +265,6 @@ export function GoogleFormsCard({
                 Open Google Form
               </a>
             )}
-            {account.google_sheet_url && (
-              <a
-                className="google-forms-card__link"
-                href={account.google_sheet_url}
-                target="_blank"
-                rel="noreferrer"
-              >
-                Open Responses Sheet
-              </a>
-            )}
           </div>
         </div>
       )}

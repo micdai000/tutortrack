@@ -19,8 +19,8 @@ export function LanguageStudySummary({
   totalCount,
 }: LanguageStudySummaryProps) {
   const title = isLocalToday(dateKey)
-    ? "Today's Language Study"
-    : `Language Study — ${formatLocalDateLabel(dateKey)}`;
+    ? "Today's Render an Account Reports"
+    : `${formatLocalDateLabel(dateKey)} Render an Account Reports`;
 
   return (
     <SectionCard className="lss-summary" title={title}>

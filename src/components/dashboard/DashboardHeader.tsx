@@ -11,7 +11,7 @@ export function DashboardHeader({ greeting, firstName }: DashboardHeaderProps) {
         {greeting}, {firstName}
       </h1>
       <p className="dashboard-header__subtitle">
-        Welcome back. Here&apos;s an overview of your tutoring workspace.
+        Which missionaries may benefit from a follow-up today?
       </p>
     </header>
   );

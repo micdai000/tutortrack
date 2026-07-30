@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { BookOpenCheck, Users } from "lucide-react";
 
 import {
@@ -18,28 +19,58 @@ import { toLocalDateKey } from "../utils/localDate";
 import "../styles/language-study-sessions.css";
 
 function LanguageStudySessionsPage() {
+  const [searchParams] = useSearchParams();
   const {
     districts,
     loading: districtsLoading,
     error: districtsError,
   } = useDistricts();
 
+  const initialDistrictId = searchParams.get("districtId");
+  const initialDate = searchParams.get("date");
+  const expandMissionaryId = searchParams.get("missionaryId");
+
   const [selectedDistrictId, setSelectedDistrictId] = useState<string | null>(
-    null
+    initialDistrictId
   );
-  const [dateKey, setDateKey] = useState(() => toLocalDateKey());
+  const [dateKey, setDateKey] = useState(() => {
+    if (initialDate && /^\d{4}-\d{2}-\d{2}$/.test(initialDate)) {
+      return initialDate;
+    }
+    return toLocalDateKey();
+  });
 
   const effectiveDistrictId =
     selectedDistrictId &&
     districts.some((district) => district.id === selectedDistrictId)
       ? selectedDistrictId
-      : (districts[0]?.id ?? "");
+      : initialDistrictId &&
+          districts.some((district) => district.id === initialDistrictId)
+        ? initialDistrictId
+        : (districts[0]?.id ?? "");
 
   const { dayView, loading: sessionsLoading, error: sessionsError } =
     useLanguageStudySessions(effectiveDistrictId || null, dateKey);
 
   const loading =
     districtsLoading || (Boolean(effectiveDistrictId) && sessionsLoading);
+
+  const orderedMissionaries = useMemo(() => {
+    if (!dayView) return [];
+    if (!expandMissionaryId) return dayView.missionaries;
+
+    const focus = dayView.missionaries.find(
+      (row) => row.missionary.id === expandMissionaryId
+    );
+    if (!focus) return dayView.missionaries;
+
+    return [
+      focus,
+      ...dayView.missionaries.filter(
+        (row) => row.missionary.id !== expandMissionaryId
+      ),
+    ];
+  }, [dayView, expandMissionaryId]);
 
   return (
     <PageContainer className="lss-page">
@@ -115,10 +146,13 @@ function LanguageStudySessionsPage() {
                   description="Expand a card to read that missionary's complete Language Study Session."
                 >
                   <div className="lss-missionary-list">
-                    {dayView.missionaries.map((row) => (
+                    {orderedMissionaries.map((row) => (
                       <LanguageStudyMissionaryCard
                         key={row.missionary.id}
                         row={row}
+                        defaultExpanded={
+                          expandMissionaryId === row.missionary.id
+                        }
                       />
                     ))}
                   </div>

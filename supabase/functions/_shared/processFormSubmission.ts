@@ -1,5 +1,7 @@
 import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
+import { evaluateAndPersistMissionaryInsights } from "./insights/evaluateMissionaryInsights.ts";
+
 export type NormalizedAnswer = {
   google_item_id?: string | null;
   google_question_id?: string | null;
@@ -242,6 +244,29 @@ export async function processNormalizedSubmission(
         match_status: matchStatus,
       })
     );
+
+    // Stage 3C: recalculate insights only for the missionary who just submitted.
+    // Failures are logged and never discard the stored Language Study Session.
+    if (matchStatus === "matched" && missionaryId) {
+      try {
+        await evaluateAndPersistMissionaryInsights(admin, missionaryId);
+      } catch (insightError) {
+        const insightMessage =
+          insightError instanceof Error
+            ? insightError.message
+            : "Missionary insights evaluation failed.";
+
+        console.error(
+          JSON.stringify({
+            event: "missionary_insights_evaluation_failed",
+            render_account_id: accountId,
+            submission_id: structured.id,
+            missionary_id: missionaryId,
+            error: insightMessage,
+          })
+        );
+      }
+    }
 
     return {
       status: "processed",

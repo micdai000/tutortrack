@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 import { getCompanionshipsByDistrict } from "../services/companionshipService";
-import type { FollowUpItem } from "../types/dashboard";
 import type {
   DashboardStats,
   DistrictSummary,
@@ -12,7 +11,6 @@ import { useDistricts } from "./useDistricts";
 type UseDashboardOverviewResult = {
   districts: DistrictSummary[];
   stats: DashboardStats;
-  followUps: FollowUpItem[];
   loading: boolean;
   error: string | null;
 };
@@ -27,9 +25,6 @@ export function useDashboardOverview(): UseDashboardOverviewResult {
   const [summaries, setSummaries] = useState<DistrictSummary[]>([]);
   const [summariesLoading, setSummariesLoading] = useState(true);
   const [summariesError, setSummariesError] = useState<string | null>(null);
-
-  // Follow-ups are not wired to persisted data yet — keep empty (same as today).
-  const followUps: FollowUpItem[] = [];
 
   useEffect(() => {
     if (districtsLoading) return;
@@ -94,13 +89,12 @@ export function useDashboardOverview(): UseDashboardOverviewResult {
       (total, district) => total + district.missionaryCount,
       0
     ),
-    followUpCount: followUps.length,
+    followUpCount: 0,
   };
 
   return {
     districts: summaries,
     stats,
-    followUps,
     loading: districtsLoading || summariesLoading,
     error: districtsError ?? summariesError,
   };

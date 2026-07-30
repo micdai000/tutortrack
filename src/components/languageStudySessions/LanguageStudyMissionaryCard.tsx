@@ -1,4 +1,4 @@
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 import { Icon } from "../ui";
@@ -8,20 +8,30 @@ import { cx } from "../ui/cx";
 
 type LanguageStudyMissionaryCardProps = {
   row: LanguageStudyMissionaryRow;
+  /** Expand on mount (dashboard deep-link). */
+  defaultExpanded?: boolean;
 };
 
 /** Collapsible missionary card for one Language Study Session day. */
 export function LanguageStudyMissionaryCard({
   row,
+  defaultExpanded = false,
 }: LanguageStudyMissionaryCardProps) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(defaultExpanded);
   const panelId = useId();
+  const cardRef = useRef<HTMLElement | null>(null);
   const { missionary, session } = row;
   const submitted = session !== null;
   const submittedAt = session?.submitted_at ?? null;
 
+  useEffect(() => {
+    if (!defaultExpanded || !cardRef.current) return;
+    cardRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [defaultExpanded]);
+
   return (
     <article
+      ref={cardRef}
       className={cx(
         "lss-card",
         submitted ? "lss-card--submitted" : "lss-card--missing",

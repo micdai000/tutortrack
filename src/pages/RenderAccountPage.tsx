@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ClipboardList, Plus } from "lucide-react";
 
 import {
+  BeginTodaysRenderCard,
   ConfirmDeleteQuestionDialog,
   GoogleFormsCard,
   RenderQuestionCard,
@@ -9,9 +10,15 @@ import {
 } from "../components/renderAccount";
 import { EmptyState, PageContainer, PageHeader } from "../components/layout";
 import { Button, Icon } from "../components/ui";
+import { useDistricts } from "../hooks/useDistricts";
 import { useEnsureRenderAccount } from "../hooks/useEnsureRenderAccount";
 import { useGoogleConnection } from "../hooks/useGoogleConnection";
 import { useRenderQuestions } from "../hooks/useRenderQuestions";
+import {
+  beginTodaysRenderAccount,
+  copyTextToClipboard,
+  getOpenSessionsForDate,
+} from "../services/languageStudyOpenSessionService";
 import { toQuestionDraft } from "../services/renderAccountService";
 import type {
   RenderQuestion,
@@ -23,6 +30,7 @@ import {
   publishGoogleForm,
   syncGoogleForm,
 } from "../services/googleConnectionService";
+import { toLocalDateKey } from "../utils/localDate";
 import "../styles/missionary-profile.css";
 import "../styles/render-account.css";
 
@@ -51,6 +59,8 @@ function RenderAccountPage() {
     connect: connectGoogle,
   } = useGoogleConnection();
 
+  const { districts, loading: districtsLoading } = useDistricts();
+
   const [publishing, setPublishing] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [syncSuccess, setSyncSuccess] = useState(false);
@@ -65,6 +75,12 @@ function RenderAccountPage() {
   const [draftsById, setDraftsById] = useState<
     Record<string, RenderQuestionDraft>
   >({});
+  const [beginningToday, setBeginningToday] = useState(false);
+  const [beginTodayStatus, setBeginTodayStatus] = useState<
+    "begun" | "already_begun" | null
+  >(null);
+  const [beginTodayError, setBeginTodayError] = useState<string | null>(null);
+  const [copyStatus, setCopyStatus] = useState<string | null>(null);
 
   const loading = accountLoading || (Boolean(account) && questionsLoading);
   const loadError = accountError ?? questionsError;
@@ -83,6 +99,50 @@ function RenderAccountPage() {
 
     return validateRenderAccount(validatable);
   }, [questions, draftsById]);
+
+  const hasGoogleForm = Boolean(account?.google_form_url);
+  const canBeginToday =
+    hasGoogleForm && districts.length > 0 && !districtsLoading;
+  const beginDisabledReason = !hasGoogleForm
+    ? "Create your Google Form below before beginning today's Render an Account."
+    : districts.length === 0 && !districtsLoading
+      ? "Add at least one district before beginning today's Render an Account."
+      : null;
+
+  useEffect(() => {
+    if (!account?.google_form_url || districtsLoading || districts.length === 0) {
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadTodayStatus() {
+      try {
+        const today = toLocalDateKey();
+        const sessions = await getOpenSessionsForDate(today);
+        if (cancelled) return;
+
+        const openDistrictIds = new Set(
+          sessions.map((session) => session.district_id)
+        );
+        const allOpen = districts.every((district) =>
+          openDistrictIds.has(district.id)
+        );
+
+        if (allOpen) {
+          setBeginTodayStatus("already_begun");
+        }
+      } catch {
+        // Non-blocking — tutor can still begin manually.
+      }
+    }
+
+    void loadTodayStatus();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [account?.google_form_url, districts, districtsLoading]);
 
   function handleDraftChange(questionId: string, draft: RenderQuestionDraft) {
     setDraftsById((current) => {
@@ -251,6 +311,38 @@ function RenderAccountPage() {
     }
   }
 
+  async function handleCopyGoogleFormLink(url: string) {
+    const copied = await copyTextToClipboard(url);
+    setCopyStatus(
+      copied
+        ? "Google Form link copied."
+        : "Unable to copy automatically. Try Copy Google Form Link again."
+    );
+  }
+
+  async function handleBeginTodaysRender() {
+    setBeginTodayError(null);
+    setCopyStatus(null);
+    setBeginningToday(true);
+
+    try {
+      const result = await beginTodaysRenderAccount();
+      setBeginTodayStatus(result.status);
+      const copied = await copyTextToClipboard(result.googleFormUrl);
+      setCopyStatus(
+        copied
+          ? "Google Form link copied."
+          : "Sessions are ready. Use Copy Google Form Link to copy manually."
+      );
+    } catch (err) {
+      setBeginTodayError(
+        getErrorMessage(err, "Unable to begin today's Render an Account.")
+      );
+    } finally {
+      setBeginningToday(false);
+    }
+  }
+
   return (
     <PageContainer className="render-account-page">
       <PageHeader title="Render an Account" />
@@ -281,6 +373,22 @@ function RenderAccountPage() {
 
       {!loading && !loadError && account && (
         <div className="render-account-body">
+          <BeginTodaysRenderCard
+            canBegin={canBeginToday}
+            beginning={beginningToday}
+            googleFormUrl={account.google_form_url}
+            resultStatus={beginTodayStatus}
+            copyStatus={copyStatus}
+            error={beginTodayError}
+            disabledReason={beginDisabledReason}
+            onBeginClick={() => void handleBeginTodaysRender()}
+            onCopyClick={() => {
+              if (account.google_form_url) {
+                void handleCopyGoogleFormLink(account.google_form_url);
+              }
+            }}
+          />
+
           <RenderStatusCard summary={validationSummary} />
 
           <GoogleFormsCard
