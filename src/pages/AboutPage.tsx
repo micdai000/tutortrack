@@ -26,13 +26,14 @@ function AboutPage() {
       </header>
 
       <main className="about-page__main">
+        <p className="about-page__eyebrow">Application name: TutorTrack</p>
         <h1>TutorTrack</h1>
         <p className="about-page__lead">
           TutorTrack is a web application for language tutors who support
-          missionaries. Use TutorTrack to organize districts, collect Render an
-          Account responses through Google Forms, review Language Study
-          Sessions, and identify missionaries who may benefit from
-          encouragement.
+          missionaries. The purpose of TutorTrack is to help tutors organize
+          districts, collect Render an Account responses through Google Forms,
+          review Language Study Sessions, and identify missionaries who may
+          benefit from encouragement.
         </p>
 
         <section className="about-page__section">

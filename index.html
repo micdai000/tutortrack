@@ -7,6 +7,11 @@
     <meta name="theme-color" content="#165AA7" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TutorTrack</title>
+    <meta
+      name="description"
+      content="TutorTrack is a web application for language tutors who support missionaries. Organize districts, collect Render an Account responses with Google Forms, review Language Study Sessions, and follow up with missionaries who may need encouragement."
+    />
+    <meta name="application-name" content="TutorTrack" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -15,7 +20,53 @@
     />
   </head>
   <body>
-    <div id="root"></div>
+    <!--
+      Static homepage copy must be present without JavaScript.
+      Google OAuth branding verification crawlers often do not execute SPA JS.
+      React replaces this content when the app loads.
+    -->
+    <div id="root">
+      <main>
+        <p>Application name: TutorTrack</p>
+        <h1>TutorTrack</h1>
+        <p>
+          TutorTrack is a web application for language tutors who support
+          missionaries. The purpose of TutorTrack is to help tutors organize
+          districts, collect Render an Account responses through Google Forms,
+          review Language Study Sessions, and identify missionaries who may
+          benefit from encouragement.
+        </p>
+        <h2>Purpose of TutorTrack</h2>
+        <p>
+          The purpose of TutorTrack is to help tutors run a simple daily
+          language-study workflow: prepare questions, share one Google Form
+          link, review missionary submissions, and follow up when recent
+          responses suggest extra support may help.
+        </p>
+        <h2>What you can do in TutorTrack</h2>
+        <ul>
+          <li>Manage districts, companionships, and missionary profiles</li>
+          <li>
+            Create and sync a tutor-owned Google Form for Render an Account
+          </li>
+          <li>Review Language Study Sessions by district and date</li>
+          <li>
+            View Today's Follow-Ups based on recent Render an Account responses
+          </li>
+        </ul>
+        <p>
+          Tutors may optionally connect their own Google account so TutorTrack
+          can create and update their Google Form and import form responses.
+        </p>
+        <p>
+          <a href="/privacy">Privacy Policy</a>
+          ·
+          <a href="/terms">Terms of Service</a>
+          ·
+          <a href="/login">Sign in to TutorTrack</a>
+        </p>
+      </main>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
