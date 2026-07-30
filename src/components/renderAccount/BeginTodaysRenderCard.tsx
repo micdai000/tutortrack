@@ -26,7 +26,8 @@ export function BeginTodaysRenderCard({
   onBeginClick,
   onCopyClick,
 }: BeginTodaysRenderCardProps) {
-  const showCopy = Boolean(googleFormUrl) && resultStatus !== null;
+  const todayHasBegun = resultStatus !== null;
+  const canCopy = Boolean(googleFormUrl) && todayHasBegun;
 
   return (
     <SectionCard
@@ -40,10 +41,10 @@ export function BeginTodaysRenderCard({
         </p>
       )}
 
-      {resultStatus === "begun" && (
+      {todayHasBegun && (
         <div className="begin-todays-card__success" role="status">
           <p className="begin-todays-card__success-title">
-            Today&apos;s Render an Account is ready.
+            You have begun today&apos;s Render an Account session.
           </p>
           <p className="begin-todays-card__success-body">
             Copy the Google Form link below and share it with each district in
@@ -52,36 +53,26 @@ export function BeginTodaysRenderCard({
         </div>
       )}
 
-      {resultStatus === "already_begun" && (
-        <div className="begin-todays-card__success" role="status">
-          <p className="begin-todays-card__success-title">
-            Today&apos;s Render an Account has already begun.
-          </p>
-          <p className="begin-todays-card__success-body">
-            Copy the Google Form link below and share it with each district in
-            Google Chat.
-          </p>
-        </div>
-      )}
-
-      {!resultStatus && disabledReason && (
+      {!todayHasBegun && disabledReason && (
         <p className="begin-todays-card__hint">{disabledReason}</p>
       )}
 
       <div className="begin-todays-card__actions">
-        <Button
-          type="button"
-          variant="primary"
-          onClick={onBeginClick}
-          disabled={beginning || !canBegin}
-        >
-          {beginning
-            ? "Opening today's sessions..."
-            : "Begin Today's Render an Account"}
-        </Button>
+        {!todayHasBegun && (
+          <Button
+            type="button"
+            variant="primary"
+            onClick={onBeginClick}
+            disabled={beginning || !canBegin}
+          >
+            {beginning
+              ? "Opening today's sessions..."
+              : "Begin Today's Render an Account"}
+          </Button>
+        )}
 
-        {showCopy && (
-          <Button type="button" variant="secondary" onClick={onCopyClick}>
+        {canCopy && (
+          <Button type="button" variant="primary" onClick={onCopyClick}>
             Copy Google Form Link
           </Button>
         )}
