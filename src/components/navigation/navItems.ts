@@ -1,5 +1,11 @@
 import type { LucideIcon } from "lucide-react";
-import { BookOpen, ClipboardList, LayoutDashboard, Settings } from "lucide-react";
+import {
+  BookOpen,
+  BookOpenCheck,
+  ClipboardList,
+  LayoutDashboard,
+  Settings,
+} from "lucide-react";
 
 export type SidebarNavItem = {
   id: string;
@@ -33,6 +39,13 @@ export const SIDEBAR_NAV_ITEMS: SidebarNavItem[] = [
     to: "/districts",
     icon: BookOpen,
     matchPrefixes: ["/districts", "/companionships", "/missionaries"],
+  },
+  {
+    id: "language-study-sessions",
+    label: "Language Study Sessions",
+    to: "/language-study-sessions",
+    icon: BookOpenCheck,
+    matchPrefixes: ["/language-study-sessions"],
   },
   {
     id: "render-account",

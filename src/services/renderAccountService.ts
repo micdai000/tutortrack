@@ -14,7 +14,7 @@ function throwQueryError(error: unknown): never {
 }
 
 const ACCOUNT_COLUMNS =
-  "id, user_id, title, created_at, updated_at, google_form_id, google_form_url, google_sheet_id, google_sheet_url, published_at, last_publish_at, last_synced_at, sync_status, needs_sync, who_are_you_google_question_id";
+  "id, user_id, title, created_at, updated_at, google_form_id, google_form_url, google_sheet_id, google_sheet_url, published_at, last_publish_at, last_synced_at, sync_status, needs_sync, who_are_you_google_question_id, response_pipeline_status, response_pipeline_error, response_pipeline_installed_at, apps_script_project_id";
 
 const QUESTION_COLUMNS =
   "id, render_account_id, display_order, question_text, helper_text, response_type, insight_category, required, options, google_question_id, created_at, updated_at";

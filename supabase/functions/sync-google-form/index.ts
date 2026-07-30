@@ -28,6 +28,8 @@ import {
   syncWhoAreYouQuestion,
   whoAreYouChoiceValues,
 } from "../_shared/whoAreYou.ts";
+import { installResponsePipeline } from "../_shared/appsScriptPipeline.ts";
+import { pullAndIngestFormResponses } from "../_shared/pullFormResponses.ts";
 
 function section2QuestionEntries(
   items: GoogleFormItem[]
@@ -444,10 +446,43 @@ Deno.serve(async (req) => {
       throw new Error("STORE_FAILED");
     }
 
+    // Ensure / repair Apps Script response pipeline (Form submit → TutorTrack).
+    const pipeline = await installResponsePipeline(admin, accessToken, {
+      renderAccountId: account.id as string,
+      formId: formId,
+      sheetId: account.google_sheet_id as string,
+    });
+
+    // Reliable catch-up: pull any Google Form responses into TutorTrack now.
+    let responseImport = {
+      pulled: 0,
+      processed: 0,
+      duplicates: 0,
+    };
+    try {
+      responseImport = await pullAndIngestFormResponses(admin, accessToken, {
+        renderAccountId: account.id as string,
+        formId,
+        sheetId: (account.google_sheet_id as string | null) ?? null,
+      });
+    } catch (pullError) {
+      console.error("pullAndIngestFormResponses failed:", pullError);
+    }
+
+    const { data: accountWithPipeline } = await admin
+      .from("render_accounts")
+      .select(
+        "id, google_form_id, google_form_url, google_sheet_id, google_sheet_url, published_at, last_publish_at, last_synced_at, sync_status, needs_sync, who_are_you_google_question_id, response_pipeline_status, response_pipeline_error, response_pipeline_installed_at, apps_script_project_id"
+      )
+      .eq("id", account.id)
+      .maybeSingle();
+
     return jsonResponse(
       {
         status: "synced",
-        ...updatedAccount,
+        ...(accountWithPipeline ?? updatedAccount),
+        response_pipeline: pipeline,
+        response_import: responseImport,
       },
       200,
       headers

@@ -34,6 +34,11 @@ export type RenderAccount = {
   needs_sync: boolean;
   /** Google Forms item ID for the managed Who are you? dropdown. */
   who_are_you_google_question_id: string | null;
+  response_pipeline_status: "not_installed" | "installed" | "error";
+  response_pipeline_error: string | null;
+  response_pipeline_installed_at: string | null;
+  /** Non-secret Apps Script project id for manual trigger setup. */
+  apps_script_project_id: string | null;
 };
 
 /** A question belonging to a Render an Account. */

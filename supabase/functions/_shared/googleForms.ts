@@ -41,6 +41,7 @@ export type GoogleForm = {
   formId?: string;
   responderUri?: string;
   revisionId?: string;
+  linkedSheetId?: string;
   info?: { title?: string };
   items?: GoogleFormItem[];
 };

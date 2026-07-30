@@ -138,6 +138,9 @@ Deno.serve(async (req) => {
       return redirect("error", "exchange_failed");
     }
 
+    // Confirm Apps Script scopes were actually granted (never log the token).
+    console.log("Google OAuth scopes granted:", tokens.scope ?? "(none returned)");
+
     // Require refresh_token — never store a partial connection.
     if (!tokens.refresh_token) {
       return redirect("error", "missing_refresh_token");

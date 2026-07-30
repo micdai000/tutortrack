@@ -109,6 +109,17 @@ export type SyncGoogleFormResult = {
   last_synced_at: string | null;
   sync_status: "up_to_date" | "changes_pending";
   needs_sync: boolean;
+  response_pipeline_status?: "not_installed" | "installed" | "error";
+  response_pipeline_error?: string | null;
+  response_pipeline?: {
+    status: "installed" | "already_installed" | "error";
+    error?: string;
+  };
+  response_import?: {
+    pulled: number;
+    processed: number;
+    duplicates: number;
+  };
 };
 
 /**

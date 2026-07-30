@@ -228,9 +228,22 @@ function RenderAccountPage() {
     setSyncing(true);
 
     try {
-      await syncGoogleForm();
+      const result = await syncGoogleForm();
       await refreshAccount({ silent: true });
       setSyncSuccess(true);
+
+      if (result.response_pipeline?.status === "error") {
+        setPublishError(
+          result.response_pipeline.error ||
+            "Google Form synced, but the real-time response pipeline needs attention. Sync still imports responses."
+        );
+        setSyncSuccess(false);
+      } else if (
+        result.response_import &&
+        result.response_import.processed > 0
+      ) {
+        setPublishError(null);
+      }
     } catch (err) {
       setPublishError(getErrorMessage(err, "Unable to sync Google Forms."));
     } finally {

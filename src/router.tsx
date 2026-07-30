@@ -12,6 +12,7 @@ import CompanionshipTeacherViewPage from "./pages/CompanionshipTeacherViewPage";
 import DistrictTeacherViewPage from "./pages/DistrictTeacherViewPage";
 import SharedTeacherViewPage from "./pages/SharedTeacherViewPage";
 import MissionaryProfilePage from "./pages/MissionaryProfilePage";
+import LanguageStudySessionsPage from "./pages/LanguageStudySessionsPage";
 import RenderAccountPage from "./pages/RenderAccountPage";
 import SettingsPage from "./pages/SettingsPage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -54,6 +55,10 @@ export const router = createBrowserRouter([
           {
             path: "/missionaries/:missionaryId",
             element: <MissionaryProfilePage />,
+          },
+          {
+            path: "/language-study-sessions",
+            element: <LanguageStudySessionsPage />,
           },
           {
             path: "/render-account",

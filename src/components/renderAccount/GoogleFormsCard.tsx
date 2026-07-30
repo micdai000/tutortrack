@@ -208,11 +208,38 @@ export function GoogleFormsCard({
                   : "Not synced yet"}
               </dd>
             </div>
+
+            <div className="google-forms-card__metric">
+              <dt>Response Pipeline</dt>
+              <dd
+                className={
+                  account.response_pipeline_status === "installed"
+                    ? "google-forms-card__value--ok"
+                    : account.response_pipeline_status === "error"
+                      ? "google-forms-card__value--pending"
+                      : undefined
+                }
+              >
+                {account.response_pipeline_status === "installed"
+                  ? "Installed"
+                  : account.response_pipeline_status === "error"
+                    ? "Needs Attention"
+                    : "Not Installed"}
+              </dd>
+            </div>
           </dl>
+
+          {account.response_pipeline_status === "error" &&
+            account.response_pipeline_error && (
+              <p className="google-forms-card__error" role="alert">
+                {account.response_pipeline_error}
+              </p>
+            )}
 
           <p className="google-forms-card__description">
             TutorTrack is the source of truth. Edit questions here, then sync
-            when you are ready to update Google Forms.
+            when you are ready to update Google Forms. Sync also imports any new
+            Google Form responses into TutorTrack.
             {!canSync && changesPending
               ? " Fix validation errors before syncing."
               : ""}
@@ -223,7 +250,7 @@ export function GoogleFormsCard({
               type="button"
               variant="primary"
               onClick={onSyncClick}
-              disabled={syncing || !changesPending || !canSync}
+              disabled={syncing || !canSync}
             >
               Sync Changes
             </Button>

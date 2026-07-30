@@ -1,0 +1,192 @@
+/**
+ * Language Study Sessions — Stage 3B daily review UI.
+ */
+
+.lss-page.tt-page-container {
+  /* PageContainer owns width/padding */
+}
+
+.lss-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--tt-space-4);
+}
+
+@media (max-width: 640px) {
+  .lss-filters {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lss-status {
+  margin: 0;
+  color: var(--tt-color-text-secondary);
+  font-size: var(--tt-text-body-size);
+}
+
+.lss-summary__metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--tt-space-4);
+  margin: 0;
+}
+
+.lss-summary__metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-1);
+}
+
+.lss-summary__label {
+  margin: 0;
+  font-size: var(--tt-text-helper-size);
+  color: var(--tt-color-text-secondary);
+}
+
+.lss-summary__value {
+  margin: 0;
+  font-size: var(--tt-text-card-title-size);
+  font-weight: var(--tt-font-weight-semibold);
+  color: var(--tt-color-text);
+}
+
+.lss-summary__value--missing {
+  color: var(--tt-color-text-secondary);
+}
+
+.lss-missionary-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-3);
+}
+
+.lss-card {
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-md);
+  background: var(--tt-color-bg);
+  overflow: hidden;
+}
+
+.lss-card--submitted {
+  border-color: #c7ddd0;
+}
+
+.lss-card--missing {
+  border-color: var(--tt-color-border);
+}
+
+.lss-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--tt-space-3);
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--tt-duration-fast) var(--tt-ease-standard);
+}
+
+.lss-card__header:hover {
+  background: #f3f4f6;
+}
+
+.lss-card__header:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--tt-color-primary);
+}
+
+.lss-card__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.lss-card__name {
+  font-weight: var(--tt-font-weight-medium);
+  color: var(--tt-color-text);
+}
+
+.lss-card__status {
+  font-size: var(--tt-text-helper-size);
+  line-height: var(--tt-text-helper-line);
+}
+
+.lss-card__status--submitted {
+  color: #166534;
+}
+
+.lss-card__status--missing {
+  color: var(--tt-color-text-secondary);
+}
+
+.lss-card__chevron {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--tt-color-text-secondary);
+  transition: transform var(--tt-duration-fast) var(--tt-ease-standard);
+}
+
+.lss-card__chevron--open {
+  transform: rotate(180deg);
+}
+
+.lss-card__body {
+  padding: 0 1rem 1rem;
+  border-top: 1px solid var(--tt-color-border);
+}
+
+.lss-card__empty {
+  margin: 0.85rem 0 0;
+  color: var(--tt-color-text-secondary);
+  font-size: var(--tt-text-body-size);
+  line-height: 1.5;
+}
+
+.lss-session {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-4);
+  padding-top: 0.85rem;
+}
+
+.lss-session__meta {
+  margin: 0;
+  font-size: var(--tt-text-helper-size);
+  color: var(--tt-color-text-secondary);
+}
+
+.lss-session__questions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-4);
+}
+
+.lss-session__question {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-2);
+}
+
+.lss-session__prompt {
+  margin: 0;
+  font-size: var(--tt-text-helper-size);
+  font-weight: var(--tt-font-weight-medium);
+  color: var(--tt-color-text-secondary);
+}
+
+.lss-session__answer {
+  margin: 0;
+  font-size: var(--tt-text-body-size);
+  line-height: 1.55;
+  color: var(--tt-color-text);
+  white-space: pre-wrap;
+}

@@ -25,6 +25,7 @@ import {
   replaceWhoAreYouOptionMappings,
   whoAreYouChoiceValues,
 } from "../_shared/whoAreYou.ts";
+import { installResponsePipeline } from "../_shared/appsScriptPipeline.ts";
 
 type DriveFileCreateResponse = {
   id?: string;
@@ -368,10 +369,19 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Stage 3A: install Apps Script On Form Submit → TutorTrack webhook.
+    // Publish succeeds even if pipeline install fails (retry on next Sync).
+    const pipeline = await installResponsePipeline(admin, accessToken, {
+      renderAccountId: account.id,
+      formId: createdFormId,
+      sheetId: createdSheetId,
+    });
+
     return jsonResponse(
       {
         status: "published",
         ...updatedAccount,
+        response_pipeline: pipeline,
       },
       200,
       headers

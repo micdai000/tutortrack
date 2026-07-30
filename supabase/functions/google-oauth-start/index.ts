@@ -91,9 +91,13 @@ Deno.serve(async (req) => {
     authUrl.searchParams.set("response_type", "code");
     authUrl.searchParams.set("scope", GOOGLE_OAUTH_SCOPES);
     authUrl.searchParams.set("access_type", "offline");
+    // Force the full consent screen so newly added Apps Script scopes are granted.
     authUrl.searchParams.set("prompt", "consent");
-    authUrl.searchParams.set("include_granted_scopes", "true");
+    // Do not rely on previously granted scopes alone — request the full current set.
+    authUrl.searchParams.set("include_granted_scopes", "false");
     authUrl.searchParams.set("state", state);
+
+    console.log("Google OAuth scopes requested:", GOOGLE_OAUTH_SCOPES);
 
     return jsonResponse({ authorizationUrl: authUrl.toString() }, 200, headers);
   } catch (error) {

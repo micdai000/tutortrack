@@ -5,13 +5,22 @@ export const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 export const GOOGLE_USERINFO_URL =
   "https://www.googleapis.com/oauth2/v3/userinfo";
 
-/** Minimum scopes for Google Forms publishing + response sheets + identity. */
+/**
+ * Scopes for Google Forms publish/sync, response sheets, and Apps Script
+ * response-pipeline install (Stage 3A).
+ */
 export const GOOGLE_OAUTH_SCOPES = [
   "openid",
   "email",
   "https://www.googleapis.com/auth/forms.body",
+  "https://www.googleapis.com/auth/forms",
+  "https://www.googleapis.com/auth/forms.responses.readonly",
   "https://www.googleapis.com/auth/drive.file",
   "https://www.googleapis.com/auth/spreadsheets",
+  "https://www.googleapis.com/auth/script.projects",
+  "https://www.googleapis.com/auth/script.deployments",
+  "https://www.googleapis.com/auth/script.scriptapp",
+  "https://www.googleapis.com/auth/script.external_request",
 ].join(" ");
 
 export type GoogleTokenResponse = {
