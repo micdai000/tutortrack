@@ -47,6 +47,37 @@ function AboutPage() {
         </section>
 
         <section className="about-page__section">
+          <h2>How TutorTrack uses Google user data</h2>
+          <p>
+            When a tutor chooses to connect their Google account, TutorTrack
+            requests access so it can:
+          </p>
+          <ul>
+            <li>
+              Create and update a tutor-owned Google Form used for Render an
+              Account
+            </li>
+            <li>
+              Create and update a linked Google Sheet that stores form responses
+            </li>
+            <li>
+              Install a small Apps Script trigger so new form submissions can be
+              imported into TutorTrack
+            </li>
+            <li>
+              Read form and spreadsheet data needed to show Language Study
+              Sessions and follow-up insights inside TutorTrack
+            </li>
+          </ul>
+          <p>
+            TutorTrack uses this Google user data only to provide those tutoring
+            features for the signed-in tutor. Each tutor connects their own
+            Google account and works with their own Forms, Sheets, and
+            TutorTrack data.
+          </p>
+        </section>
+
+        <section className="about-page__section">
           <h2>What you can do in TutorTrack</h2>
           <ul>
             <li>Manage districts, companionships, and missionary profiles</li>
@@ -59,15 +90,6 @@ function AboutPage() {
               responses
             </li>
           </ul>
-        </section>
-
-        <section className="about-page__section">
-          <h2>Google account connection</h2>
-          <p>
-            Tutors may optionally connect their own Google account so TutorTrack
-            can create and update their Google Form and import form responses.
-            Each tutor uses their own Google Form and their own TutorTrack data.
-          </p>
         </section>
 
         <div className="about-page__actions">
