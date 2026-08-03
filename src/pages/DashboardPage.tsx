@@ -61,6 +61,9 @@ function DashboardPage() {
     followUps: missionariesInNeed,
     loading: missionariesInNeedLoading,
     error: missionariesInNeedError,
+    completionMessage: checkInCompletionMessage,
+    completingInsightId,
+    markCheckInComplete,
   } = useDashboardFollowUps(effectiveDistrictId || null);
 
   const {
@@ -125,7 +128,10 @@ function DashboardPage() {
           followUps={missionariesInNeed}
           loading={missionariesInNeedLoading || loading}
           error={missionariesInNeedError}
+          completionMessage={checkInCompletionMessage}
+          completingInsightId={completingInsightId}
           onDistrictChange={handleDistrictChange}
+          onMarkCheckInComplete={markCheckInComplete}
         />
 
         <TodaysFollowUps

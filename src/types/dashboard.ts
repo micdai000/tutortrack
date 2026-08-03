@@ -31,6 +31,8 @@ export type DashboardFollowUp = {
   districtId: string;
   insightCategory: FollowUpInsightCategory;
   reason: string;
+  /** Insight evaluation timestamp used to fingerprint check-in completions. */
+  lastEvaluatedAt: string;
   /**
    * Local YYYY-MM-DD for Language Study Sessions deep-link.
    * For missed submissions, this is the latest missed opened day.

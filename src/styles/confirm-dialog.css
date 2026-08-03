@@ -42,7 +42,8 @@
 }
 
 .confirm-dialog-cancel,
-.confirm-dialog-danger {
+.confirm-dialog-danger,
+.confirm-dialog-primary {
   padding: 0.55rem 0.9rem;
   border-radius: 6px;
   font-size: 0.9rem;
@@ -60,8 +61,20 @@
   color: #ffffff;
 }
 
+.confirm-dialog-primary {
+  border: 1px solid var(--tt-color-primary);
+  background: var(--tt-color-primary);
+  color: #ffffff;
+}
+
+.confirm-dialog-primary:hover:not(:disabled) {
+  border-color: var(--tt-color-primary-hover);
+  background: var(--tt-color-primary-hover);
+}
+
 .confirm-dialog-cancel:disabled,
-.confirm-dialog-danger:disabled {
+.confirm-dialog-danger:disabled,
+.confirm-dialog-primary:disabled {
   opacity: 0.65;
   cursor: not-allowed;
 }

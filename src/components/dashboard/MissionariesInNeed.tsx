@@ -10,7 +10,10 @@ type MissionariesInNeedProps = {
   followUps: DashboardFollowUp[];
   loading: boolean;
   error: string | null;
+  completionMessage: string | null;
+  completingInsightId: string | null;
   onDistrictChange: (districtId: string) => void;
+  onMarkCheckInComplete: (followUp: DashboardFollowUp) => Promise<void>;
 };
 
 /** Permanent home for missionaries automatically flagged by Render an Account. */
@@ -20,7 +23,10 @@ export function MissionariesInNeed({
   followUps,
   loading,
   error,
+  completionMessage,
+  completingInsightId,
   onDistrictChange,
+  onMarkCheckInComplete,
 }: MissionariesInNeedProps) {
   return (
     <FlaggedMissionariesCard
@@ -36,6 +42,9 @@ export function MissionariesInNeed({
       districtSelectId="dashboard-missionaries-in-need-district"
       loadingLabel="Loading missionaries in need..."
       emptyTitle="No missionaries need attention right now."
+      completionMessage={completionMessage}
+      completingInsightId={completingInsightId}
+      onMarkCheckInComplete={onMarkCheckInComplete}
     />
   );
 }

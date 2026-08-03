@@ -11,6 +11,12 @@ function throwQueryError(error: unknown): never {
   throw new Error(getErrorMessage(error, "Unexpected database error."));
 }
 
+type CheckInRow = {
+  missionary_id: string;
+  insight_category: string;
+  acknowledged_last_evaluated_at: string;
+};
+
 const MEASURABLE_CATEGORIES = new Set<string>([
   "TASK_COMPLETION",
   "STUDY_EFFECTIVENESS",
@@ -78,6 +84,35 @@ export async function getRedFollowUpsForDistrict(
     return [];
   }
 
+  const { data: checkInRows, error: checkInError } = await supabase
+    .from("missionary_insight_check_ins")
+    .select("missionary_id, insight_category, acknowledged_last_evaluated_at")
+    .in("missionary_id", missionaryIds);
+
+  if (checkInError) throwQueryError(checkInError);
+
+  const checkInByKey = new Map(
+    ((checkInRows ?? []) as CheckInRow[]).map((row) => [
+      `${row.missionary_id}:${row.insight_category}`,
+      row.acknowledged_last_evaluated_at,
+    ])
+  );
+
+  const uncheckedInsights = redInsights.filter((row) => {
+    const acknowledgedAt = checkInByKey.get(
+      `${row.missionary_id}:${row.insight_category}`
+    );
+    if (!acknowledgedAt) return true;
+    return (
+      new Date(acknowledgedAt).getTime() !==
+      new Date(row.last_evaluated_at).getTime()
+    );
+  });
+
+  if (uncheckedInsights.length === 0) {
+    return [];
+  }
+
   const { data: submissionRows, error: submissionError } = await supabase
     .from("render_form_submissions")
     .select("missionary_id, submitted_at")
@@ -97,7 +132,7 @@ export async function getRedFollowUpsForDistrict(
 
   const openSessionIds = Array.from(
     new Set(
-      redInsights
+      uncheckedInsights
         .filter((row) => row.insight_category === "SUBMISSION_CONSISTENCY")
         .flatMap((row) => row.supporting_session_ids ?? [])
     )
@@ -117,7 +152,7 @@ export async function getRedFollowUpsForDistrict(
     }
   }
 
-  return redInsights
+  return uncheckedInsights
     .map((row) => {
       const missionary = missionaryById.get(row.missionary_id);
       if (!missionary) return null;
@@ -144,11 +179,44 @@ export async function getRedFollowUpsForDistrict(
         districtId,
         insightCategory: row.insight_category as FollowUpInsightCategory,
         reason: row.reason,
+        lastEvaluatedAt: row.last_evaluated_at,
         latestSessionDateKey,
       } satisfies DashboardFollowUp;
     })
     .filter((item): item is DashboardFollowUp => item !== null)
     .sort((a, b) => a.missionaryName.localeCompare(b.missionaryName));
+}
+
+/**
+ * Mark a Missionaries in Need check-in complete for the current insight state.
+ * The card stays hidden until that insight is re-evaluated.
+ */
+export async function markInsightCheckInComplete(
+  followUp: DashboardFollowUp
+): Promise<void> {
+  const {
+    data: { session },
+    error: sessionError,
+  } = await supabase.auth.getSession();
+
+  if (sessionError) throwQueryError(sessionError);
+  if (!session) {
+    throw new Error("You must be signed in to complete a check-in.");
+  }
+
+  const { error } = await supabase.from("missionary_insight_check_ins").upsert(
+    {
+      insight_record_id: followUp.id,
+      missionary_id: followUp.missionaryId,
+      insight_category: followUp.insightCategory,
+      acknowledged_last_evaluated_at: followUp.lastEvaluatedAt,
+      completed_at: new Date().toISOString(),
+      completed_by: session.user.id,
+    },
+    { onConflict: "missionary_id,insight_category" }
+  );
+
+  if (error) throwQueryError(error);
 }
 
 /** Build Language Study Sessions deep-link for a follow-up card. */

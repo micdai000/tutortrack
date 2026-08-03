@@ -20,6 +20,9 @@ type FlaggedMissionariesCardProps = {
   emptyDescription?: string;
   loadingLabel?: string;
   className?: string;
+  completionMessage?: string | null;
+  completingInsightId?: string | null;
+  onMarkCheckInComplete?: (followUp: DashboardFollowUp) => Promise<void>;
 };
 
 /**
@@ -40,6 +43,9 @@ export function FlaggedMissionariesCard({
   emptyDescription,
   loadingLabel,
   className,
+  completionMessage,
+  completingInsightId,
+  onMarkCheckInComplete,
 }: FlaggedMissionariesCardProps) {
   const cardClassName = ["dashboard-followups", className]
     .filter(Boolean)
@@ -83,6 +89,9 @@ export function FlaggedMissionariesCard({
         loadingLabel={loadingLabel}
         emptyTitle={emptyTitle}
         emptyDescription={emptyDescription}
+        completionMessage={completionMessage}
+        completingInsightId={completingInsightId}
+        onMarkCheckInComplete={onMarkCheckInComplete}
       />
     </Card>
   );
