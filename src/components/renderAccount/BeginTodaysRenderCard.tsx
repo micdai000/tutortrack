@@ -4,6 +4,7 @@ import { Button } from "../ui";
 type BeginTodaysRenderCardProps = {
   canBegin: boolean;
   beginning: boolean;
+  cancelling: boolean;
   googleFormUrl: string | null;
   /** begun | already_begun after a successful action or page load check */
   resultStatus: "begun" | "already_begun" | null;
@@ -12,12 +13,14 @@ type BeginTodaysRenderCardProps = {
   disabledReason: string | null;
   onBeginClick: () => void;
   onCopyClick: () => void;
+  onCancelClick: () => void;
 };
 
 /** Daily workflow: open today's sessions and copy the shared Google Form link. */
 export function BeginTodaysRenderCard({
   canBegin,
   beginning,
+  cancelling,
   googleFormUrl,
   resultStatus,
   copyStatus,
@@ -25,9 +28,11 @@ export function BeginTodaysRenderCard({
   disabledReason,
   onBeginClick,
   onCopyClick,
+  onCancelClick,
 }: BeginTodaysRenderCardProps) {
   const todayHasBegun = resultStatus !== null;
   const canCopy = Boolean(googleFormUrl) && todayHasBegun;
+  const actionsBusy = beginning || cancelling;
 
   return (
     <SectionCard
@@ -48,7 +53,8 @@ export function BeginTodaysRenderCard({
           </p>
           <p className="begin-todays-card__success-body">
             Copy the Google Form link below and share it with each district in
-            Google Chat.
+            Google Chat. If you opened today by mistake, you can cancel
+            today&apos;s session.
           </p>
         </div>
       )}
@@ -63,7 +69,7 @@ export function BeginTodaysRenderCard({
             type="button"
             variant="primary"
             onClick={onBeginClick}
-            disabled={beginning || !canBegin}
+            disabled={actionsBusy || !canBegin}
           >
             {beginning
               ? "Opening today's sessions..."
@@ -72,8 +78,26 @@ export function BeginTodaysRenderCard({
         )}
 
         {canCopy && (
-          <Button type="button" variant="primary" onClick={onCopyClick}>
+          <Button
+            type="button"
+            variant="primary"
+            onClick={onCopyClick}
+            disabled={actionsBusy}
+          >
             Copy Google Form Link
+          </Button>
+        )}
+
+        {todayHasBegun && (
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={onCancelClick}
+            disabled={actionsBusy}
+          >
+            {cancelling
+              ? "Cancelling..."
+              : "Cancel Today's Render an Account"}
           </Button>
         )}
       </div>

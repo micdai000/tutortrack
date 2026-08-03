@@ -15,7 +15,10 @@ function throwQueryError(error: unknown): never {
 const OPEN_SESSION_COLUMNS =
   "id, district_id, session_date, status, google_form_url, opened_at, opened_by, created_at, updated_at";
 
-/** Load open sessions for a local calendar date across the tutor's districts. */
+/**
+ * Load OPEN sessions for a local calendar date across the tutor's districts.
+ * Closed/cancelled rows are excluded so cancelled days are not treated as active.
+ */
 export async function getOpenSessionsForDate(
   sessionDate: string
 ): Promise<LanguageStudyOpenSession[]> {
@@ -23,6 +26,7 @@ export async function getOpenSessionsForDate(
     .from("language_study_open_sessions")
     .select(OPEN_SESSION_COLUMNS)
     .eq("session_date", sessionDate)
+    .eq("status", "open")
     .order("opened_at", { ascending: true });
 
   if (error) throwQueryError(error);
@@ -119,6 +123,29 @@ export async function beginTodaysRenderAccount(
     districtCount: districts.length,
     createdCount: created.length,
     sessions,
+  };
+}
+
+/**
+ * Cancel today's Render an Account: remove OPEN sessions for the local day.
+ * Deletes rows so the day is not treated as an opened session (e.g. for
+ * future missed-response tracking) and the tutor can begin again if needed.
+ */
+export async function cancelTodaysRenderAccount(
+  sessionDate = toLocalDateKey()
+): Promise<{ sessionDate: string; cancelledCount: number }> {
+  const { data, error } = await supabase
+    .from("language_study_open_sessions")
+    .delete()
+    .eq("session_date", sessionDate)
+    .eq("status", "open")
+    .select("id");
+
+  if (error) throwQueryError(error);
+
+  return {
+    sessionDate,
+    cancelledCount: (data ?? []).length,
   };
 }
 

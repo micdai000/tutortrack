@@ -3,6 +3,7 @@ import { ClipboardList, Plus } from "lucide-react";
 
 import {
   BeginTodaysRenderCard,
+  ConfirmCancelTodaysRenderDialog,
   ConfirmDeleteQuestionDialog,
   GoogleFormsCard,
   RenderQuestionCard,
@@ -16,6 +17,7 @@ import { useGoogleConnection } from "../hooks/useGoogleConnection";
 import { useRenderQuestions } from "../hooks/useRenderQuestions";
 import {
   beginTodaysRenderAccount,
+  cancelTodaysRenderAccount,
   copyTextToClipboard,
   getOpenSessionsForDate,
 } from "../services/languageStudyOpenSessionService";
@@ -81,6 +83,9 @@ function RenderAccountPage() {
   >(null);
   const [beginTodayError, setBeginTodayError] = useState<string | null>(null);
   const [copyStatus, setCopyStatus] = useState<string | null>(null);
+  const [cancelTodayOpen, setCancelTodayOpen] = useState(false);
+  const [cancellingToday, setCancellingToday] = useState(false);
+  const [cancelTodayError, setCancelTodayError] = useState<string | null>(null);
 
   const loading = accountLoading || (Boolean(account) && questionsLoading);
   const loadError = accountError ?? questionsError;
@@ -343,6 +348,25 @@ function RenderAccountPage() {
     }
   }
 
+  async function handleConfirmCancelTodaysRender() {
+    setCancelTodayError(null);
+    setCancellingToday(true);
+
+    try {
+      await cancelTodaysRenderAccount();
+      setBeginTodayStatus(null);
+      setCopyStatus(null);
+      setBeginTodayError(null);
+      setCancelTodayOpen(false);
+    } catch (err) {
+      setCancelTodayError(
+        getErrorMessage(err, "Unable to cancel today's Render an Account.")
+      );
+    } finally {
+      setCancellingToday(false);
+    }
+  }
+
   return (
     <PageContainer className="render-account-page">
       <PageHeader title="Render an Account" />
@@ -376,6 +400,7 @@ function RenderAccountPage() {
           <BeginTodaysRenderCard
             canBegin={canBeginToday}
             beginning={beginningToday}
+            cancelling={cancellingToday}
             googleFormUrl={account.google_form_url}
             resultStatus={beginTodayStatus}
             copyStatus={copyStatus}
@@ -387,7 +412,24 @@ function RenderAccountPage() {
                 void handleCopyGoogleFormLink(account.google_form_url);
               }
             }}
+            onCancelClick={() => {
+              setCancelTodayError(null);
+              setCancelTodayOpen(true);
+            }}
           />
+
+          {cancelTodayOpen && (
+            <ConfirmCancelTodaysRenderDialog
+              submitting={cancellingToday}
+              error={cancelTodayError}
+              onDismiss={() => {
+                if (cancellingToday) return;
+                setCancelTodayOpen(false);
+                setCancelTodayError(null);
+              }}
+              onConfirm={() => void handleConfirmCancelTodaysRender()}
+            />
+          )}
 
           <RenderStatusCard summary={validationSummary} />
 
