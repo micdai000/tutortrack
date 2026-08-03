@@ -45,13 +45,15 @@ export function FlaggedMissionariesCard({
     .filter(Boolean)
     .join(" ");
 
-  const itemCount = followUps.length;
+  const headingId = `${districtSelectId}-heading`;
+  const countLabel = loading ? "" : ` (${followUps.length})`;
 
   return (
-    <Card as="section" className={cardClassName}>
+    <Card as="section" className={cardClassName} aria-labelledby={headingId}>
       <div className="dashboard-section-header dashboard-section-header--flush">
-        <h2>
-          {title} ({itemCount})
+        <h2 id={headingId}>
+          {title}
+          <span className="dashboard-section-header__count">{countLabel}</span>
         </h2>
         <Icon icon={icon} size="sm" tone="muted" />
       </div>

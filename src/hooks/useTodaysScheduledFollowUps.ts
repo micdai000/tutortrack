@@ -16,7 +16,7 @@ type UseTodaysScheduledFollowUpsResult = {
   markComplete: (missionaryId: string) => Promise<void>;
 };
 
-/** Loads missionaries with follow_up_date equal to the tutor's local today. */
+/** Loads missionaries with follow_up_date today or overdue (not completed). */
 export function useTodaysScheduledFollowUps(): UseTodaysScheduledFollowUpsResult {
   const [followUps, setFollowUps] = useState<ScheduledFollowUp[]>([]);
   const [loading, setLoading] = useState(true);
@@ -84,9 +84,12 @@ export function useTodaysScheduledFollowUps(): UseTodaysScheduledFollowUpsResult
         messageTimer.current = null;
       }, 3000);
     } catch (err) {
-      setError(
-        getErrorMessage(err, "Unable to mark this follow-up complete.")
+      const message = getErrorMessage(
+        err,
+        "Unable to mark this follow-up complete."
       );
+      setError(message);
+      throw new Error(message);
     } finally {
       setCompletingMissionaryId(null);
     }

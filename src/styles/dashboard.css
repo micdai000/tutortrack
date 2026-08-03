@@ -44,7 +44,7 @@
   flex-direction: column;
   gap: var(--tt-space-2);
   padding: var(--tt-space-5);
-  min-height: 7.5rem;
+  min-height: 6.75rem;
 }
 
 .dashboard-stat-card__icon {
@@ -75,12 +75,14 @@
   color: var(--tt-color-text-secondary);
 }
 
-/* ---------- Main columns ---------- */
+/* ---------- Priority action cards ---------- */
 
-.dashboard-main {
+.dashboard-priority {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--tt-space-6);
+  margin-bottom: var(--tt-space-8);
+  align-items: start;
 }
 
 .dashboard-section-header {
@@ -92,7 +94,7 @@
 }
 
 .dashboard-section-header--flush {
-  margin-bottom: var(--tt-space-5);
+  margin-bottom: var(--tt-space-4);
 }
 
 .dashboard-section-header h2 {
@@ -101,6 +103,11 @@
   font-weight: var(--tt-text-section-weight);
   line-height: var(--tt-text-section-line);
   color: var(--tt-color-text);
+}
+
+.dashboard-section-header__count {
+  font-weight: var(--tt-font-weight-medium);
+  color: var(--tt-color-text-secondary);
 }
 
 .dashboard-section-link {
@@ -118,16 +125,16 @@
 /* ---------- Follow-ups / Missionaries in Need ---------- */
 
 .dashboard-followups {
-  padding: var(--tt-space-6);
+  padding: var(--tt-space-5) var(--tt-space-6);
 }
 
 .dashboard-missionaries-in-need {
-  margin-bottom: var(--tt-space-8);
+  margin-bottom: 0;
 }
 
 .dashboard-followups__filter {
-  max-width: 20rem;
-  margin-bottom: var(--tt-space-5);
+  max-width: 18rem;
+  margin-bottom: var(--tt-space-4);
 }
 
 .dashboard-followups__empty {
@@ -193,12 +200,12 @@
 .dashboard-followups__item {
   display: flex;
   flex-direction: column;
-  gap: var(--tt-space-4);
+  gap: var(--tt-space-3);
   width: 100%;
   padding: var(--tt-space-4) var(--tt-space-4) var(--tt-space-4)
     calc(var(--tt-space-4) - 2px);
   border: 1px solid var(--tt-color-border);
-  border-left: 3px solid #b91c1c;
+  border-left: 3px solid var(--tt-color-border);
   border-radius: var(--tt-radius-md);
   background: var(--tt-color-bg);
   text-align: left;
@@ -215,7 +222,14 @@ button.dashboard-followups__item {
 .dashboard-followups__item:hover {
   background: #fafafa;
   border-color: #d1d5db;
-  border-left-color: #991b1b;
+}
+
+.dashboard-followups__item--need {
+  border-left-color: #c4a0a0;
+}
+
+.dashboard-followups__item--need:hover {
+  border-left-color: #a67f7f;
 }
 
 button.dashboard-followups__item:focus-visible,
@@ -243,43 +257,61 @@ button.dashboard-followups__item:focus-visible,
   justify-content: flex-start;
 }
 
+.dashboard-followups__item-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--tt-space-3);
+  margin-bottom: var(--tt-space-2);
+}
+
 .dashboard-followups__item-title {
-  margin: 0 0 var(--tt-space-1);
+  margin: 0;
+  font-size: var(--tt-text-body-size);
   font-weight: var(--tt-font-weight-semibold);
+  line-height: 1.4;
   color: var(--tt-color-text);
 }
 
 .dashboard-followups__item-category {
-  margin: 0 0 var(--tt-space-3);
+  margin: var(--tt-space-1) 0 0;
   font-size: var(--tt-text-helper-size);
   font-weight: var(--tt-font-weight-medium);
-  color: var(--tt-color-text-secondary);
-}
-
-.dashboard-followups__item-reason-label {
-  margin: 0 0 var(--tt-space-1);
-  font-size: var(--tt-text-caption-size);
-  font-weight: var(--tt-font-weight-medium);
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
   color: var(--tt-color-text-secondary);
 }
 
 .dashboard-followups__item-reason {
-  margin: 0;
-  font-size: var(--tt-text-body-size);
+  margin: var(--tt-space-2) 0 0;
+  font-size: var(--tt-text-helper-size);
   line-height: 1.5;
   color: var(--tt-color-text);
 }
 
-.dashboard-followups__item-meta {
+.dashboard-followups__item-meta-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: var(--tt-space-2) var(--tt-space-4);
+  margin: var(--tt-space-3) 0 0;
+}
+
+.dashboard-followups__item-meta-list > div {
+  min-width: 0;
+}
+
+.dashboard-followups__item-meta-list dt {
   margin: 0;
-  font-size: var(--tt-text-helper-size);
+  font-size: var(--tt-text-caption-size);
+  font-weight: var(--tt-font-weight-medium);
+  line-height: 1.3;
   color: var(--tt-color-text-secondary);
 }
 
-.dashboard-followups__item-meta + .dashboard-followups__item-meta {
-  margin-top: var(--tt-space-1);
+.dashboard-followups__item-meta-list dd {
+  margin: var(--tt-space-1) 0 0;
+  font-size: var(--tt-text-helper-size);
+  line-height: 1.4;
+  color: var(--tt-color-text);
+  overflow-wrap: anywhere;
 }
 
 .dashboard-followups__item-notes {
@@ -287,26 +319,46 @@ button.dashboard-followups__item:focus-visible,
   font-size: var(--tt-text-helper-size);
   line-height: 1.5;
   color: var(--tt-color-text);
+  white-space: pre-wrap;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   overflow: hidden;
 }
 
+.dashboard-followups__item-notes--empty {
+  color: var(--tt-color-text-secondary);
+  white-space: normal;
+  display: block;
+  -webkit-line-clamp: unset;
+}
+
 .dashboard-followups__item--scheduled {
-  border-left-color: var(--tt-color-primary);
+  border-left-color: #8aa4c4;
 }
 
 .dashboard-followups__item--scheduled:hover {
-  border-left-color: var(--tt-color-primary-hover);
+  border-left-color: #6b8aad;
 }
 
-/* ---------- Search ---------- */
+.dashboard-followups__item--overdue {
+  border-left-color: #c4a574;
+}
 
-.dashboard-districts-panel {
+.dashboard-followups__item--overdue:hover {
+  border-left-color: #8a6a3a;
+}
+
+/* ---------- Districts ---------- */
+
+.dashboard-districts {
   display: flex;
   flex-direction: column;
-  gap: var(--tt-space-5);
+  gap: var(--tt-space-4);
+}
+
+.dashboard-districts > .dashboard-section-header {
+  margin-bottom: 0;
 }
 
 .dashboard-search {
@@ -406,9 +458,19 @@ button.dashboard-followups__item:focus-visible,
 
 /* ---------- Responsive ---------- */
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
+  .dashboard-priority {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--tt-space-5);
+    margin-bottom: var(--tt-space-6);
+  }
+
   .dashboard-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-followups {
+    padding: var(--tt-space-5);
   }
 }
 
@@ -418,14 +480,34 @@ button.dashboard-followups__item:focus-visible,
     padding-bottom: var(--tt-space-12);
   }
 
-  /* 2×2 square stat cards: Districts | Companionships / Missionaries | Follow-ups */
+  .dashboard-header {
+    margin-bottom: var(--tt-space-6);
+  }
+
   .dashboard-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--tt-space-3);
+    margin-bottom: var(--tt-space-6);
   }
 
   .dashboard-district-grid {
     grid-template-columns: 1fr;
+  }
+
+  .dashboard-followups__filter {
+    max-width: none;
+  }
+
+  .dashboard-followups__item-heading {
+    flex-wrap: wrap;
+  }
+
+  .dashboard-followups__item-meta-list {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dashboard-followups__item {
+    padding: var(--tt-space-4);
   }
 
   .dashboard-stat-card {

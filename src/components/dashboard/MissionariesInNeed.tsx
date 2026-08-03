@@ -13,10 +13,7 @@ type MissionariesInNeedProps = {
   onDistrictChange: (districtId: string) => void;
 };
 
-/**
- * Permanent home for missionaries automatically flagged by Render an Account.
- * Uses the same follow-up data as Today's Follow-Ups during the transition.
- */
+/** Permanent home for missionaries automatically flagged by Render an Account. */
 export function MissionariesInNeed({
   districts,
   districtId,
@@ -38,7 +35,7 @@ export function MissionariesInNeed({
       onDistrictChange={onDistrictChange}
       districtSelectId="dashboard-missionaries-in-need-district"
       loadingLabel="Loading missionaries in need..."
-      emptyTitle="No missionaries currently require additional attention."
+      emptyTitle="No missionaries need attention right now."
     />
   );
 }

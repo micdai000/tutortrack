@@ -1,5 +1,9 @@
 import { supabase } from "../lib/supabase";
 import type { ScheduledFollowUp } from "../types/dashboard";
+import {
+  compareScheduledFollowUps,
+  resolveDashboardFollowUpUrgency,
+} from "../utils/followUpStatus";
 import { getErrorMessage } from "../utils/getErrorMessage";
 import { toLocalDateKey } from "../utils/localDate";
 import { clearMissionaryFollowUp } from "./missionaryService";
@@ -18,13 +22,19 @@ type MissionaryQueryRow = {
     | {
         id: string;
         district_id: string;
-        districts: { id: string; name: string } | { id: string; name: string }[] | null;
+        districts:
+          | { id: string; name: string }
+          | { id: string; name: string }[]
+          | null;
         missionaries: Array<{ id: string; display_name: string }> | null;
       }
     | Array<{
         id: string;
         district_id: string;
-        districts: { id: string; name: string } | { id: string; name: string }[] | null;
+        districts:
+          | { id: string; name: string }
+          | { id: string; name: string }[]
+          | null;
         missionaries: Array<{ id: string; display_name: string }> | null;
       }>
     | null;
@@ -50,8 +60,8 @@ function buildCompanionshipLabel(
 }
 
 /**
- * Load missionaries whose follow_up_date is the tutor's local today.
- * Future and past dates are excluded.
+ * Load missionaries with follow_up_date today or earlier (not yet completed).
+ * Future dates are excluded. Sorted: overdue oldest-first, then today.
  */
 export async function getTodaysScheduledFollowUps(
   todayDateKey = toLocalDateKey()
@@ -79,8 +89,9 @@ export async function getTodaysScheduledFollowUps(
       )
     `
     )
-    .eq("follow_up_date", todayDateKey)
-    .order("display_name", { ascending: true });
+    .not("follow_up_date", "is", null)
+    .lte("follow_up_date", todayDateKey)
+    .order("follow_up_date", { ascending: true });
 
   if (error) throwQueryError(error);
 
@@ -88,9 +99,12 @@ export async function getTodaysScheduledFollowUps(
     .map((row) => {
       const companionship = unwrapOne(row.companionships);
       const district = unwrapOne(companionship?.districts ?? null);
-      if (!companionship || !district) return null;
+      if (!companionship || !district || !row.follow_up_date) return null;
 
-      const notes = row.follow_up_notes?.trim() || null;
+      const urgency = resolveDashboardFollowUpUrgency(
+        row.follow_up_date,
+        todayDateKey
+      ).urgency;
 
       return {
         id: row.id,
@@ -99,19 +113,20 @@ export async function getTodaysScheduledFollowUps(
         districtId: district.id,
         districtName: district.name,
         companionshipId: companionship.id,
-        companionshipLabel: buildCompanionshipLabel(
-          companionship.missionaries
-        ),
+        companionshipLabel: buildCompanionshipLabel(companionship.missionaries),
         followUpDate: row.follow_up_date,
-        followUpNotes: notes,
+        followUpNotes: row.follow_up_notes?.trim() || null,
+        urgency,
       } satisfies ScheduledFollowUp;
     })
     .filter((item): item is ScheduledFollowUp => item !== null)
-    .sort((a, b) => a.missionaryName.localeCompare(b.missionaryName));
+    .sort((a, b) => compareScheduledFollowUps(a, b, todayDateKey));
 }
 
 /** Deep-link to the missionary language study plan / profile workspace. */
-export function buildMissionaryFollowUpHref(followUp: ScheduledFollowUp): string {
+export function buildMissionaryFollowUpHref(
+  followUp: ScheduledFollowUp
+): string {
   return `/missionaries/${followUp.missionaryId}`;
 }
 

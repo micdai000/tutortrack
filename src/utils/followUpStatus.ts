@@ -1,13 +1,14 @@
 import { toLocalDateKey } from "./localDate";
 
-/**
- * Follow-up lifecycle states.
- * `overdue` is reserved for a future enhancement — callers should prefer
- * getFollowUpStatusPresentation() for current UI.
- */
+/** Follow-up lifecycle states for profile + dashboard. */
 export type FollowUpStatusKind = "none" | "scheduled" | "overdue";
 
-export type FollowUpStatusTone = "neutral" | "success" | "warning" | "danger" | "info";
+export type FollowUpStatusTone =
+  | "neutral"
+  | "success"
+  | "warning"
+  | "danger"
+  | "info";
 
 export type FollowUpStatus = {
   kind: FollowUpStatusKind;
@@ -16,6 +17,9 @@ export type FollowUpStatus = {
   tone: FollowUpStatusTone;
   dateKey: string | null;
 };
+
+/** Dashboard urgency for active (due/overdue) follow-ups. */
+export type ScheduledFollowUpUrgency = "today" | "overdue";
 
 /** Short scheduled label date, e.g. "Aug. 15". */
 export function formatFollowUpStatusDate(dateKey: string): string {
@@ -43,11 +47,7 @@ export function formatFollowUpScheduledDate(dateKey: string): string {
   });
 }
 
-/**
- * Resolve follow-up status from follow_up_date.
- * Past dates resolve to `overdue` for future UI, but presentation currently
- * matches scheduled (no overdue badge yet).
- */
+/** Resolve follow-up status from follow_up_date for the Missionary Workspace. */
 export function resolveFollowUpStatus(
   followUpDate: string | null | undefined,
   todayDateKey = toLocalDateKey()
@@ -66,8 +66,17 @@ export function resolveFollowUpStatus(
   if (dateKey < todayDateKey) {
     return {
       kind: "overdue",
-      label: `Scheduled for ${formatFollowUpStatusDate(dateKey)}`,
-      tone: "success",
+      label: `Overdue · ${formatFollowUpStatusDate(dateKey)}`,
+      tone: "warning",
+      dateKey,
+    };
+  }
+
+  if (dateKey === todayDateKey) {
+    return {
+      kind: "scheduled",
+      label: "Scheduled for Today",
+      tone: "info",
       dateKey,
     };
   }
@@ -78,4 +87,43 @@ export function resolveFollowUpStatus(
     tone: "success",
     dateKey,
   };
+}
+
+/** Dashboard badge label/tone for an active scheduled follow-up. */
+export function resolveDashboardFollowUpUrgency(
+  followUpDate: string,
+  todayDateKey = toLocalDateKey()
+): {
+  urgency: ScheduledFollowUpUrgency;
+  label: "Today" | "Overdue";
+  tone: "info" | "warning";
+} {
+  if (followUpDate < todayDateKey) {
+    return { urgency: "overdue", label: "Overdue", tone: "warning" };
+  }
+
+  return { urgency: "today", label: "Today", tone: "info" };
+}
+
+/**
+ * Sort active follow-ups: overdue oldest-first, then today's items by name.
+ */
+export function compareScheduledFollowUps(
+  a: { followUpDate: string; missionaryName: string },
+  b: { followUpDate: string; missionaryName: string },
+  todayDateKey = toLocalDateKey()
+): number {
+  const aOverdue = a.followUpDate < todayDateKey;
+  const bOverdue = b.followUpDate < todayDateKey;
+
+  if (aOverdue !== bOverdue) {
+    return aOverdue ? -1 : 1;
+  }
+
+  if (aOverdue && bOverdue) {
+    const byDate = a.followUpDate.localeCompare(b.followUpDate);
+    if (byDate !== 0) return byDate;
+  }
+
+  return a.missionaryName.localeCompare(b.missionaryName);
 }

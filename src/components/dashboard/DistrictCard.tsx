@@ -41,7 +41,7 @@ export function DistrictCard({ district }: DistrictCardProps) {
         </div>
 
         <span className="dashboard-district-card__cta">
-          Open District
+          Open district
           <Icon icon={ArrowRight} size="sm" tone="primary" />
         </span>
       </Link>

@@ -40,7 +40,7 @@ export type DashboardFollowUp = {
 };
 
 /**
- * One manually scheduled follow-up due today.
+ * One active manual follow-up (today or overdue).
  * Powered by missionaries.follow_up_date (not Render an Account insights).
  */
 export type ScheduledFollowUp = {
@@ -54,12 +54,5 @@ export type ScheduledFollowUp = {
   companionshipLabel: string | null;
   followUpDate: string;
   followUpNotes: string | null;
-};
-
-/** @deprecated Prefer ScheduledFollowUp or DashboardFollowUp. */
-export type FollowUpItem = {
-  id: string;
-  missionaryName: string;
-  districtName: string;
-  followUpLabel: string;
+  urgency: "today" | "overdue";
 };

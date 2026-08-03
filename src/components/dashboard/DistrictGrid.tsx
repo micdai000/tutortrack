@@ -4,6 +4,7 @@ import { BookOpen, Search } from "lucide-react";
 import type { DistrictSummary } from "../../types/dashboardOverview";
 import { EmptyState } from "../layout/EmptyState";
 import { DistrictCard } from "./DistrictCard";
+import { SearchBar } from "./SearchBar";
 
 type DistrictGridProps = {
   districts: DistrictSummary[];
@@ -11,6 +12,8 @@ type DistrictGridProps = {
   error?: string | null;
   emptyQuery?: boolean;
   query?: string;
+  searchValue: string;
+  onSearchChange: (value: string) => void;
 };
 
 /** Responsive grid of district cards with loading / empty / error states. */
@@ -20,15 +23,27 @@ export function DistrictGrid({
   error = null,
   emptyQuery = false,
   query = "",
+  searchValue,
+  onSearchChange,
 }: DistrictGridProps) {
   return (
-    <section className="dashboard-districts" aria-labelledby="dashboard-districts-heading">
+    <section
+      className="dashboard-districts"
+      aria-labelledby="dashboard-districts-heading"
+    >
       <div className="dashboard-section-header">
-        <h2 id="dashboard-districts-heading">Your districts</h2>
+        <h2 id="dashboard-districts-heading">Your Districts</h2>
         <Link to="/districts" className="dashboard-section-link">
           View all
         </Link>
       </div>
+
+      <SearchBar
+        value={searchValue}
+        onChange={onSearchChange}
+        placeholder="Search districts…"
+        label="Search districts"
+      />
 
       {loading && (
         <p className="dashboard-status" role="status">
@@ -56,7 +71,10 @@ export function DistrictGrid({
           title="No districts yet"
           description="Add your first district to start organizing companionships."
           action={
-            <Link to="/districts" className="tt-button tt-button--primary tt-button--sm">
+            <Link
+              to="/districts"
+              className="tt-button tt-button--primary tt-button--sm"
+            >
               Add district
             </Link>
           }

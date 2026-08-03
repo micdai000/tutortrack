@@ -11,7 +11,7 @@ export function DashboardHeader({ greeting, firstName }: DashboardHeaderProps) {
         {greeting}, {firstName}
       </h1>
       <p className="dashboard-header__subtitle">
-        Which missionaries may benefit from a follow-up today?
+        Review missionaries who need attention and manage active follow-ups.
       </p>
     </header>
   );

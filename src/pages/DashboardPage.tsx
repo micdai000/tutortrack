@@ -11,7 +11,6 @@ import {
   DashboardHeader,
   DistrictGrid,
   MissionariesInNeed,
-  SearchBar,
   StatCard,
   TodaysFollowUps,
 } from "../components/dashboard";
@@ -112,14 +111,14 @@ function DashboardPage() {
           loading={loading}
         />
         <StatCard
-          label="Follow-ups today"
+          label="Active follow-ups"
           value={scheduledFollowUps.length}
           icon={CalendarClock}
           loading={loading || scheduledFollowUpsLoading}
         />
       </section>
 
-      {districts.length > 0 && (
+      <div className="dashboard-priority">
         <MissionariesInNeed
           districts={districts}
           districtId={effectiveDistrictId}
@@ -128,36 +127,26 @@ function DashboardPage() {
           error={missionariesInNeedError}
           onDistrictChange={handleDistrictChange}
         />
-      )}
 
-      <div className="dashboard-main">
         <TodaysFollowUps
           followUps={scheduledFollowUps}
           loading={scheduledFollowUpsLoading || loading}
           error={scheduledFollowUpsError}
           completionMessage={completionMessage}
           completingMissionaryId={completingMissionaryId}
-          onMarkComplete={(missionaryId) => {
-            void markComplete(missionaryId);
-          }}
+          onMarkComplete={markComplete}
         />
-
-        <div className="dashboard-districts-panel">
-          <SearchBar
-            value={query}
-            onChange={setQuery}
-            placeholder="Search districts…"
-            label="Search districts"
-          />
-          <DistrictGrid
-            districts={filteredDistricts}
-            loading={loading}
-            error={error}
-            emptyQuery={normalizedQuery.length > 0}
-            query={query.trim()}
-          />
-        </div>
       </div>
+
+      <DistrictGrid
+        districts={filteredDistricts}
+        loading={loading}
+        error={error}
+        emptyQuery={normalizedQuery.length > 0}
+        query={query.trim()}
+        searchValue={query}
+        onSearchChange={setQuery}
+      />
     </PageContainer>
   );
 }

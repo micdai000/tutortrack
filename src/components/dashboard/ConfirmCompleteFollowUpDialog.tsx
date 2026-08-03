@@ -37,8 +37,15 @@ export function ConfirmCompleteFollowUpDialog({
           className="confirm-dialog-body"
         >
           <p>
-            This will remove the scheduled follow-up for{" "}
-            <strong>{missionaryName}</strong> and clear the follow-up notes.
+            This will remove the scheduled follow-up and clear the follow-up
+            notes
+            {missionaryName ? (
+              <>
+                {" "}
+                for <strong>{missionaryName}</strong>
+              </>
+            ) : null}
+            .
           </p>
         </div>
 
