@@ -129,11 +129,14 @@ function DashboardPage() {
         />
 
         <TodaysFollowUps
+          districts={districts}
+          districtId={effectiveDistrictId}
           followUps={scheduledFollowUps}
           loading={scheduledFollowUpsLoading || loading}
           error={scheduledFollowUpsError}
           completionMessage={completionMessage}
           completingMissionaryId={completingMissionaryId}
+          onDistrictChange={handleDistrictChange}
           onMarkComplete={markComplete}
         />
       </div>

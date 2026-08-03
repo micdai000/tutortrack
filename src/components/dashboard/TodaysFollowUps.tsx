@@ -1,22 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CalendarClock } from "lucide-react";
+import { CalendarClock, ChevronDown } from "lucide-react";
 
 import type { ScheduledFollowUp } from "../../types/dashboard";
+import type { District } from "../../types/district";
 import { buildMissionaryFollowUpHref } from "../../services/dashboardScheduledFollowUpService";
 import { formatFollowUpScheduledDate } from "../../utils/followUpStatus";
 import { StatusBadge } from "../layout";
 import { Card } from "../ui/Card";
-import { Button, Icon } from "../ui";
+import { Button, Field, Icon, Select } from "../ui";
 import { ConfirmCompleteFollowUpDialog } from "./ConfirmCompleteFollowUpDialog";
 import { DashboardEmptyState } from "./DashboardEmptyState";
 
 type TodaysFollowUpsProps = {
+  districts: District[];
+  districtId: string;
   followUps: ScheduledFollowUp[];
   loading: boolean;
   error: string | null;
   completionMessage: string | null;
   completingMissionaryId: string | null;
+  onDistrictChange: (districtId: string) => void;
   onMarkComplete: (missionaryId: string) => Promise<void>;
 };
 
@@ -25,23 +29,44 @@ type TodaysFollowUpsProps = {
  * Independent from Missionaries in Need / Render an Account flags.
  */
 export function TodaysFollowUps({
+  districts,
+  districtId,
   followUps,
   loading,
   error,
   completionMessage,
   completingMissionaryId,
+  onDistrictChange,
   onMarkComplete,
 }: TodaysFollowUpsProps) {
   const navigate = useNavigate();
   const [pendingComplete, setPendingComplete] =
     useState<ScheduledFollowUp | null>(null);
   const [confirmError, setConfirmError] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const completing =
     pendingComplete !== null &&
     completingMissionaryId === pendingComplete.missionaryId;
 
-  const countLabel = loading ? "" : ` (${followUps.length})`;
+  const visibleFollowUps = districtId
+    ? followUps.filter((item) => item.districtId === districtId)
+    : followUps;
+
+  useEffect(() => {
+    setExpandedId(null);
+  }, [districtId]);
+
+  useEffect(() => {
+    if (
+      expandedId !== null &&
+      !visibleFollowUps.some((item) => item.id === expandedId)
+    ) {
+      setExpandedId(null);
+    }
+  }, [expandedId, visibleFollowUps]);
+
+  const countLabel = loading ? "" : ` (${visibleFollowUps.length})`;
 
   return (
     <Card
@@ -56,6 +81,27 @@ export function TodaysFollowUps({
         </h2>
         <Icon icon={CalendarClock} size="sm" tone="muted" />
       </div>
+
+      {districts.length > 0 && (
+        <div className="dashboard-followups__filter">
+          <Field
+            label="District"
+            htmlFor="dashboard-todays-followups-district"
+          >
+            <Select
+              id="dashboard-todays-followups-district"
+              value={districtId}
+              onChange={(event) => onDistrictChange(event.target.value)}
+            >
+              {districts.map((district) => (
+                <option key={district.id} value={district.id}>
+                  {district.name}
+                </option>
+              ))}
+            </Select>
+          </Field>
+        </div>
+      )}
 
       {completionMessage && (
         <p className="dashboard-followups__toast" role="status">
@@ -75,18 +121,24 @@ export function TodaysFollowUps({
         </p>
       )}
 
-      {!loading && !error && followUps.length === 0 && (
+      {!loading && !error && visibleFollowUps.length === 0 && (
         <DashboardEmptyState title="No active follow-ups." />
       )}
 
-      {!loading && followUps.length > 0 && (
+      {!loading && visibleFollowUps.length > 0 && (
         <ul className="dashboard-followups__list">
-          {followUps.map((item) => {
+          {visibleFollowUps.map((item) => {
             const isOverdue = item.urgency === "overdue";
+            const isExpanded = expandedId === item.id;
+            const panelId = `dashboard-followup-panel-${item.id}`;
             const itemClassName = [
               "dashboard-followups__item",
               "dashboard-followups__item--scheduled",
+              "dashboard-followups__item--collapsible",
               isOverdue ? "dashboard-followups__item--overdue" : null,
+              isExpanded
+                ? "dashboard-followups__item--expanded"
+                : "dashboard-followups__item--collapsed",
             ]
               .filter(Boolean)
               .join(" ");
@@ -96,66 +148,102 @@ export function TodaysFollowUps({
                 <div className={itemClassName}>
                   <button
                     type="button"
-                    className="dashboard-followups__item-main"
-                    aria-label={`Open profile for ${item.missionaryName}`}
+                    className="dashboard-followups__item-toggle"
+                    aria-expanded={isExpanded}
+                    aria-controls={panelId}
                     onClick={() =>
-                      void navigate(buildMissionaryFollowUpHref(item))
+                      setExpandedId((current) =>
+                        current === item.id ? null : item.id
+                      )
                     }
                   >
                     <div className="dashboard-followups__item-heading">
                       <p className="dashboard-followups__item-title">
                         {item.missionaryName}
                       </p>
-                      <StatusBadge tone={isOverdue ? "warning" : "info"}>
-                        {isOverdue ? "Overdue" : "Today"}
-                      </StatusBadge>
+                      <div className="dashboard-followups__item-heading-meta">
+                        <StatusBadge tone={isOverdue ? "warning" : "info"}>
+                          {isOverdue ? "Overdue" : "Today"}
+                        </StatusBadge>
+                        <span
+                          className={[
+                            "dashboard-followups__item-chevron",
+                            isExpanded
+                              ? "dashboard-followups__item-chevron--open"
+                              : null,
+                          ]
+                            .filter(Boolean)
+                            .join(" ")}
+                          aria-hidden="true"
+                        >
+                          <Icon icon={ChevronDown} size="sm" tone="muted" />
+                        </span>
+                      </div>
                     </div>
-
-                    <dl className="dashboard-followups__item-meta-list">
-                      <div>
-                        <dt>District</dt>
-                        <dd>{item.districtName}</dd>
-                      </div>
-                      {item.companionshipLabel ? (
-                        <div>
-                          <dt>Companionship</dt>
-                          <dd>{item.companionshipLabel}</dd>
-                        </div>
-                      ) : null}
-                      <div>
-                        <dt>Scheduled</dt>
-                        <dd>
-                          {formatFollowUpScheduledDate(item.followUpDate)}
-                        </dd>
-                      </div>
-                    </dl>
-
-                    {item.followUpNotes ? (
-                      <p className="dashboard-followups__item-notes">
-                        {item.followUpNotes}
-                      </p>
-                    ) : (
-                      <p className="dashboard-followups__item-notes dashboard-followups__item-notes--empty">
-                        No notes
-                      </p>
-                    )}
                   </button>
 
-                  <div className="dashboard-followups__item-actions">
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      disabled={completingMissionaryId !== null}
-                      aria-label={`Mark follow-up complete for ${item.missionaryName}`}
-                      onClick={() => {
-                        setConfirmError(null);
-                        setPendingComplete(item);
-                      }}
+                  {isExpanded && (
+                    <div
+                      id={panelId}
+                      className="dashboard-followups__item-details"
                     >
-                      Mark Complete
-                    </Button>
-                  </div>
+                      <dl className="dashboard-followups__item-meta-list">
+                        <div>
+                          <dt>District</dt>
+                          <dd>{item.districtName}</dd>
+                        </div>
+                        {item.companionshipLabel ? (
+                          <div>
+                            <dt>Companionship</dt>
+                            <dd>{item.companionshipLabel}</dd>
+                          </div>
+                        ) : null}
+                        <div>
+                          <dt>Scheduled</dt>
+                          <dd>
+                            {formatFollowUpScheduledDate(item.followUpDate)}
+                          </dd>
+                        </div>
+                      </dl>
+
+                      {item.followUpNotes ? (
+                        <p className="dashboard-followups__item-notes">
+                          {item.followUpNotes}
+                        </p>
+                      ) : (
+                        <p className="dashboard-followups__item-notes dashboard-followups__item-notes--empty">
+                          No notes
+                        </p>
+                      )}
+
+                      <div className="dashboard-followups__item-actions">
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          disabled={completingMissionaryId !== null}
+                          aria-label={`Mark follow-up complete for ${item.missionaryName}`}
+                          onClick={() => {
+                            setConfirmError(null);
+                            setPendingComplete(item);
+                          }}
+                        >
+                          Mark Complete
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          aria-label={`Open profile for ${item.missionaryName}`}
+                          onClick={() =>
+                            void navigate(buildMissionaryFollowUpHref(item))
+                          }
+                        >
+                          Open profile
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </li>
             );

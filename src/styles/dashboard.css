@@ -233,7 +233,8 @@ button.dashboard-followups__item {
 }
 
 button.dashboard-followups__item:focus-visible,
-.dashboard-followups__item-main:focus-visible {
+.dashboard-followups__item-main:focus-visible,
+.dashboard-followups__item-toggle:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px var(--tt-color-primary-accent);
 }
@@ -254,7 +255,10 @@ button.dashboard-followups__item:focus-visible,
 
 .dashboard-followups__item-actions {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: flex-start;
+  gap: var(--tt-space-2);
 }
 
 .dashboard-followups__item-heading {
@@ -263,6 +267,64 @@ button.dashboard-followups__item:focus-visible,
   justify-content: space-between;
   gap: var(--tt-space-3);
   margin-bottom: var(--tt-space-2);
+}
+
+.dashboard-followups__item-heading-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--tt-space-2);
+  flex-shrink: 0;
+}
+
+.dashboard-followups__item-toggle {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-radius: var(--tt-radius-sm);
+}
+
+.dashboard-followups__item-toggle .dashboard-followups__item-heading {
+  margin-bottom: 0;
+  align-items: center;
+}
+
+.dashboard-followups__item-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--tt-duration-fast) var(--tt-ease-standard);
+}
+
+.dashboard-followups__item-chevron--open {
+  transform: rotate(180deg);
+}
+
+.dashboard-followups__item-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-3);
+}
+
+.dashboard-followups__item-details .dashboard-followups__item-meta-list,
+.dashboard-followups__item-details .dashboard-followups__item-notes {
+  margin-top: 0;
+}
+
+.dashboard-followups__item--collapsible {
+  gap: var(--tt-space-3);
+}
+
+.dashboard-followups__item--collapsed {
+  gap: 0;
+  padding-top: var(--tt-space-3);
+  padding-bottom: var(--tt-space-3);
 }
 
 .dashboard-followups__item-title {
