@@ -2,8 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { CalendarClock, Check } from "lucide-react";
 
 import type { DashboardFollowUp } from "../../types/dashboard";
+import { FOLLOW_UP_CATEGORY_LABELS } from "../../types/dashboard";
 import type { District } from "../../types/district";
-import { INSIGHT_CATEGORY_LABELS } from "../../types/renderAccount";
 import { buildLanguageStudySessionHref } from "../../services/dashboardFollowUpService";
 import { Card } from "../ui/Card";
 import { Field, Icon, Select } from "../ui";
@@ -76,7 +76,7 @@ export function TodaysFollowUps({
             </p>
             <p className="dashboard-followups__empty-description">
               All missionaries in this district are currently doing well based
-              on their recent Render an Account sessions.
+              on recent Render an Account answers and submission consistency.
             </p>
           </div>
         </div>
@@ -97,7 +97,7 @@ export function TodaysFollowUps({
                   {item.missionaryName}
                 </p>
                 <p className="dashboard-followups__item-category">
-                  {INSIGHT_CATEGORY_LABELS[item.insightCategory]}
+                  {FOLLOW_UP_CATEGORY_LABELS[item.insightCategory]}
                 </p>
                 <p className="dashboard-followups__item-reason-label">Reason</p>
                 <p className="dashboard-followups__item-reason">{item.reason}</p>

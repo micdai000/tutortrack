@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { getRedFollowUpsForDistrict } from "../services/dashboardFollowUpService";
+import { refreshSubmissionConsistencyForDistrict } from "../services/submissionConsistencyService";
 import type { DashboardFollowUp } from "../types/dashboard";
 import { getErrorMessage } from "../utils/getErrorMessage";
 
@@ -10,7 +11,10 @@ type UseDashboardFollowUpsResult = {
   error: string | null;
 };
 
-/** Loads RED insight follow-ups for the selected dashboard district. */
+/**
+ * Refreshes missed-submission insights, then loads RED follow-ups
+ * for the selected dashboard district.
+ */
 export function useDashboardFollowUps(
   districtId: string | null
 ): UseDashboardFollowUpsResult {
@@ -33,6 +37,16 @@ export function useDashboardFollowUps(
       setError(null);
 
       try {
+        try {
+          await refreshSubmissionConsistencyForDistrict(districtId);
+        } catch (attendanceError) {
+          // Still show existing follow-ups if refresh fails.
+          console.warn(
+            "Submission consistency refresh failed:",
+            getErrorMessage(attendanceError, "unknown")
+          );
+        }
+
         const rows = await getRedFollowUpsForDistrict(districtId);
         if (!cancelled) {
           setFollowUps(rows);

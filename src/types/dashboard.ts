@@ -1,7 +1,24 @@
 import type { InsightCategory } from "./renderAccount";
 
-/** Measurable insight categories that can drive follow-ups. */
-export type FollowUpInsightCategory = Exclude<InsightCategory, "NONE">;
+/**
+ * Insight categories that can drive dashboard follow-ups.
+ * Includes answer-based categories plus missed-submission consistency.
+ */
+export type FollowUpInsightCategory =
+  | Exclude<InsightCategory, "NONE">
+  | "SUBMISSION_CONSISTENCY";
+
+/** Human-readable labels for dashboard follow-up categories. */
+export const FOLLOW_UP_CATEGORY_LABELS: Record<
+  FollowUpInsightCategory,
+  string
+> = {
+  TASK_COMPLETION: "Task Completion",
+  STUDY_EFFECTIVENESS: "Study Effectiveness",
+  CONFIDENCE: "Confidence",
+  PLANNING: "Planning",
+  SUBMISSION_CONSISTENCY: "Missed Render an Account",
+};
 
 /**
  * One red insight follow-up for the dashboard daily action center.
@@ -14,7 +31,11 @@ export type DashboardFollowUp = {
   districtId: string;
   insightCategory: FollowUpInsightCategory;
   reason: string;
-  /** Local YYYY-MM-DD of the missionary's most recent completed session. */
+  /**
+   * Local YYYY-MM-DD for Language Study Sessions deep-link.
+   * For missed submissions, this is the latest missed opened day.
+   * Otherwise the missionary's most recent completed session day.
+   */
   latestSessionDateKey: string | null;
 };
 

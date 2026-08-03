@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 import { evaluateAndPersistMissionaryInsights } from "./insights/evaluateMissionaryInsights.ts";
+import { evaluateAndPersistSubmissionConsistencyForMissionary } from "./insights/evaluateSubmissionConsistency.ts";
 
 export type NormalizedAnswer = {
   google_item_id?: string | null;
@@ -263,6 +264,28 @@ export async function processNormalizedSubmission(
             submission_id: structured.id,
             missionary_id: missionaryId,
             error: insightMessage,
+          })
+        );
+      }
+
+      try {
+        await evaluateAndPersistSubmissionConsistencyForMissionary(
+          admin,
+          missionaryId
+        );
+      } catch (attendanceError) {
+        const attendanceMessage =
+          attendanceError instanceof Error
+            ? attendanceError.message
+            : "Submission consistency evaluation failed.";
+
+        console.error(
+          JSON.stringify({
+            event: "submission_consistency_evaluation_failed",
+            render_account_id: accountId,
+            submission_id: structured.id,
+            missionary_id: missionaryId,
+            error: attendanceMessage,
           })
         );
       }

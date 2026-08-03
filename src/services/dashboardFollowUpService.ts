@@ -16,6 +16,7 @@ const MEASURABLE_CATEGORIES = new Set<string>([
   "STUDY_EFFECTIVENESS",
   "CONFIDENCE",
   "PLANNING",
+  "SUBMISSION_CONSISTENCY",
 ]);
 
 type InsightRow = {
@@ -23,12 +24,18 @@ type InsightRow = {
   missionary_id: string;
   insight_category: string;
   reason: string;
+  supporting_session_ids: string[] | null;
   last_evaluated_at: string;
 };
 
 type SubmissionRow = {
   missionary_id: string | null;
   submitted_at: string | null;
+};
+
+type OpenSessionRow = {
+  id: string;
+  session_date: string;
 };
 
 /**
@@ -54,7 +61,9 @@ export async function getRedFollowUpsForDistrict(
 
   const { data: insightRows, error: insightError } = await supabase
     .from("missionary_insight_records")
-    .select("id, missionary_id, insight_category, reason, last_evaluated_at")
+    .select(
+      "id, missionary_id, insight_category, reason, supporting_session_ids, last_evaluated_at"
+    )
     .eq("status", "red")
     .in("missionary_id", missionaryIds)
     .order("last_evaluated_at", { ascending: false });
@@ -86,12 +95,47 @@ export async function getRedFollowUpsForDistrict(
     latestSessionByMissionary.set(row.missionary_id, row.submitted_at);
   }
 
+  const openSessionIds = Array.from(
+    new Set(
+      redInsights
+        .filter((row) => row.insight_category === "SUBMISSION_CONSISTENCY")
+        .flatMap((row) => row.supporting_session_ids ?? [])
+    )
+  );
+
+  const missedDateByOpenSessionId = new Map<string, string>();
+  if (openSessionIds.length > 0) {
+    const { data: openSessions, error: openSessionError } = await supabase
+      .from("language_study_open_sessions")
+      .select("id, session_date")
+      .in("id", openSessionIds);
+
+    if (openSessionError) throwQueryError(openSessionError);
+
+    for (const row of (openSessions ?? []) as OpenSessionRow[]) {
+      missedDateByOpenSessionId.set(row.id, row.session_date);
+    }
+  }
+
   return redInsights
     .map((row) => {
       const missionary = missionaryById.get(row.missionary_id);
       if (!missionary) return null;
 
-      const latestSubmittedAt = latestSessionByMissionary.get(missionary.id);
+      let latestSessionDateKey: string | null = null;
+
+      if (row.insight_category === "SUBMISSION_CONSISTENCY") {
+        const missedDates = (row.supporting_session_ids ?? [])
+          .map((id) => missedDateByOpenSessionId.get(id))
+          .filter((dateKey): dateKey is string => Boolean(dateKey))
+          .sort((a, b) => b.localeCompare(a));
+        latestSessionDateKey = missedDates[0] ?? null;
+      } else {
+        const latestSubmittedAt = latestSessionByMissionary.get(missionary.id);
+        latestSessionDateKey = latestSubmittedAt
+          ? toLocalDateKey(new Date(latestSubmittedAt))
+          : null;
+      }
 
       return {
         id: row.id,
@@ -100,9 +144,7 @@ export async function getRedFollowUpsForDistrict(
         districtId,
         insightCategory: row.insight_category as FollowUpInsightCategory,
         reason: row.reason,
-        latestSessionDateKey: latestSubmittedAt
-          ? toLocalDateKey(new Date(latestSubmittedAt))
-          : null,
+        latestSessionDateKey,
       } satisfies DashboardFollowUp;
     })
     .filter((item): item is DashboardFollowUp => item !== null)
