@@ -39,7 +39,24 @@ export type DashboardFollowUp = {
   latestSessionDateKey: string | null;
 };
 
-/** @deprecated Prefer DashboardFollowUp for Stage 3D. */
+/**
+ * One manually scheduled follow-up due today.
+ * Powered by missionaries.follow_up_date (not Render an Account insights).
+ */
+export type ScheduledFollowUp = {
+  id: string;
+  missionaryId: string;
+  missionaryName: string;
+  districtId: string;
+  districtName: string;
+  companionshipId: string;
+  /** Companionship members shown as a short label, when available. */
+  companionshipLabel: string | null;
+  followUpDate: string;
+  followUpNotes: string | null;
+};
+
+/** @deprecated Prefer ScheduledFollowUp or DashboardFollowUp. */
 export type FollowUpItem = {
   id: string;
   missionaryName: string;

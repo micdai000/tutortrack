@@ -12,7 +12,7 @@ function throwQueryError(error: unknown): never {
 }
 
 const PROFILE_COLUMNS =
-  "id, companionship_id, display_name, short_term_goal, current_study_plan, tutor_notes, long_term_goal, follow_up_date, last_updated_at, created_at";
+  "id, companionship_id, display_name, short_term_goal, current_study_plan, tutor_notes, long_term_goal, follow_up_date, follow_up_notes, last_updated_at, created_at";
 
 const LIST_COLUMNS = "id, companionship_id, display_name, created_at";
 
@@ -58,6 +58,7 @@ export async function updateMissionaryProfile(
       tutor_notes: draft.tutor_notes.trim() || null,
       long_term_goal: draft.long_term_goal.trim() || null,
       follow_up_date: draft.follow_up_date || null,
+      follow_up_notes: draft.follow_up_notes.trim() || null,
       last_updated_at: new Date().toISOString(),
     })
     .eq("id", missionaryId)
@@ -87,7 +88,24 @@ export function toMissionaryDraft(
     tutor_notes: profile.tutor_notes ?? "",
     long_term_goal: profile.long_term_goal ?? "",
     follow_up_date: profile.follow_up_date ?? "",
+    follow_up_notes: profile.follow_up_notes ?? "",
   };
+}
+
+/** Clear a scheduled follow-up (date + notes) after the tutor marks it complete. */
+export async function clearMissionaryFollowUp(
+  missionaryId: string
+): Promise<void> {
+  const { error } = await supabase
+    .from("missionaries")
+    .update({
+      follow_up_date: null,
+      follow_up_notes: null,
+      last_updated_at: new Date().toISOString(),
+    })
+    .eq("id", missionaryId);
+
+  if (error) throwQueryError(error);
 }
 
 /** Update only a missionary's display name. */

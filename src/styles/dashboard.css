@@ -115,10 +115,14 @@
   color: var(--tt-color-primary-hover);
 }
 
-/* ---------- Follow-ups ---------- */
+/* ---------- Follow-ups / Missionaries in Need ---------- */
 
 .dashboard-followups {
   padding: var(--tt-space-6);
+}
+
+.dashboard-missionaries-in-need {
+  margin-bottom: var(--tt-space-8);
 }
 
 .dashboard-followups__filter {
@@ -175,8 +179,21 @@
   gap: var(--tt-space-3);
 }
 
+.dashboard-followups__toast {
+  margin: 0 0 var(--tt-space-4);
+  padding: var(--tt-space-3) var(--tt-space-4);
+  border: 1px solid var(--tt-color-border);
+  border-radius: var(--tt-radius-md);
+  background: var(--tt-color-bg);
+  color: var(--tt-color-text-secondary);
+  font-size: var(--tt-text-helper-size);
+  line-height: var(--tt-text-helper-line);
+}
+
 .dashboard-followups__item {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-4);
   width: 100%;
   padding: var(--tt-space-4) var(--tt-space-4) var(--tt-space-4)
     calc(var(--tt-space-4) - 2px);
@@ -187,9 +204,12 @@
   text-align: left;
   font: inherit;
   color: inherit;
-  cursor: pointer;
   transition: background-color var(--tt-duration-fast) var(--tt-ease-standard),
     border-color var(--tt-duration-fast) var(--tt-ease-standard);
+}
+
+button.dashboard-followups__item {
+  cursor: pointer;
 }
 
 .dashboard-followups__item:hover {
@@ -198,9 +218,29 @@
   border-left-color: #991b1b;
 }
 
-.dashboard-followups__item:focus-visible {
+button.dashboard-followups__item:focus-visible,
+.dashboard-followups__item-main:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px var(--tt-color-primary-accent);
+}
+
+.dashboard-followups__item-main {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-radius: var(--tt-radius-sm);
+}
+
+.dashboard-followups__item-actions {
+  display: flex;
+  justify-content: flex-start;
 }
 
 .dashboard-followups__item-title {
@@ -236,6 +276,29 @@
   margin: 0;
   font-size: var(--tt-text-helper-size);
   color: var(--tt-color-text-secondary);
+}
+
+.dashboard-followups__item-meta + .dashboard-followups__item-meta {
+  margin-top: var(--tt-space-1);
+}
+
+.dashboard-followups__item-notes {
+  margin: var(--tt-space-3) 0 0;
+  font-size: var(--tt-text-helper-size);
+  line-height: 1.5;
+  color: var(--tt-color-text);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.dashboard-followups__item--scheduled {
+  border-left-color: var(--tt-color-primary);
+}
+
+.dashboard-followups__item--scheduled:hover {
+  border-left-color: var(--tt-color-primary-hover);
 }
 
 /* ---------- Search ---------- */

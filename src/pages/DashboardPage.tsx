@@ -10,6 +10,7 @@ import { useAuth } from "../components/AuthProvider";
 import {
   DashboardHeader,
   DistrictGrid,
+  MissionariesInNeed,
   SearchBar,
   StatCard,
   TodaysFollowUps,
@@ -17,6 +18,7 @@ import {
 import { PageContainer } from "../components/layout";
 import { useDashboardFollowUps } from "../hooks/useDashboardFollowUps";
 import { useDashboardOverview } from "../hooks/useDashboardOverview";
+import { useTodaysScheduledFollowUps } from "../hooks/useTodaysScheduledFollowUps";
 import { getDisplayFirstName, getTimeOfDayGreeting } from "../utils/greeting";
 import "../styles/dashboard.css";
 
@@ -57,10 +59,19 @@ function DashboardPage() {
         : (districts[0]?.id ?? "");
 
   const {
-    followUps,
-    loading: followUpsLoading,
-    error: followUpsError,
+    followUps: missionariesInNeed,
+    loading: missionariesInNeedLoading,
+    error: missionariesInNeedError,
   } = useDashboardFollowUps(effectiveDistrictId || null);
+
+  const {
+    followUps: scheduledFollowUps,
+    loading: scheduledFollowUpsLoading,
+    error: scheduledFollowUpsError,
+    completionMessage,
+    completingMissionaryId,
+    markComplete,
+  } = useTodaysScheduledFollowUps();
 
   function handleDistrictChange(districtId: string) {
     setSelectedDistrictId(districtId);
@@ -102,23 +113,34 @@ function DashboardPage() {
         />
         <StatCard
           label="Follow-ups today"
-          value={followUps.length}
+          value={scheduledFollowUps.length}
           icon={CalendarClock}
-          loading={loading || followUpsLoading}
+          loading={loading || scheduledFollowUpsLoading}
         />
       </section>
 
+      {districts.length > 0 && (
+        <MissionariesInNeed
+          districts={districts}
+          districtId={effectiveDistrictId}
+          followUps={missionariesInNeed}
+          loading={missionariesInNeedLoading || loading}
+          error={missionariesInNeedError}
+          onDistrictChange={handleDistrictChange}
+        />
+      )}
+
       <div className="dashboard-main">
-        {districts.length > 0 && (
-          <TodaysFollowUps
-            districts={districts}
-            districtId={effectiveDistrictId}
-            followUps={followUps}
-            loading={followUpsLoading || loading}
-            error={followUpsError}
-            onDistrictChange={handleDistrictChange}
-          />
-        )}
+        <TodaysFollowUps
+          followUps={scheduledFollowUps}
+          loading={scheduledFollowUpsLoading || loading}
+          error={scheduledFollowUpsError}
+          completionMessage={completionMessage}
+          completingMissionaryId={completingMissionaryId}
+          onMarkComplete={(missionaryId) => {
+            void markComplete(missionaryId);
+          }}
+        />
 
         <div className="dashboard-districts-panel">
           <SearchBar

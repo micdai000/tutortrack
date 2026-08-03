@@ -8,7 +8,8 @@ export type Missionary = {
 
 /**
  * Full missionary profile used by the Missionary Profile page.
- * follow_up_date / last_updated_at are structured for future Dashboard use.
+ * follow_up_date powers Today's Follow-Ups on the dashboard when it equals today.
+ * follow_up_notes stores why the tutor scheduled that follow-up.
  */
 export type MissionaryProfile = {
   id: string;
@@ -19,6 +20,7 @@ export type MissionaryProfile = {
   tutor_notes: string | null;
   long_term_goal: string | null;
   follow_up_date: string | null;
+  follow_up_notes: string | null;
   last_updated_at: string;
   created_at: string;
 };
@@ -31,6 +33,7 @@ export type MissionaryProfileDraft = {
   tutor_notes: string;
   long_term_goal: string;
   follow_up_date: string;
+  follow_up_notes: string;
 };
 
 export type MissionarySaveStatus =

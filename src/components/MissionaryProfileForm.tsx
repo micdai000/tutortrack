@@ -105,7 +105,9 @@ export function MissionaryProfileForm({
       <MetadataCard
         lastUpdatedAt={lastUpdatedAt}
         followUpDate={draft.follow_up_date}
+        followUpNotes={draft.follow_up_notes}
         onFollowUpChange={(value) => onChange("follow_up_date", value)}
+        onFollowUpNotesChange={(value) => onChange("follow_up_notes", value)}
       />
     </div>
   );

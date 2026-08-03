@@ -288,6 +288,19 @@
   gap: var(--tt-space-5);
 }
 
+.missionary-follow-up {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tt-space-5);
+}
+
+.missionary-follow-up__updated {
+  margin: 0;
+  font-size: var(--tt-text-helper-size);
+  line-height: var(--tt-text-helper-line);
+  color: var(--tt-color-text-secondary);
+}
+
 .missionary-field--readonly {
   justify-content: flex-start;
 }
