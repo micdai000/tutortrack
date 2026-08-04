@@ -46,8 +46,8 @@ export function ConfirmCheckInCompleteDialog({
             ) : (
               " this missionary"
             )}{" "}
-            from Missionaries in Need for the current issue. They will reappear
-            if the system flags them again later.
+            from Missionaries in Need for this issue. They will stay hidden
+            after refresh, and only reappear if the system flags a new issue.
           </p>
         </div>
 

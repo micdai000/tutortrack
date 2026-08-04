@@ -16,6 +16,19 @@
   .lss-filters {
     grid-template-columns: 1fr;
   }
+
+  .lss-filters__date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .lss-filters__date .tt-input {
+    width: max-content;
+    max-width: 100%;
+    align-self: center;
+  }
 }
 
 .lss-status {

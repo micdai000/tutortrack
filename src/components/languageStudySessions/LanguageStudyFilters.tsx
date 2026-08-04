@@ -36,7 +36,7 @@ export function LanguageStudyFilters({
         </Select>
       </Field>
 
-      <Field label="Date" htmlFor="lss-date">
+      <Field label="Date" htmlFor="lss-date" className="lss-filters__date">
         <Input
           id="lss-date"
           type="date"

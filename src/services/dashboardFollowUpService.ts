@@ -14,8 +14,13 @@ function throwQueryError(error: unknown): never {
 type CheckInRow = {
   missionary_id: string;
   insight_category: string;
-  acknowledged_last_evaluated_at: string;
+  acknowledged_supporting_session_ids: string[] | null;
 };
+
+/** Stable fingerprint for the underlying issue, not the refresh timestamp. */
+function sessionFingerprint(ids: string[] | null | undefined): string {
+  return [...(ids ?? [])].map(String).sort().join(",");
+}
 
 const MEASURABLE_CATEGORIES = new Set<string>([
   "TASK_COMPLETION",
@@ -86,7 +91,9 @@ export async function getRedFollowUpsForDistrict(
 
   const { data: checkInRows, error: checkInError } = await supabase
     .from("missionary_insight_check_ins")
-    .select("missionary_id, insight_category, acknowledged_last_evaluated_at")
+    .select(
+      "missionary_id, insight_category, acknowledged_supporting_session_ids"
+    )
     .in("missionary_id", missionaryIds);
 
   if (checkInError) throwQueryError(checkInError);
@@ -94,18 +101,18 @@ export async function getRedFollowUpsForDistrict(
   const checkInByKey = new Map(
     ((checkInRows ?? []) as CheckInRow[]).map((row) => [
       `${row.missionary_id}:${row.insight_category}`,
-      row.acknowledged_last_evaluated_at,
+      sessionFingerprint(row.acknowledged_supporting_session_ids),
     ])
   );
 
   const uncheckedInsights = redInsights.filter((row) => {
-    const acknowledgedAt = checkInByKey.get(
+    const acknowledgedFingerprint = checkInByKey.get(
       `${row.missionary_id}:${row.insight_category}`
     );
-    if (!acknowledgedAt) return true;
+    if (acknowledgedFingerprint === undefined) return true;
     return (
-      new Date(acknowledgedAt).getTime() !==
-      new Date(row.last_evaluated_at).getTime()
+      acknowledgedFingerprint !==
+      sessionFingerprint(row.supporting_session_ids)
     );
   });
 
@@ -180,6 +187,7 @@ export async function getRedFollowUpsForDistrict(
         insightCategory: row.insight_category as FollowUpInsightCategory,
         reason: row.reason,
         lastEvaluatedAt: row.last_evaluated_at,
+        supportingSessionIds: [...(row.supporting_session_ids ?? [])],
         latestSessionDateKey,
       } satisfies DashboardFollowUp;
     })
@@ -189,7 +197,7 @@ export async function getRedFollowUpsForDistrict(
 
 /**
  * Mark a Missionaries in Need check-in complete for the current insight state.
- * The card stays hidden until that insight is re-evaluated.
+ * The card stays hidden across refresh until the supporting sessions change.
  */
 export async function markInsightCheckInComplete(
   followUp: DashboardFollowUp
@@ -210,6 +218,7 @@ export async function markInsightCheckInComplete(
       missionary_id: followUp.missionaryId,
       insight_category: followUp.insightCategory,
       acknowledged_last_evaluated_at: followUp.lastEvaluatedAt,
+      acknowledged_supporting_session_ids: followUp.supportingSessionIds,
       completed_at: new Date().toISOString(),
       completed_by: session.user.id,
     },

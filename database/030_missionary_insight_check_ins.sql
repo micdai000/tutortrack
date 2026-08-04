@@ -4,7 +4,7 @@
 --
 -- Lets tutors mark a Missionaries in Need check-in complete
 -- without mutating live insight status. A card stays hidden
--- until that insight is re-evaluated (new last_evaluated_at).
+-- until the underlying supporting sessions change.
 -- =====================================================
 
 create table if not exists public.missionary_insight_check_ins (
@@ -25,8 +25,11 @@ create table if not exists public.missionary_insight_check_ins (
       'SUBMISSION_CONSISTENCY'
     )),
 
-  -- Fingerprint of the insight state that was checked in.
+  -- Audit only: evaluation timestamp changes on every dashboard refresh.
   acknowledged_last_evaluated_at timestamptz not null,
+
+  -- Visibility fingerprint: hide while these supporting sessions match.
+  acknowledged_supporting_session_ids uuid[] not null default '{}',
 
   completed_at timestamptz not null default now(),
   completed_by uuid not null references auth.users (id) on delete cascade,
@@ -44,7 +47,10 @@ comment on table public.missionary_insight_check_ins is
   'Tutor check-in completions for Missionaries in Need cards';
 
 comment on column public.missionary_insight_check_ins.acknowledged_last_evaluated_at is
-  'Insight last_evaluated_at at check-in time; card returns if the insight is re-evaluated';
+  'Audit timestamp of the insight evaluation that was checked in';
+
+comment on column public.missionary_insight_check_ins.acknowledged_supporting_session_ids is
+  'Supporting/open session ids at check-in time; card returns only when this set changes';
 
 alter table public.missionary_insight_check_ins enable row level security;
 
