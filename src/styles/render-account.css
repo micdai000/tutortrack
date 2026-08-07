@@ -382,12 +382,6 @@
   line-height: 1.5;
 }
 
-.render-question-card__helper {
-  min-height: 4rem;
-  font-size: var(--tt-text-body-size);
-  line-height: 1.45;
-}
-
 .render-question-card__meta {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

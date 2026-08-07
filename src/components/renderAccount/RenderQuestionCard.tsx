@@ -190,7 +190,6 @@ export function RenderQuestionCard({
   }
 
   const textFieldId = `question-text-${question.id}`;
-  const helperFieldId = `helper-text-${question.id}`;
   const responseFieldId = `response-type-${question.id}`;
   const insightFieldId = `insight-category-${question.id}`;
   const requiredFieldId = `required-${question.id}`;
@@ -233,17 +232,6 @@ export function RenderQuestionCard({
             placeholder="Write your question..."
             rows={3}
             aria-invalid={displayErrors.question_text ? true : undefined}
-          />
-        </Field>
-
-        <Field label="Helper Text (Optional)" htmlFor={helperFieldId}>
-          <Textarea
-            id={helperFieldId}
-            className="render-question-card__helper"
-            value={draft.helper_text}
-            onChange={(event) => updateField("helper_text", event.target.value)}
-            placeholder="Add optional instructions or clarification for missionaries."
-            rows={2}
           />
         </Field>
 
