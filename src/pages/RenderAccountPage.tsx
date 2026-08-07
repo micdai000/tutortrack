@@ -59,6 +59,7 @@ function RenderAccountPage() {
     connecting: googleConnecting,
     error: googleError,
     connect: connectGoogle,
+    reconnect: reconnectGoogle,
   } = useGoogleConnection();
 
   const { districts, loading: districtsLoading } = useDistricts();
@@ -270,6 +271,13 @@ function RenderAccountPage() {
     }
   }
 
+  /** Clear stale Google grant and send the tutor through consent again. */
+  async function handleReconnectGoogle() {
+    setPublishError(null);
+    setSyncSuccess(false);
+    await reconnectGoogle();
+  }
+
   /** Push pending TutorTrack edits to the existing Google Form. */
   async function handleSyncChanges() {
     setPublishError(null);
@@ -446,6 +454,7 @@ function RenderAccountPage() {
             canSync={validationSummary.isPublishable}
             onPublishClick={() => void handlePublishToGoogleForms()}
             onSyncClick={() => void handleSyncChanges()}
+            onReconnectClick={() => void handleReconnectGoogle()}
           />
 
           {questions.length === 0 ? (

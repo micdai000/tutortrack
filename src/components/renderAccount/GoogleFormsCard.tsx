@@ -18,7 +18,15 @@ type GoogleFormsCardProps = {
   canSync: boolean;
   onPublishClick: () => void;
   onSyncClick: () => void;
+  onReconnectClick: () => void;
 };
+
+function isGoogleReconnectError(error: string | null): boolean {
+  if (!error) return false;
+  return /reconnect google|authorization expired|denied permission/i.test(
+    error
+  );
+}
 
 function isPublished(account: RenderAccount | null): boolean {
   return Boolean(account?.google_form_id && account.google_form_url);
@@ -45,10 +53,12 @@ export function GoogleFormsCard({
   canSync,
   onPublishClick,
   onSyncClick,
+  onReconnectClick,
 }: GoogleFormsCardProps) {
   const isConnected = connection !== null;
   const published = isPublished(account);
   const busy = loading || connecting || publishing || syncing;
+  const showReconnectHint = isGoogleReconnectError(error);
   const changesPending = Boolean(
     account &&
       (account.needs_sync || account.sync_status === "changes_pending")
@@ -159,6 +169,13 @@ export function GoogleFormsCard({
               : ""}
           </p>
 
+          {showReconnectHint && (
+            <p className="google-forms-card__hint" role="status">
+              Use Reconnect Google below. This only refreshes TutorTrack&apos;s
+              permission to your Google account — it does not create a new form.
+            </p>
+          )}
+
           <div className="google-forms-card__actions">
             <Button
               type="button"
@@ -167,6 +184,16 @@ export function GoogleFormsCard({
               disabled={publishing || !canPublish}
             >
               Create Google Form
+            </Button>
+
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={onReconnectClick}
+              disabled={connecting}
+              title="Refreshes Google permission only. Does not recreate your form."
+            >
+              Reconnect Google
             </Button>
           </div>
         </div>
@@ -245,6 +272,13 @@ export function GoogleFormsCard({
               : ""}
           </p>
 
+          {showReconnectHint && (
+            <p className="google-forms-card__hint" role="status">
+              Use Reconnect Google below. This only refreshes TutorTrack&apos;s
+              permission to your Google account — it does not recreate your form.
+            </p>
+          )}
+
           <div className="google-forms-card__actions">
             <Button
               type="button"
@@ -253,6 +287,16 @@ export function GoogleFormsCard({
               disabled={syncing || !canSync}
             >
               Sync Changes
+            </Button>
+
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={onReconnectClick}
+              disabled={connecting}
+              title="Refreshes Google permission only. Does not recreate your form."
+            >
+              Reconnect Google
             </Button>
 
             {account.google_form_url && (

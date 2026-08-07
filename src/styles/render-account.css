@@ -224,6 +224,14 @@
   line-height: 1.55;
 }
 
+.google-forms-card__hint {
+  margin: 0;
+  max-width: 36rem;
+  color: var(--tt-color-text-secondary);
+  font-size: var(--tt-text-helper-size);
+  line-height: 1.55;
+}
+
 .google-forms-card__actions {
   display: flex;
   justify-content: flex-start;

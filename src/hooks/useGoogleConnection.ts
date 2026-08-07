@@ -18,6 +18,7 @@ type UseGoogleConnectionResult = {
   error: string | null;
   refresh: () => Promise<void>;
   connect: () => Promise<void>;
+  reconnect: () => Promise<void>;
   disconnect: () => Promise<void>;
 };
 
@@ -117,6 +118,28 @@ export function useGoogleConnection(): UseGoogleConnectionResult {
     }
   }
 
+  /**
+   * Clear the stored Google grant, then send the tutor through consent again.
+   * Does not touch the published Google Form — only TutorTrack's OAuth tokens.
+   */
+  async function reconnect() {
+    setConnecting(true);
+    setError(null);
+
+    try {
+      await deleteGoogleConnection();
+      setConnection(null);
+      const authorizationUrl = await startGoogleOAuth();
+      window.location.assign(authorizationUrl);
+    } catch (err) {
+      setConnecting(false);
+      setError(
+        getErrorMessage(err, "Unable to reconnect Google. Please try again.")
+      );
+      await refresh({ silent: true });
+    }
+  }
+
   async function disconnect() {
     await deleteGoogleConnection();
     setConnection(null);
@@ -130,6 +153,7 @@ export function useGoogleConnection(): UseGoogleConnectionResult {
     error,
     refresh,
     connect,
+    reconnect,
     disconnect,
   };
 }
