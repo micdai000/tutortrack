@@ -1,11 +1,23 @@
 import type { CategorySessionSignal, InsightSession } from "./types.ts";
 import type { MeasurableInsightCategory } from "./types.ts";
 
+/** Threshold for decline / isolated-low signals (exclusive): scores below this are low. */
 const LOW_SCORE_THRESHOLD = 5;
 
-/** Scores below this value are considered low. */
+/**
+ * Max score that still counts as low for the sustained-all-low red rule (inclusive).
+ * Study Effectiveness / Confidence: every lookback score at or below this → red.
+ */
+const SUSTAINED_LOW_MAX = 6;
+
+/** Scores below 5 are considered low (decline ending low, isolated yellow). */
 export function isLowScore(score: number): boolean {
   return score < LOW_SCORE_THRESHOLD;
+}
+
+/** Scores 1–6 count as low for the sustained-all-low red pattern. */
+export function isSustainedLowScore(score: number): boolean {
+  return score <= SUSTAINED_LOW_MAX;
 }
 
 /** Parse a YES_NO response_value into affirmative (Yes) / negative (No). */

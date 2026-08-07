@@ -52,7 +52,82 @@ function session(
   )!;
   assert(confidence.status === "red", `expected red, got ${confidence.status}`);
   assert(
-    confidence.reason.includes("below 5"),
+    confidence.reason.includes("at or below 6"),
+    `unexpected reason: ${confidence.reason}`
+  );
+}
+
+// Sustained scores at or below 6 (including 6) → red
+{
+  const result = evaluateMissionaryInsightsFromSessions("m1b", [
+    session("1", [
+      {
+        insightCategory: "STUDY_EFFECTIVENESS",
+        responseType: "RATING_1_TO_10",
+        responseValue: "6",
+      },
+    ]),
+    session("2", [
+      {
+        insightCategory: "STUDY_EFFECTIVENESS",
+        responseType: "RATING_1_TO_10",
+        responseValue: "5",
+      },
+    ]),
+    session("3", [
+      {
+        insightCategory: "STUDY_EFFECTIVENESS",
+        responseType: "RATING_1_TO_10",
+        responseValue: "6",
+      },
+    ]),
+  ]);
+
+  const study = result.categoryEvaluations.find(
+    (evaluation) => evaluation.category === "STUDY_EFFECTIVENESS"
+  )!;
+  assert(study.status === "red", `expected red for ≤6 sustained, got ${study.status}`);
+  assert(
+    study.reason.includes("at or below 6"),
+    `unexpected reason: ${study.reason}`
+  );
+}
+
+// Clear decline ending below 5 (not all ≤6) → still red
+{
+  const result = evaluateMissionaryInsightsFromSessions("m1c", [
+    session("1", [
+      {
+        insightCategory: "CONFIDENCE",
+        responseType: "RATING_1_TO_10",
+        responseValue: "9",
+      },
+    ]),
+    session("2", [
+      {
+        insightCategory: "CONFIDENCE",
+        responseType: "RATING_1_TO_10",
+        responseValue: "7",
+      },
+    ]),
+    session("3", [
+      {
+        insightCategory: "CONFIDENCE",
+        responseType: "RATING_1_TO_10",
+        responseValue: "4",
+      },
+    ]),
+  ]);
+
+  const confidence = result.categoryEvaluations.find(
+    (evaluation) => evaluation.category === "CONFIDENCE"
+  )!;
+  assert(
+    confidence.status === "red",
+    `expected red for decline ending below 5, got ${confidence.status}`
+  );
+  assert(
+    confidence.reason.includes("declined"),
     `unexpected reason: ${confidence.reason}`
   );
 }

@@ -2,6 +2,7 @@ import {
   isLowScore,
   isMaterialDecline,
   isStrictlyDeclining,
+  isSustainedLowScore,
 } from "../parseAnswers.ts";
 import type {
   CategoryEvaluation,
@@ -11,7 +12,7 @@ import type {
 
 /**
  * Rating (1–10) category engine (Study Effectiveness, Confidence).
- * Prioritizes sustained lows and downward trends over isolated scores.
+ * Prioritizes sustained lows (all ≤6) and downward trends ending below 5.
  */
 export function evaluateRatingCategory(
   category: MeasurableInsightCategory,
@@ -30,22 +31,25 @@ export function evaluateRatingCategory(
   const supportingSessionIds = signals.map((signal) => signal.submissionId);
   const scores = signals.map((signal) => signal.score!);
   const sessionCount = scores.length;
+  const sustainedLowCount = scores.filter((score) =>
+    isSustainedLowScore(score)
+  ).length;
   const lowCount = scores.filter((score) => isLowScore(score)).length;
   const latestScore = scores[scores.length - 1]!;
   const strictlyDeclining = isStrictlyDeclining(scores);
   const materialDecline = isMaterialDecline(scores);
 
-  // Sustained low across 2+ sessions → red
-  if (sessionCount >= 2 && lowCount === sessionCount) {
+  // Sustained low across 2+ sessions (every score ≤ 6) → red
+  if (sessionCount >= 2 && sustainedLowCount === sessionCount) {
     return {
       category,
       status: "red",
-      reason: `${label} remained below 5 during the last ${sessionCount} completed Language Study Sessions.`,
+      reason: `${label} remained at or below 6 during the last ${sessionCount} completed Language Study Sessions.`,
       supportingSessionIds,
     };
   }
 
-  // Clear downward trend ending low → red
+  // Clear downward trend ending below 5 → red
   if (
     sessionCount >= 3 &&
     (strictlyDeclining || materialDecline) &&
